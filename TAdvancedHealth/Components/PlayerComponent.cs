@@ -80,7 +80,7 @@ namespace Tavstal.TAdvancedHealth.Modules
             }
             catch (Exception e)
             {
-                Logger.LogError(e.ToString());
+                LoggerHelper.LogError(e.ToString());
             }
         }
 
@@ -97,7 +97,7 @@ namespace Tavstal.TAdvancedHealth.Modules
             }
             catch (Exception e)
             {
-                Logger.LogError(e.ToString());
+                LoggerHelper.LogError(e.ToString());
             }
         }
 

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Rocket.Unturned.Player;
 using Steamworks;
 using Tavstal.TAdvancedHealth.Compatibility;
+using Tavstal.TAdvancedHealth.Helpers;
 using SDG.Unturned;
 #endregion
 
@@ -235,8 +236,8 @@ namespace Tavstal.TAdvancedHealth.Modules
             }
             catch (Exception e)
             {
-                Logger.LogError("ProgressBar Error");
-                Logger.LogError(e);
+                LoggerHelper.LogError("ProgressBar Error");
+                LoggerHelper.LogError(e);
             }
         }
     }

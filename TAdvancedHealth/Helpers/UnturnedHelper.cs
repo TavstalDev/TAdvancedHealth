@@ -197,7 +197,7 @@ namespace Tavstal.TAdvancedHealth.Helpers
                         {
                             var teleportLocation = new Vector3(player.Position.x, player.Position.y, player.Position.z);
                             tmpPlayer.Player.quests.sendSetMarker(true, teleportLocation);
-                            SendMessage(sp, TAdvancedHealthMain.Instance.Translate(true, "player_injured", player.CharacterName));
+                            SendChatMessage(sp, TAdvancedHealthMain.Instance.Translate(true, "player_injured", player.CharacterName));
                         }
                     }
                 }

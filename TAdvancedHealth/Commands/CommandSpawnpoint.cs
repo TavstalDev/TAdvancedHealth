@@ -31,13 +31,13 @@ namespace Tavstal.TAdvancedHealth
                 }
                 else
                 {
-                    UnturnedHelper.SendMessage(player.SteamPlayer(), TAdvancedHealthMain.Translate(true, "Hospital_isnot_exists"));
+                    UnturnedHelper.SendChatMessage(player.SteamPlayer(), TAdvancedHealthMain.Translate(true, "Hospital_isnot_exists"));
                     return;
                 }
             }
             else
             {
-                UnturnedHelper.SendMessage(player.SteamPlayer(), Syntax);
+                UnturnedHelper.SendChatMessage(player.SteamPlayer(), Syntax);
                 return;
             }
         }

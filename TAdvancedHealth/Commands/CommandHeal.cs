@@ -26,24 +26,24 @@ namespace Tavstal.TAdvancedHealth
                 TAdvancedHealthComponent comp = callerPlayer.GetComponent<TAdvancedHealthComponent>();
                 comp.Revive();
 
-                UnturnedHelper.SendMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_cure_success", callerPlayer.CharacterName));
+                UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_cure_success", callerPlayer.CharacterName));
             }
             else if (args.Length == 1)
             {
                 UnturnedPlayer targetPlayer = UnturnedPlayer.FromName(args[0]);
                 if (targetPlayer == null)
                 {
-                    UnturnedHelper.SendMessage(callerPlayer.SteamPlayer(), "error_playet_not_found");
+                    UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), "error_playet_not_found");
                     return;
                 }
 
                 TAdvancedHealthComponent targetComp = targetPlayer.GetComponent<TAdvancedHealthComponent>();
                 targetComp.Revive();
 
-                UnturnedHelper.SendMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_cure_success", targetPlayer.CharacterName));
+                UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_cure_success", targetPlayer.CharacterName));
             }
             else
-                UnturnedHelper.SendMessage(callerPlayer.SteamPlayer(), "<color=yellow>" + Syntax + "</color>");
+                UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), "<color=yellow>" + Syntax + "</color>");
         }
     }
 }

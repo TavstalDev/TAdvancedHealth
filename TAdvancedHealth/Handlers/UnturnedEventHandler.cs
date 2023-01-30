@@ -1127,7 +1127,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                                 {
                                     if (value > DateTime.Now)
                                     {
-                                        Helper.SendMessage(killerPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "error_defiblirator_cooldown", (value - DateTime.Now).TotalSeconds.ToString("0.00")));
+                                        Helper.SendChatMessage(killerPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "error_defiblirator_cooldown", (value - DateTime.Now).TotalSeconds.ToString("0.00")));
                                         return;
                                     }
                                     killerComp.lastDefibliratorUses.Remove(defibrillator.ItemID);
@@ -1173,7 +1173,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                                         }
                                         else
                                         {
-                                            UnturnedHelper.SendMessage(attacker.SteamPlayer(), ag.Message);
+                                            UnturnedHelper.SendChatMessage(attacker.SteamPlayer(), ag.Message);
                                         }
                                         allow = false;
                                         break;

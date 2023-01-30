@@ -39,7 +39,7 @@ namespace Tavstal.TAdvancedHealth.Compatibility.Harmony
             if (userComp.lastDefibliratorUses.TryGetValue(useableMelee.equippedMeleeAsset.id, out DateTime time))
                 if (time > DateTime.Now)
                 {
-                    UnturnedHelper.SendMessage(userPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "error_defiblirator_cooldown", (time - DateTime.Now).TotalSeconds.ToString("0.00")));
+                    UnturnedHelper.SendChatMessage(userPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "error_defiblirator_cooldown", (time - DateTime.Now).TotalSeconds.ToString("0.00")));
                     return;
                 }
                 else
@@ -62,21 +62,21 @@ namespace Tavstal.TAdvancedHealth.Compatibility.Harmony
                     if (chance != 0 && chance <= defibrillator.ReviveChance)
                     {
                         targetComp.Revive();
-                        UnturnedHelper.SendMessage(userPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "success_defiblirator_revive", targetPlayer.CharacterName));
-                        UnturnedHelper.SendMessage(targetPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "success_defiblirator_revive_other", userPlayer.CharacterName));
+                        UnturnedHelper.SendChatMessage(userPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "success_defiblirator_revive", targetPlayer.CharacterName));
+                        UnturnedHelper.SendChatMessage(targetPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "success_defiblirator_revive_other", userPlayer.CharacterName));
                     }
                     else
                     {
-                        UnturnedHelper.SendMessage(userPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "error_defiblirator_revive_fail", targetPlayer.CharacterName));
-                        //Helper.SendMessage(targetPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "error_defiblirator_revive_fail_other"));
+                        UnturnedHelper.SendChatMessage(userPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "error_defiblirator_revive_fail", targetPlayer.CharacterName));
+                        //Helper.SendChatMessage(targetPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "error_defiblirator_revive_fail_other"));
                     }
                     userComp.lastDefibliratorUses.Add(useableMelee.equippedMeleeAsset.id, DateTime.Now.AddSeconds(defibrillator.RechargeTimeSecs));
                 }
                 else
-                    UnturnedHelper.SendMessage(userPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "error_defiblirator_not_injured"));
+                    UnturnedHelper.SendChatMessage(userPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "error_defiblirator_not_injured"));
             }
             else
-                UnturnedHelper.SendMessage(userPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "error_defiblirator_no_player"));
+                UnturnedHelper.SendChatMessage(userPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "error_defiblirator_no_player"));
         }
     }
 }

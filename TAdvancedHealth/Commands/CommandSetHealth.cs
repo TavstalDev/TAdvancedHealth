@@ -41,7 +41,7 @@ namespace Tavstal.TAdvancedHealth
                         }
 
                         TAdvancedHealthMain.Database.UpdateHeadHealth(callerPlayer.Id, newhealth);
-                        UnturnedHelper.SendMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", main.Translate(true, "head"), newhealth));
+                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", main.Translate(true, "head"), newhealth));
                     }
                     else if (args[0].ToLower() == "body")
                     {
@@ -58,7 +58,7 @@ namespace Tavstal.TAdvancedHealth
                         }
 
                         TAdvancedHealthMain.Database.UpdateBodyHealth(callerPlayer.Id, newhealth);
-                        UnturnedHelper.SendMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", main.Translate(true, "body"), newhealth));
+                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", main.Translate(true, "body"), newhealth));
                     }
                     else if (args[0].ToLower() == "rightarm")
                     {
@@ -75,7 +75,7 @@ namespace Tavstal.TAdvancedHealth
                         }
 
                         TAdvancedHealthMain.Database.UpdateRightArmHealth(callerPlayer.Id, newhealth);
-                        UnturnedHelper.SendMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", main.Translate(true, "rightarm"), newhealth));
+                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", main.Translate(true, "rightarm"), newhealth));
                     }
                     else if (args[0].ToLower() == "leftarm")
                     {
@@ -92,7 +92,7 @@ namespace Tavstal.TAdvancedHealth
                         }
 
                         TAdvancedHealthMain.Database.UpdateLeftArmHealth(callerPlayer.Id, newhealth);
-                        UnturnedHelper.SendMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", main.Translate(true, "leftarm"), newhealth));
+                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", main.Translate(true, "leftarm"), newhealth));
                     }
                     else if (args[0].ToLower() == "leftleg")
                     {
@@ -109,7 +109,7 @@ namespace Tavstal.TAdvancedHealth
                         }
 
                         TAdvancedHealthMain.Database.UpdateLeftLegHealth(callerPlayer.Id, newhealth);
-                        UnturnedHelper.SendMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", main.Translate(true, "leftleg"), newhealth));
+                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", main.Translate(true, "leftleg"), newhealth));
                     }
                     else if (args[0].ToLower() == "rightleg")
                     {
@@ -126,7 +126,7 @@ namespace Tavstal.TAdvancedHealth
                         }
 
                         TAdvancedHealthMain.Database.UpdateRightLegHealth(callerPlayer.Id, newhealth);
-                        UnturnedHelper.SendMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", main.Translate(true, "rightleg"), newhealth));
+                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", main.Translate(true, "rightleg"), newhealth));
                     }
 
                 }
@@ -135,7 +135,7 @@ namespace Tavstal.TAdvancedHealth
                     UnturnedPlayer targetPlayer = UnturnedPlayer.FromName(args[0]);
                     if (targetPlayer == null)
                     {
-                        UnturnedHelper.SendMessage(callerPlayer.SteamPlayer(), "error_playet_not_found");
+                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), "error_playet_not_found");
                         return;
                     }
 
@@ -154,8 +154,8 @@ namespace Tavstal.TAdvancedHealth
                         }
 
                         TAdvancedHealthMain.Database.UpdateHeadHealth(targetPlayer.Id, newhealth);
-                        UnturnedHelper.SendMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", targetPlayer.CharacterName, main.Translate(true, "head"), newhealth));
-                        UnturnedHelper.SendMessage(targetPlayer.SteamPlayer(), main.Translate(true, "command_sethealth_other", callerPlayer.CharacterName, main.Translate(true, "head"), newhealth));
+                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", targetPlayer.CharacterName, main.Translate(true, "head"), newhealth));
+                        UnturnedHelper.SendChatMessage(targetPlayer.SteamPlayer(), main.Translate(true, "command_sethealth_other", callerPlayer.CharacterName, main.Translate(true, "head"), newhealth));
                     }
                     else if (args[1].ToLower() == "body")
                     {
@@ -172,8 +172,8 @@ namespace Tavstal.TAdvancedHealth
                         }
 
                         TAdvancedHealthMain.Database.UpdateBodyHealth(targetPlayer.Id, newhealth);
-                        UnturnedHelper.SendMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", targetPlayer.CharacterName, main.Translate(true, "body"), newhealth));
-                        UnturnedHelper.SendMessage(targetPlayer.SteamPlayer(), main.Translate(true, "command_sethealth_other", callerPlayer.CharacterName, main.Translate(true, "body"), newhealth));
+                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", targetPlayer.CharacterName, main.Translate(true, "body"), newhealth));
+                        UnturnedHelper.SendChatMessage(targetPlayer.SteamPlayer(), main.Translate(true, "command_sethealth_other", callerPlayer.CharacterName, main.Translate(true, "body"), newhealth));
                     }
                     else if (args[1].ToLower() == "rightarm")
                     {
@@ -190,8 +190,8 @@ namespace Tavstal.TAdvancedHealth
                         }
 
                         TAdvancedHealthMain.Database.UpdateRightArmHealth(targetPlayer.Id, newhealth);
-                        UnturnedHelper.SendMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", targetPlayer.CharacterName, main.Translate(true, "rightarm"), newhealth));
-                        UnturnedHelper.SendMessage(targetPlayer.SteamPlayer(), main.Translate(true, "command_sethealth_other", callerPlayer.CharacterName, main.Translate(true, "rightarm"), newhealth));
+                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", targetPlayer.CharacterName, main.Translate(true, "rightarm"), newhealth));
+                        UnturnedHelper.SendChatMessage(targetPlayer.SteamPlayer(), main.Translate(true, "command_sethealth_other", callerPlayer.CharacterName, main.Translate(true, "rightarm"), newhealth));
                     }
                     else if (args[1].ToLower() == "leftarm")
                     {
@@ -208,8 +208,8 @@ namespace Tavstal.TAdvancedHealth
                         }
 
                         TAdvancedHealthMain.Database.UpdateLeftArmHealth(targetPlayer.Id, newhealth);
-                        UnturnedHelper.SendMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", targetPlayer.CharacterName, main.Translate(true, "leftarm"), newhealth));
-                        UnturnedHelper.SendMessage(targetPlayer.SteamPlayer(), main.Translate(true, "command_sethealth_other", callerPlayer.CharacterName, main.Translate(true, "leftarm"), newhealth));
+                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", targetPlayer.CharacterName, main.Translate(true, "leftarm"), newhealth));
+                        UnturnedHelper.SendChatMessage(targetPlayer.SteamPlayer(), main.Translate(true, "command_sethealth_other", callerPlayer.CharacterName, main.Translate(true, "leftarm"), newhealth));
                     }
                     else if (args[1].ToLower() == "leftleg")
                     {
@@ -226,8 +226,8 @@ namespace Tavstal.TAdvancedHealth
                         }
 
                         TAdvancedHealthMain.Database.UpdateLeftLegHealth(targetPlayer.Id, newhealth);
-                        UnturnedHelper.SendMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", targetPlayer.CharacterName, main.Translate(true, "leftleg"), newhealth));
-                        UnturnedHelper.SendMessage(targetPlayer.SteamPlayer(), main.Translate(true, "command_sethealth_other", callerPlayer.CharacterName, main.Translate(true, "leftleg"), newhealth));
+                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", targetPlayer.CharacterName, main.Translate(true, "leftleg"), newhealth));
+                        UnturnedHelper.SendChatMessage(targetPlayer.SteamPlayer(), main.Translate(true, "command_sethealth_other", callerPlayer.CharacterName, main.Translate(true, "leftleg"), newhealth));
                     }
                     else if (args[1].ToLower() == "rightleg")
                     {
@@ -244,12 +244,12 @@ namespace Tavstal.TAdvancedHealth
                         }
 
                         TAdvancedHealthMain.Database.UpdateRightLegHealth(targetPlayer.Id, newhealth);
-                        UnturnedHelper.SendMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", targetPlayer.CharacterName, main.Translate(true, "rightleg"), newhealth));
-                        UnturnedHelper.SendMessage(targetPlayer.SteamPlayer(), main.Translate(true, "command_sethealth_other", callerPlayer.CharacterName, main.Translate(true, "rightleg"), newhealth));
+                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", targetPlayer.CharacterName, main.Translate(true, "rightleg"), newhealth));
+                        UnturnedHelper.SendChatMessage(targetPlayer.SteamPlayer(), main.Translate(true, "command_sethealth_other", callerPlayer.CharacterName, main.Translate(true, "rightleg"), newhealth));
                     }
                 }
                 else
-                    UnturnedHelper.SendMessage(callerPlayer.SteamPlayer(), Syntax);
+                    UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), Syntax);
             }
             catch (Exception e)
             {
