@@ -32,7 +32,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStatusIcons, false);
                 health.isHUDEnabled = true;
                 EffectManager.sendUIEffect(health.HUDEffectID, (short)health.HUDEffectID, player.SteamPlayer().transportConnection, true);
-                UnturnedHelper.UpdateHealthAllUI(player);
+                HealthHelper.UpdateHealthAllUI(player);
             }
             else
             {

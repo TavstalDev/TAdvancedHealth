@@ -73,6 +73,8 @@
     <Compile Include="Handlers\HealthSystemEventHandler.cs" />
     <Compile Include="Handlers\UnturnedEventHandler.cs" />
     <Compile Include="Helpers\FormatHelper.cs" />
+    <Compile Include="Helpers\PlayerHelper.cs" />
+    <Compile Include="Helpers\HealthHelper.cs" />
     <Compile Include="Helpers\UnturnedHelper.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="Managers\EventManager.cs" />

@@ -207,7 +207,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                         return;
                     }
 
-                    int val = MathHelper.GenerateRandomNumber(1, 100);
+                    int val = MathHelper.Next(1, 100);
 
                     if (val <= c.HeavyBleedingChance)
                         comp.hasHeavyBleeding = true;
@@ -239,7 +239,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 {
                     if (c.CanHavePainEffect)
                     {
-                        int painChance = MathHelper.GenerateRandomNumber(1, 100);
+                        int painChance = MathHelper.Next(1, 100);
 
                         if (painChance <= c.PainEffectChance)
                         {
@@ -633,7 +633,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowVirus, false);
                     player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowWater, false);
                     player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStatusIcons, false);
-                    UnturnedHelper.UpdateHealthAllUI(player);
+                    HealthHelper.UpdateHealthAllUI(player);
                 }
                 #endregion
             }
@@ -791,7 +791,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 Vector3 ragdoll = player.Position.normalized;
                 if (limb == ELimb.SKULL)
                 {
-                    if (UnturnedHelper.CanBleed(health.HeadHealth, totaldamage))
+                    if (HealthHelper.CanBleed(health.HeadHealth, totaldamage))
                         player.Bleeding = true;
 
                     if (health.HeadHealth - totaldamage > 0)
@@ -809,10 +809,10 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     {
                         if (c.CanBeInjured && !health.isInjured)
                         {
-                            int chanc = MathHelper.GenerateRandomNumber(1, 100);
+                            int chanc = MathHelper.Next(1, 100);
                             if (c.InjuredChance >= chanc)
                             {
-                                UnturnedHelper.SetPlayerDowned(player);
+                                HealthHelper.SetPlayerDowned(player);
                                 return;
                             }
                         }
@@ -832,7 +832,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 }
                 else if (cause == EDeathCause.BONES)
                 {
-                    if (UnturnedHelper.CanBleed(health.LeftLegHealth, totaldamage) || UnturnedHelper.CanBleed(health.RightLegHealth, totaldamage))
+                    if (HealthHelper.CanBleed(health.LeftLegHealth, totaldamage) || HealthHelper.CanBleed(health.RightLegHealth, totaldamage))
                         player.Bleeding = true;
 
                     if (health.RightLegHealth - totaldamage > 0)
@@ -889,7 +889,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 }
                 else if (limb == ELimb.LEFT_BACK || limb == ELimb.LEFT_FRONT || limb == ELimb.RIGHT_BACK || limb == ELimb.RIGHT_FRONT || limb == ELimb.SPINE || cause == EDeathCause.INFECTION || cause == EDeathCause.BREATH)
                 {
-                    if (UnturnedHelper.CanBleed(health.BodyHealth, totaldamage))
+                    if (HealthHelper.CanBleed(health.BodyHealth, totaldamage))
                         player.Bleeding = true;
 
                     if (health.BodyHealth - totaldamage > 0)
@@ -907,10 +907,10 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     {
                         if (c.CanBeInjured && !health.isInjured)
                         {
-                            int chanc = MathHelper.GenerateRandomNumber(1, 100);
+                            int chanc = MathHelper.Next(1, 100);
                             if (c.InjuredChance >= chanc)
                             {
-                                UnturnedHelper.SetPlayerDowned(player);
+                                HealthHelper.SetPlayerDowned(player);
                                 return;
                             }
                         }
@@ -930,7 +930,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 }
                 else if (limb == ELimb.LEFT_ARM || limb == ELimb.LEFT_HAND)
                 {
-                    if (UnturnedHelper.CanBleed(health.LeftArmHealth, totaldamage))
+                    if (HealthHelper.CanBleed(health.LeftArmHealth, totaldamage))
                         player.Bleeding = true;
 
                     if (health.LeftArmHealth - totaldamage > 0)
@@ -961,7 +961,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 }
                 else if (limb == ELimb.RIGHT_ARM || limb == ELimb.RIGHT_HAND)
                 {
-                    if (UnturnedHelper.CanBleed(health.RightArmHealth, totaldamage))
+                    if (HealthHelper.CanBleed(health.RightArmHealth, totaldamage))
                         player.Bleeding = true;
 
                     if (health.RightArmHealth - totaldamage > 0)
@@ -992,7 +992,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 }
                 else if (limb == ELimb.LEFT_LEG || limb == ELimb.LEFT_FOOT)
                 {
-                    if (UnturnedHelper.CanBleed(health.LeftLegHealth, totaldamage))
+                    if (HealthHelper.CanBleed(health.LeftLegHealth, totaldamage))
                         player.Bleeding = true;
 
                     if (health.LeftLegHealth - totaldamage > 0)
@@ -1023,7 +1023,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 }
                 else if (limb == ELimb.RIGHT_LEG || limb == ELimb.RIGHT_FOOT)
                 {
-                    if (UnturnedHelper.CanBleed(health.RightLegHealth, totaldamage))
+                    if (HealthHelper.CanBleed(health.RightLegHealth, totaldamage))
                         player.Bleeding = true;
 
                     if (health.RightLegHealth - totaldamage > 0)
@@ -1054,7 +1054,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 }
                 else
                 {
-                    if (UnturnedHelper.CanBleed(health.BodyHealth, totaldamage))
+                    if (HealthHelper.CanBleed(health.BodyHealth, totaldamage))
                         player.Bleeding = true;
 
                     if (health.BodyHealth - totaldamage > 0)
@@ -1072,10 +1072,10 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     {
                         if (c.CanBeInjured && !health.isInjured)
                         {
-                            int chanc = MathHelper.GenerateRandomNumber(1, 100);
+                            int chanc = MathHelper.Next(1, 100);
                             if (c.InjuredChance >= chanc)
                             {
-                                UnturnedHelper.SetPlayerDowned(player);
+                                HealthHelper.SetPlayerDowned(player);
                                 return;
                             }
                         }
@@ -1133,7 +1133,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                                     killerComp.lastDefibliratorUses.Remove(defibrillator.ItemID);
                                 }
 
-                                int chance = MathHelper.GenerateRandomNumber(1, 100);
+                                int chance = MathHelper.Next(1, 100);
                                 if (chance != 0 && chance <= defibrillator.ReviveChance)
                                     cp.Revive();
                                 killerComp.lastDefibliratorUses.Add(defibrillator.ItemID, DateTime.Now.AddSeconds(defibrillator.RechargeTimeSecs));
@@ -1158,7 +1158,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                                 List<Permission> victimPerms = victim.GetPermissions();
                                 List<Permission> attackerPerms = attacker.GetPermissions();
 
-                                List<RocketPermissionsGroup> mutualGroups = UnturnedHelper.GetMutualGroups(victim, attacker);
+                                List<RocketPermissionsGroup> mutualGroups = PlayerHelper.GetMutualGroups(victim, attacker);
                                 List<string> ffGroups = ag.groups;
 
                                 for (int i = 0; i < mutualGroups.Count; i++)
@@ -1242,7 +1242,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 Vector3 ragdoll = player.Position.normalized;
                 if (limb == ELimb.SKULL)
                 {
-                    if (UnturnedHelper.CanBleed(health.HeadHealth, totaldamage))
+                    if (HealthHelper.CanBleed(health.HeadHealth, totaldamage))
                         player.Bleeding = true;
 
                     if (health.HeadHealth - totaldamage > 0)
@@ -1260,10 +1260,10 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     {
                         if (c.CanBeInjured && !health.isInjured)
                         {
-                            int chanc = MathHelper.GenerateRandomNumber(1, 100);
+                            int chanc = MathHelper.Next(1, 100);
                             if (c.InjuredChance >= chanc)
                             {
-                                UnturnedHelper.SetPlayerDowned(player);
+                                HealthHelper.SetPlayerDowned(player);
                                 return;
                             }
                         }
@@ -1283,7 +1283,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 }
                 else if (cause == EDeathCause.BONES)
                 {
-                    if (UnturnedHelper.CanBleed(health.LeftLegHealth, totaldamage) || UnturnedHelper.CanBleed(health.RightLegHealth, totaldamage))
+                    if (HealthHelper.CanBleed(health.LeftLegHealth, totaldamage) || HealthHelper.CanBleed(health.RightLegHealth, totaldamage))
                         player.Bleeding = true;
 
                     if (health.RightLegHealth - totaldamage > 0)
@@ -1340,7 +1340,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 }
                 else if (limb == ELimb.LEFT_BACK || limb == ELimb.LEFT_FRONT || limb == ELimb.RIGHT_BACK || limb == ELimb.RIGHT_FRONT || limb == ELimb.SPINE || cause == EDeathCause.INFECTION || cause == EDeathCause.BREATH)
                 {
-                    if (UnturnedHelper.CanBleed(health.BodyHealth, totaldamage))
+                    if (HealthHelper.CanBleed(health.BodyHealth, totaldamage))
                         player.Bleeding = true;
 
                     if (health.BodyHealth - totaldamage > 0)
@@ -1358,10 +1358,10 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     {
                         if (c.CanBeInjured && !health.isInjured)
                         {
-                            int chanc = MathHelper.GenerateRandomNumber(1, 100);
+                            int chanc = MathHelper.Next(1, 100);
                             if (c.InjuredChance >= chanc)
                             {
-                                UnturnedHelper.SetPlayerDowned(player);
+                                HealthHelper.SetPlayerDowned(player);
                                 return;
                             }
                         }
@@ -1381,7 +1381,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 }
                 else if (limb == ELimb.LEFT_ARM || limb == ELimb.LEFT_HAND)
                 {
-                    if (UnturnedHelper.CanBleed(health.LeftArmHealth, totaldamage))
+                    if (HealthHelper.CanBleed(health.LeftArmHealth, totaldamage))
                         player.Bleeding = true;
 
                     if (health.LeftArmHealth - totaldamage > 0)
@@ -1412,7 +1412,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 }
                 else if (limb == ELimb.RIGHT_ARM || limb == ELimb.RIGHT_HAND)
                 {
-                    if (UnturnedHelper.CanBleed(health.RightArmHealth, totaldamage))
+                    if (HealthHelper.CanBleed(health.RightArmHealth, totaldamage))
                         player.Bleeding = true;
 
                     if (health.RightArmHealth - totaldamage > 0)
@@ -1443,7 +1443,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 }
                 else if (limb == ELimb.LEFT_LEG || limb == ELimb.LEFT_FOOT)
                 {
-                    if (UnturnedHelper.CanBleed(health.LeftLegHealth, totaldamage))
+                    if (HealthHelper.CanBleed(health.LeftLegHealth, totaldamage))
                         player.Bleeding = true;
 
                     if (health.LeftLegHealth - totaldamage > 0)
@@ -1474,7 +1474,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 }
                 else if (limb == ELimb.RIGHT_LEG || limb == ELimb.RIGHT_FOOT)
                 {
-                    if (UnturnedHelper.CanBleed(health.RightLegHealth, totaldamage))
+                    if (HealthHelper.CanBleed(health.RightLegHealth, totaldamage))
                         player.Bleeding = true;
 
                     if (health.RightLegHealth - totaldamage > 0)
@@ -1505,7 +1505,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 }
                 else
                 {
-                    if (UnturnedHelper.CanBleed(health.BodyHealth, totaldamage))
+                    if (HealthHelper.CanBleed(health.BodyHealth, totaldamage))
                         player.Bleeding = true;
 
                     if (health.BodyHealth - totaldamage > 0)
@@ -1523,10 +1523,10 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     {
                         if (c.CanBeInjured && !health.isInjured)
                         {
-                            int chanc = MathHelper.GenerateRandomNumber(1, 100);
+                            int chanc = MathHelper.Next(1, 100);
                             if (c.InjuredChance >= chanc)
                             {
-                                UnturnedHelper.SetPlayerDowned(player);
+                                HealthHelper.SetPlayerDowned(player);
                                 return;
                             }
                         }
@@ -1610,11 +1610,11 @@ namespace Tavstal.TAdvancedHealth.Handlers
                         if (Config.HospitalSettings.hospitals != null)
                             if (Config.HospitalSettings.RandomSpawn)
                             {
-                                int i = MathHelper.GenerateRandomNumber(0, Config.HospitalSettings.hospitals.Count - 1);
+                                int i = MathHelper.Next(0, Config.HospitalSettings.hospitals.Count - 1);
                                 Hospital h = Config.HospitalSettings.hospitals.ElementAt(i);
                                 if (h.Position != null)
                                 {
-                                    i = MathHelper.GenerateRandomNumber(0, h.Position.Count - 1);
+                                    i = MathHelper.Next(0, h.Position.Count - 1);
                                     Vector3 p = h.Position.ElementAt(i).GetVector3();
                                     player.Teleport(p, player.Rotation);
                                 }
@@ -1625,7 +1625,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                                 if (hospital != null)
                                     if (hospital.Position != null)
                                     {
-                                        int index = MathHelper.GenerateRandomNumber(0, hospital.Position.Count - 1);
+                                        int index = MathHelper.Next(0, hospital.Position.Count - 1);
                                         Vector3 hPosition = hospital.Position.ElementAt(index).GetVector3();
                                         player.Teleport(hPosition, player.Rotation);
                                     }
@@ -1657,7 +1657,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             {
                 TAdvancedHealthComponent comp = player.GetComponent<TAdvancedHealthComponent>();
 
-                UnturnedHelper.UpdateHealthUI(player);
+                HealthHelper.UpdateHealthUI(player);
                 if (comp.DragState != EDragState.NONE)
                     comp.UnDrag();
 

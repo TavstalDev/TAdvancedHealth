@@ -50,7 +50,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                 {
                     SDG.Unturned.EffectManager.askEffectClearByID(oldId, player.SteamPlayer().transportConnection);
                     SDG.Unturned.EffectManager.sendUIEffect(style.EffectID, (short)style.EffectID, player.SteamPlayer().transportConnection, true);
-                    UnturnedHelper.UpdateHealthAllUI(player);
+                    HealthHelper.UpdateHealthAllUI(player);
                 }
             }
             else if (args[0].ToLower() == "list")

@@ -42,7 +42,7 @@ namespace Tavstal.TAdvancedHealth.Modules
 
                     if (state == EPlayerStates.NONE_TEMPERATURE)
                     {
-                        StatusIcon icon2 = UnturnedHelper.GetStatusIcon(EPlayerStates.WARM);
+                        StatusIcon icon2 = HealthHelper.GetStatusIcon(EPlayerStates.WARM);
                         if (icon2 != null)
                         {
                             List<StatusIcon> icons = config.CustomHealtSystemAndComponentSettings.statusIcons.FindAll(x => x.GroupIndex == icon2.GroupIndex && x.Status != state);
@@ -55,7 +55,7 @@ namespace Tavstal.TAdvancedHealth.Modules
                         return;
                     }
 
-                    StatusIcon icon = UnturnedHelper.GetStatusIcon(state);
+                    StatusIcon icon = HealthHelper.GetStatusIcon(state);
 
                     if (icon != null)
                     {
@@ -113,7 +113,7 @@ namespace Tavstal.TAdvancedHealth.Modules
                 if (states.Count - 1 >= i)
                 {
                     EPlayerStates value = states.ElementAt(i);
-                    StatusIcon icon = UnturnedHelper.GetStatusIcon(value);
+                    StatusIcon icon = HealthHelper.GetStatusIcon(value);
 
                     EffectManager.sendUIEffectImageURL(effectID, this.Player.CSteamID, true, "Status#" + localuiname + "_img", icon.IconUrl);
                     StartCoroutine(TAdvancedHealthMain.Instance.DelayedInvoke(0.1f, () => {

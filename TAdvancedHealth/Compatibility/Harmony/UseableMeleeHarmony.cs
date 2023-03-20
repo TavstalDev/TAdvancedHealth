@@ -58,7 +58,7 @@ namespace Tavstal.TAdvancedHealth.Compatibility.Harmony
                 PlayerHealth targetHealth = Database.GetPlayerHealth(targetPlayer.Id);
                 if (targetHealth.isInjured)
                 {
-                    int chance = MathHelper.GenerateRandomNumber(1, 100);
+                    int chance = MathHelper.Next(1, 100);
                     if (chance != 0 && chance <= defibrillator.ReviveChance)
                     {
                         targetComp.Revive();

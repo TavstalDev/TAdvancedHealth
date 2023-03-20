@@ -32,7 +32,7 @@ namespace Tavstal.TAdvancedHealth.Compatibility
             while (count > 0)
             {
                 count--;
-                int index = MathHelper.GenerateRandomNumber(count + 1);
+                int index = MathHelper.Next(count + 1);
                 T value = list[index];
                 list[index] = list[count];
                 list[count] = value;
@@ -45,7 +45,7 @@ namespace Tavstal.TAdvancedHealth.Compatibility
             while (count > 0)
             {
                 count--;
-                int index = MathHelper.GenerateRandomNumber(count + 1);
+                int index = MathHelper.Next(count + 1);
                 T value = list[index];
                 list[index] = list[count];
                 list[count] = value;

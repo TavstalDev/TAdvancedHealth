@@ -162,7 +162,7 @@ namespace Tavstal.TAdvancedHealth
                     var transCon = steamPlayer.transportConnection;
                     TAdvancedHealthComponent comp = player.GetComponent<TAdvancedHealthComponent>();
 
-                    PlayerHealth h = UnturnedHelper.GetPlayerHealth(player.Id);
+                    PlayerHealth h = HealthHelper.GetPlayerHealth(player.Id);
                     if (h.isInjured)
                     {
                         player.Bleeding = false;
