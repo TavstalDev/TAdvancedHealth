@@ -64,6 +64,7 @@
     <Compile Include="Compatibility\Classes\Hospital.cs" />
     <Compile Include="Compatibility\Classes\Settings\AntiGroupFriendlyFireSettings.cs" />
     <Compile Include="Compatibility\Classes\StatusIcon.cs" />
+    <Compile Include="Compatibility\Enumerators\DatabaseEventTypeEnum.cs" />
     <Compile Include="Compatibility\Enumerators\DragStateEnum.cs" />
     <Compile Include="Compatibility\Enumerators\ProgressBarTypeEnum.cs" />
     <Compile Include="Compatibility\Enumerators\PlayerStateEnum.cs" />

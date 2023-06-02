@@ -134,7 +134,7 @@ namespace Tavstal.TAdvancedHealth.Helpers
                     health.RightArmHealth = Configuration.Instance.CustomHealtSystemAndComponentSettings.RightArmHealth;
                     health.LeftLegHealth = Configuration.Instance.CustomHealtSystemAndComponentSettings.LeftLegHealth;
                     health.RightLegHealth = Configuration.Instance.CustomHealtSystemAndComponentSettings.RightLegHealth;
-                    TAdvancedHealthMain.Database.Update(player.Id, health);
+                    TAdvancedHealthMain.Database.Update(player.Id, health, EDatabaseEventType.ALL);
 
 
                     player.Player.stance.checkStance(EPlayerStance.PRONE, true);

@@ -183,7 +183,7 @@ namespace Tavstal.TAdvancedHealth.Modules
                 isHUDEnabled = health.isHUDEnabled,
                 isInjured = false,
                 PlayerId = health.PlayerId
-            });
+            }, EDatabaseEventType.ALL);
             this.Player.Broken = false;
             this.Player.Bleeding = false;
             this.Player.Hunger = 0;

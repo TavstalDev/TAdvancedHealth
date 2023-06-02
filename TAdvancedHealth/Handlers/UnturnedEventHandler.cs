@@ -469,7 +469,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                         else
                             health.RightArmHealth = c.RightArmHealth;
 
-                        Database.Update(player.Id, health);
+                        Database.Update(player.Id, health, EDatabaseEventType.ALL);
                     }
                     comp.lastEquipedItem = 0;
                 }
@@ -559,7 +559,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     var c = Config;
                     var s = c.CustomHealtSystemAndComponentSettings;
                     HUDStyle style = Config.HUDStyles.FirstOrDefault(x => x.Enabled);
-                    Database.Add(player.Id, new PlayerHealth { PlayerId = player.Id, HUDEffectID = style.EffectID, BaseHealth = s.BaseHealth, BodyHealth = s.BodyHealth, HeadHealth = s.HeadHealth, LeftArmHealth = s.LeftArmHealth, LeftLegHealth = s.LeftLegHealth, RightArmHealth = s.RightArmHealth, RightLegHealth = s.RightLegHealth, isInjured = false, isHUDEnabled = true, dieDate = DateTime.Now });
+                    Database.AddPlayerHealth(player.Id, new PlayerHealth { PlayerId = player.Id, HUDEffectID = style.EffectID, BaseHealth = s.BaseHealth, BodyHealth = s.BodyHealth, HeadHealth = s.HeadHealth, LeftArmHealth = s.LeftArmHealth, LeftLegHealth = s.LeftLegHealth, RightArmHealth = s.RightArmHealth, RightLegHealth = s.RightLegHealth, isInjured = false, isHUDEnabled = true, dieDate = DateTime.Now });
                     health = Database.GetPlayerHealth(player.Id);
                 }
                 else
@@ -582,7 +582,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                             health.RightLegHealth = s.RightLegHealth;
                         if (health.LeftLegHealth > s.LeftLegHealth)
                             health.LeftLegHealth = s.LeftLegHealth;
-                        Database.Update(player.Id, health);
+                        Database.Update(player.Id, health, EDatabaseEventType.ALL);
                     }
                 }
 
