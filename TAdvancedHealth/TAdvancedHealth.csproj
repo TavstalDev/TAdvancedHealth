@@ -43,6 +43,11 @@
     <Compile Include="Commands\CommandSpawnpoint.cs" />
     <Compile Include="Commands\CommandSetHealthHud.cs" />
     <Compile Include="Commands\CommandToggleHealthHUD.cs" />
+    <Compile Include="Compatibility\Classes\Database\SqlUniqueKeyAttribute.cs" />
+    <Compile Include="Compatibility\Classes\Database\SqlPrimaryKeyAttribute.cs" />
+    <Compile Include="Compatibility\Classes\Database\SqlNonNullableAttribute.cs" />
+    <Compile Include="Compatibility\Classes\Database\SqlNameAttribute.cs" />
+    <Compile Include="Compatibility\Classes\Database\SqlForeignKeyAttribute.cs" />
     <Compile Include="Compatibility\Classes\DatabaseData.cs" />
     <Compile Include="Compatibility\Classes\Format\TextFormat.cs" />
     <Compile Include="Compatibility\Classes\Format\ConsoleFormat.cs" />
@@ -72,6 +77,7 @@
     <Compile Include="Compatibility\Interfaces\ISerializableVector3.cs" />
     <Compile Include="Handlers\HealthSystemEventHandler.cs" />
     <Compile Include="Handlers\UnturnedEventHandler.cs" />
+    <Compile Include="Helpers\DatabaseHelper.cs" />
     <Compile Include="Helpers\FormatHelper.cs" />
     <Compile Include="Helpers\PlayerHelper.cs" />
     <Compile Include="Helpers\HealthHelper.cs" />

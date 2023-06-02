@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace Tavstal.TAdvancedHealth.Compatibility
 {
+    [SqlName("")]
     public class PlayerHealth
     {
         public string PlayerId { get; set; }
@@ -22,6 +23,7 @@ namespace Tavstal.TAdvancedHealth.Compatibility
         {
             get
             {
+                
                 if (TAdvancedHealthMain.Instance.Configuration.Instance.CustomHealtSystemAndComponentSettings.EnableTarkovLikeHealth)
                     return _headHealth;
                 else

@@ -3,6 +3,7 @@ using System;
 using Logger = Tavstal.TAdvancedHealth.Helpers.LoggerHelper;
 using Tavstal.TAdvancedHealth.Compatibility;
 using Tavstal.TAdvancedHealth.Managers;
+using Tavstal.TAdvancedHealth.Helpers;
 
 namespace Tavstal.TAdvancedHealth
 {
@@ -30,21 +31,22 @@ namespace Tavstal.TAdvancedHealth
                 {
                     MySQLCommand.CommandText = "CREATE TABLE " + TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData +
                     "(steamID VARCHAR(50) NOT NULL," +
-                    "baseHealth TEXT," +
-                    "headHealth TEXT," +
-                    "bodyHealth TEXT," +
-                    "rightArmHealth TEXT," +
-                    "leftArmHealth TEXT," +
-                    "rightLegHealth TEXT," +
-                    "leftLegHealth TEXT," +
-                    "isInjured TEXT," +
-                    "isHUDEnabled TEXT," +
-                    "hudEffectId TEXT," +
-                    "dieDate TEXT," +
+                    "baseHealth FLOAT(6,2)," +
+                    "headHealth FLOAT(6,2)," +
+                    "bodyHealth FLOAT(6,2)," +
+                    "rightArmHealth FLOAT(6,2)," +
+                    "leftArmHealth FLOAT(6,2)," +
+                    "rightLegHealth FLOAT(6,2)," +
+                    "leftLegHealth FLOAT(6,2)," +
+                    "isInjured BIT," +
+                    "isHUDEnabled BIT," +
+                    "hudEffectId SMALLINT UNSIGNED," +
+                    "dieDate DATETIME," +
                     "PRIMARY KEY(steamID));";
 
                     MySQLCommand.ExecuteNonQuery();
                 }
+                
                 MySQLConnection.Close();
             }
             catch (Exception ex)
@@ -76,17 +78,34 @@ namespace Tavstal.TAdvancedHealth
         {
             try
             {
+                string tablename = TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData;
                 MySqlConnection MySQLConnection = CreateConnection();
                 MySqlCommand MySQLCommand = MySQLConnection.CreateCommand();
                 MySQLConnection.Open();
 
-                MySQLCommand.CommandText = "SELECT * FROM " + TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData + " WHERE steamID = '" + id + "'";
+                MySQLCommand.Parameters.AddWithValue("@SteamID", id);
+                MySQLCommand.Parameters.AddWithValue("@BaseHealth", h.BaseHealth);
+                MySQLCommand.Parameters.AddWithValue("@HeadHealth", h.HeadHealth);
+                MySQLCommand.Parameters.AddWithValue("@BodyHealth", h.BodyHealth);
+                MySQLCommand.Parameters.AddWithValue("@RightArmHealth", h.RightArmHealth);
+                MySQLCommand.Parameters.AddWithValue("@LeftArmHealth", h.LeftArmHealth);
+                MySQLCommand.Parameters.AddWithValue("@RightLegHealth", h.RightLegHealth);
+                MySQLCommand.Parameters.AddWithValue("@LeftLegHealth", h.LeftLegHealth);
+                MySQLCommand.Parameters.AddWithValue("@isInjured", h.isInjured);
+                MySQLCommand.Parameters.AddWithValue("@isHUDEnabled", h.isHUDEnabled);
+                MySQLCommand.Parameters.AddWithValue("@HUDEffectID", h.HUDEffectID);
+                MySQLCommand.Parameters.AddWithValue("@dieDate", h.dieDate);
+
+                MySQLCommand.CommandText = $"SELECT * FROM {tablename} WHERE steamID=@SteamID";
                 object data = MySQLCommand.ExecuteScalar();
 
                 if (data == null)
                 {
-                    MySQLCommand.CommandText = "INSERT INTO " + TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData + " (steamID,baseHealth,headHealth,bodyHealth,rightArmHealth,leftArmHealth,rightLegHealth,leftLegHealth,isInjured,isHUDEnabled,hudEffectId,dieDate) VALUES ('" + id + "','" + h.BaseHealth + "','" + h.HeadHealth + "','" + h.BodyHealth + "','" + h.RightArmHealth + "','" + h.LeftArmHealth + "','" + h.RightLegHealth + "','" + h.LeftLegHealth + "','" + h.isInjured + "','" + h.isHUDEnabled + "','" + h.HUDEffectID + "','" + h.dieDate + "')";
+                    MySQLCommand.CommandText = $"INSERT INTO {tablename} " +
+                        $"(steamID,baseHealth,headHealth,bodyHealth,rightArmHealth,leftArmHealth,rightLegHealth,leftLegHealth,isInjured,isHUDEnabled,hudEffectId,dieDate) " +
+                        $"VALUES (@SteamID,@BaseHealth,@HeadHealth,@BodyHealth,@RightArmHealth,@LeftArmHealth,@RightLegHealth,@LeftLegHealth,@isInjured,@isHUDEnabled,@HUDEffectID,@dieDate)";
                     MySQLCommand.ExecuteNonQuery();
+
                     EventManager.FCallBaseHealthUpdated(id, h.BaseHealth);
                     EventManager.FCallBodyHealthUpdated(id, h.BodyHealth);
                     EventManager.FCallHeadHealthUpdated(id, h.HeadHealth);
@@ -108,16 +127,17 @@ namespace Tavstal.TAdvancedHealth
         {
             try
             {
+                string tablename = TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData;
                 MySqlConnection MySQLConnection = CreateConnection();
                 MySqlCommand MySQLCommand = MySQLConnection.CreateCommand();
                 MySQLConnection.Open();
 
-                MySQLCommand.CommandText = "SELECT * FROM " + TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData + " WHERE steamID = '" + id + "'";
+                MySQLCommand.Parameters.AddWithValue("@ID", id);
+                MySQLCommand.CommandText = $"SELECT * FROM {tablename} WHERE steamID=@ID";
                 object data = MySQLCommand.ExecuteScalar();
 
                 if (data != null)
                 {
-                    MySQLCommand.Parameters.AddWithValue("@ID", id);
                     MySQLCommand.Parameters.AddWithValue("@HEI", h.HUDEffectID);
                     MySQLCommand.Parameters.AddWithValue("@BAH", h.BaseHealth);
                     MySQLCommand.Parameters.AddWithValue("@HH", h.HeadHealth);
@@ -138,7 +158,7 @@ namespace Tavstal.TAdvancedHealth
                     EventManager.FCallLeftLegHealthUpdated(id, h.LeftLegHealth);
                     EventManager.FCallRightLegHealthUpdated(id, h.RightLegHealth);
 
-                    MySQLCommand.CommandText = "UPDATE `" + TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData + "` SET hudEffectId=@HEI,baseHealth=@BAH,headHealth=@HH,bodyHealth=@BH,rightArmHealth=@RAH,leftArmHealth=@LAH,rightLegHealth=@RLH,leftLegHealth=@LLH,isInjured=@II,isHUDEnabled=@IH,dieDate=@DD WHERE steamID=@ID;";
+                    MySQLCommand.CommandText = $"UPDATE {tablename} SET hudEffectId=@HEI,baseHealth=@BAH,headHealth=@HH,bodyHealth=@BH,rightArmHealth=@RAH,leftArmHealth=@LAH,rightLegHealth=@RLH,leftLegHealth=@LLH,isInjured=@II,isHUDEnabled=@IH,dieDate=@DD WHERE steamID=@ID;";
                     MySQLCommand.ExecuteNonQuery();
                 }
                 else
@@ -158,16 +178,17 @@ namespace Tavstal.TAdvancedHealth
         {
             try
             {
+                string tablename = TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData;
                 MySqlConnection MySQLConnection = CreateConnection();
                 MySqlCommand MySQLCommand = MySQLConnection.CreateCommand();
                 MySQLConnection.Open();
 
-                MySQLCommand.CommandText = "SELECT * FROM " + TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData + " WHERE steamID = '" + id + "'";
+                MySQLCommand.Parameters.AddWithValue("@ID", id);
+                MySQLCommand.CommandText = $"SELECT * FROM {tablename} WHERE steamID=@ID";
                 object data = MySQLCommand.ExecuteScalar();
 
                 if (data != null)
                 {
-                    MySQLCommand.Parameters.AddWithValue("@ID", id);
                     MySQLCommand.Parameters.AddWithValue("@HEI", effectid);
 
                     MySQLCommand.CommandText = "UPDATE `" + TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData + "` SET hudEffectId=@HEI WHERE steamID=@ID;";
@@ -185,6 +206,7 @@ namespace Tavstal.TAdvancedHealth
         {
             try
             {
+                string tablename = TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData;
                 MySqlConnection MySQLConnection = CreateConnection();
                 MySqlCommand MySQLCommand = MySQLConnection.CreateCommand();
                 MySQLConnection.Open();
@@ -212,6 +234,7 @@ namespace Tavstal.TAdvancedHealth
         {
             try
             {
+                string tablename = TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData;
                 MySqlConnection MySQLConnection = CreateConnection();
                 MySqlCommand MySQLCommand = MySQLConnection.CreateCommand();
                 MySQLConnection.Open();
@@ -241,6 +264,7 @@ namespace Tavstal.TAdvancedHealth
         {
             try
             {
+                string tablename = TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData;
                 MySqlConnection MySQLConnection = CreateConnection();
                 MySqlCommand MySQLCommand = MySQLConnection.CreateCommand();
                 MySQLConnection.Open();
@@ -269,6 +293,7 @@ namespace Tavstal.TAdvancedHealth
         {
             try
             {
+                string tablename = TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData;
                 MySqlConnection MySQLConnection = CreateConnection();
                 MySqlCommand MySQLCommand = MySQLConnection.CreateCommand();
                 MySQLConnection.Open();
@@ -297,6 +322,7 @@ namespace Tavstal.TAdvancedHealth
         {
             try
             {
+                string tablename = TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData;
                 MySqlConnection MySQLConnection = CreateConnection();
                 MySqlCommand MySQLCommand = MySQLConnection.CreateCommand();
                 MySQLConnection.Open();
@@ -325,6 +351,7 @@ namespace Tavstal.TAdvancedHealth
         {
             try
             {
+                string tablename = TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData;
                 MySqlConnection MySQLConnection = CreateConnection();
                 MySqlCommand MySQLCommand = MySQLConnection.CreateCommand();
                 MySQLConnection.Open();
@@ -353,6 +380,7 @@ namespace Tavstal.TAdvancedHealth
         {
             try
             {
+                string tablename = TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData;
                 MySqlConnection MySQLConnection = CreateConnection();
                 MySqlCommand MySQLCommand = MySQLConnection.CreateCommand();
                 MySQLConnection.Open();
@@ -381,6 +409,7 @@ namespace Tavstal.TAdvancedHealth
         {
             try
             {
+                string tablename = TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData;
                 MySqlConnection MySQLConnection = CreateConnection();
                 MySqlCommand MySQLCommand = MySQLConnection.CreateCommand();
                 MySQLConnection.Open();
@@ -409,6 +438,7 @@ namespace Tavstal.TAdvancedHealth
         {
             try
             {
+                string tablename = TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData;
                 MySqlConnection MySQLConnection = CreateConnection();
                 MySqlCommand MySQLCommand = MySQLConnection.CreateCommand();
                 MySQLConnection.Open();
@@ -438,6 +468,7 @@ namespace Tavstal.TAdvancedHealth
             PlayerHealth h = null;
             try
             {
+                string tablename = TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData;
                 MySqlConnection MySQLConnection = CreateConnection();
                 MySqlCommand MySQLCommand = MySQLConnection.CreateCommand();
                 MySQLConnection.Open();
