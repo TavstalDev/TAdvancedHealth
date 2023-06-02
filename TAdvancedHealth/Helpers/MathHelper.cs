@@ -88,5 +88,10 @@ namespace Tavstal.TAdvancedHealth.Managers
         {
             return maxValue < value ? maxValue : (value < minValue ? minValue : value);
         }
+
+        public static float Clamp(float value, float minValue, float maxValue)
+        {
+            return maxValue < value ? maxValue : (value < minValue ? minValue : value);
+        }
     }
 }
