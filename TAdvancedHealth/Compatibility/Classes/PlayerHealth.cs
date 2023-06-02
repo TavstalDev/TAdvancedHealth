@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Tavstal.TAdvancedHealth.Managers;
 using UnityEngine;
 
 namespace Tavstal.TAdvancedHealth.Compatibility
@@ -29,9 +30,13 @@ namespace Tavstal.TAdvancedHealth.Compatibility
             set
             {
                 if (TAdvancedHealthMain.Instance.Configuration.Instance.CustomHealtSystemAndComponentSettings.EnableTarkovLikeHealth)
-                    _headHealth = value;
+                {
+                    _headHealth = MathHelper.Clamp(value, 0, TAdvancedHealthMain.Instance.Configuration.Instance.CustomHealtSystemAndComponentSettings.HeadHealth);
+                }
                 else
-                    BaseHealth = value;
+                {
+                    BaseHealth = MathHelper.Clamp(value, 0, TAdvancedHealthMain.Instance.Configuration.Instance.CustomHealtSystemAndComponentSettings.BaseHealth);
+                }
             }
         }
         public float BodyHealth
@@ -46,9 +51,13 @@ namespace Tavstal.TAdvancedHealth.Compatibility
             set
             {
                 if (TAdvancedHealthMain.Instance.Configuration.Instance.CustomHealtSystemAndComponentSettings.EnableTarkovLikeHealth)
-                    _bodyHealth = value;
+                {
+                    _bodyHealth = MathHelper.Clamp(value, 0, TAdvancedHealthMain.Instance.Configuration.Instance.CustomHealtSystemAndComponentSettings.BodyHealth);
+                }
                 else
-                    BaseHealth = value;
+                {
+                    BaseHealth = MathHelper.Clamp(value, 0, TAdvancedHealthMain.Instance.Configuration.Instance.CustomHealtSystemAndComponentSettings.BaseHealth);
+                }
             }
         }
         public float RightArmHealth
@@ -63,9 +72,13 @@ namespace Tavstal.TAdvancedHealth.Compatibility
             set
             {
                 if (TAdvancedHealthMain.Instance.Configuration.Instance.CustomHealtSystemAndComponentSettings.EnableTarkovLikeHealth)
-                    _rightArmHealth = value;
+                {
+                    _rightArmHealth = MathHelper.Clamp(value, 0, TAdvancedHealthMain.Instance.Configuration.Instance.CustomHealtSystemAndComponentSettings.RightArmHealth);
+                }
                 else
-                    BaseHealth = value;
+                {
+                    BaseHealth = MathHelper.Clamp(value, 0, TAdvancedHealthMain.Instance.Configuration.Instance.CustomHealtSystemAndComponentSettings.BaseHealth);
+                }
             }
         }
         public float LeftArmHealth
@@ -80,9 +93,13 @@ namespace Tavstal.TAdvancedHealth.Compatibility
             set
             {
                 if (TAdvancedHealthMain.Instance.Configuration.Instance.CustomHealtSystemAndComponentSettings.EnableTarkovLikeHealth)
-                    _leftArmHealth = value;
+                {
+                    _leftArmHealth = MathHelper.Clamp(value, 0, TAdvancedHealthMain.Instance.Configuration.Instance.CustomHealtSystemAndComponentSettings.LeftArmHealth);
+                }
                 else
-                    BaseHealth = value;
+                {
+                    BaseHealth = MathHelper.Clamp(value, 0, TAdvancedHealthMain.Instance.Configuration.Instance.CustomHealtSystemAndComponentSettings.BaseHealth);
+                }
             }
         }
         public float RightLegHealth
@@ -97,9 +114,13 @@ namespace Tavstal.TAdvancedHealth.Compatibility
             set
             {
                 if (TAdvancedHealthMain.Instance.Configuration.Instance.CustomHealtSystemAndComponentSettings.EnableTarkovLikeHealth)
-                    _rightLegHealth = value;
+                {
+                    _rightLegHealth = MathHelper.Clamp(value, 0, TAdvancedHealthMain.Instance.Configuration.Instance.CustomHealtSystemAndComponentSettings.RightLegHealth);
+                }
                 else
-                    BaseHealth = value;
+                {
+                    BaseHealth = MathHelper.Clamp(value, 0, TAdvancedHealthMain.Instance.Configuration.Instance.CustomHealtSystemAndComponentSettings.BaseHealth);
+                }
             }
         }
         public float LeftLegHealth
@@ -114,9 +135,13 @@ namespace Tavstal.TAdvancedHealth.Compatibility
             set
             {
                 if (TAdvancedHealthMain.Instance.Configuration.Instance.CustomHealtSystemAndComponentSettings.EnableTarkovLikeHealth)
-                    _leftLegHealth = value;
+                {
+                    _leftLegHealth = MathHelper.Clamp(value, 0, TAdvancedHealthMain.Instance.Configuration.Instance.CustomHealtSystemAndComponentSettings.LeftLegHealth);
+                }
                 else
-                    BaseHealth = value;
+                {
+                    BaseHealth = MathHelper.Clamp(value, 0, TAdvancedHealthMain.Instance.Configuration.Instance.CustomHealtSystemAndComponentSettings.BaseHealth);
+                }
             }
         }
         public bool isInjured { get; set; }
