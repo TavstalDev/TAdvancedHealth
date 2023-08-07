@@ -21,15 +21,15 @@ namespace Tavstal.TAdvancedHealth
             {
                 MySqlConnection MySQLConnection = CreateConnection();
                 MySqlCommand MySQLCommand = MySQLConnection.CreateCommand();
-
-                MySQLCommand.CommandText = "SHOW TABLES LIKE '{tablename}'";
+                string tablename = TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData;
+                MySQLCommand.CommandText = $"SHOW TABLES LIKE '{tablename}'";
                 MySQLConnection.Open();
 
                 object result = MySQLCommand.ExecuteScalar();
 
                 if (result == null)
                 {
-                    MySQLCommand.CommandText = "CREATE TABLE " + TAdvancedHealthMain.Instance.Configuration.Instance.databaseData.DatabaseTable_PlayerData +
+                    MySQLCommand.CommandText = $"CREATE TABLE {tablename}"+
                     "(steamID VARCHAR(50) NOT NULL," +
                     "baseHealth FLOAT(6,2)," +
                     "headHealth FLOAT(6,2)," +
@@ -148,7 +148,7 @@ namespace Tavstal.TAdvancedHealth
                     MySQLCommand.Parameters.AddWithValue("@LLH", h.LeftLegHealth);
                     MySQLCommand.Parameters.AddWithValue("@II", h.isInjured);
                     MySQLCommand.Parameters.AddWithValue("@IH", h.isHUDEnabled);
-                    MySQLCommand.Parameters.AddWithValue("@DD", h.dieDate.ToString());
+                    MySQLCommand.Parameters.AddWithValue("@DD", h.dieDate);
 
                     switch (eventtype)
                     {
@@ -301,7 +301,7 @@ namespace Tavstal.TAdvancedHealth
                 if (data != null)
                 {
                     MySQLCommand.Parameters.AddWithValue("@II", isInjured);
-                    MySQLCommand.Parameters.AddWithValue("@DD",bleedDate.ToString());
+                    MySQLCommand.Parameters.AddWithValue("@DD", bleedDate);
 
                     MySQLCommand.CommandText = $"UPDATE `{tablename}` SET isInjured=@II,dieDate=@DD WHERE steamID=@ID;";
                     MySQLCommand.ExecuteNonQuery();
