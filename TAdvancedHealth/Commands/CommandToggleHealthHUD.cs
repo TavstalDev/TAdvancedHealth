@@ -19,9 +19,9 @@ namespace Tavstal.TAdvancedHealth.Commands
         public void Execute(IRocketPlayer caller, string[] args)
         {
             UnturnedPlayer player = (UnturnedPlayer)caller;
-            PlayerHealth health = TAdvancedHealthMain.Database.GetPlayerHealth(player.Id);
+            HealthData health = TAdvancedHealth.Database.GetPlayerHealth(player.Id);
 
-            if (!health.isHUDEnabled)
+            if (!health.IsHUDEnabled)
             {
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowFood, false);
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowHealth, false);
@@ -30,7 +30,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowVirus, false);
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowWater, false);
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStatusIcons, false);
-                health.isHUDEnabled = true;
+                health.IsHUDEnabled = true;
                 EffectManager.sendUIEffect(health.HUDEffectID, (short)health.HUDEffectID, player.SteamPlayer().transportConnection, true);
                 HealthHelper.UpdateHealthAllUI(player);
             }
@@ -43,12 +43,12 @@ namespace Tavstal.TAdvancedHealth.Commands
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowVirus, true);
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowWater, true);
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStatusIcons, true);
-                health.isHUDEnabled = false;
+                health.IsHUDEnabled = false;
                 EffectManager.askEffectClearByID(health.HUDEffectID, player.SteamPlayer().transportConnection);
 
             }
 
-            TAdvancedHealthMain.Database.UpdateHUDEnabled(player.Id, health.isHUDEnabled);
+            TAdvancedHealth.Database.UpdateHUDEnabledAsync(player.Id, health.IsHUDEnabled);
         }
     }
 }

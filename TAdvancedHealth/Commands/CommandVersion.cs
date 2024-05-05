@@ -20,8 +20,8 @@ namespace Tavstal.TAdvancedHealth
         public void Execute(IRocketPlayer caller, string[] command)
         {
             Logger.Log("#########################################");
-            Logger.Log(string.Format("# Build Version: {0}", TAdvancedHealthMain.Instance._Version));
-            Logger.Log(string.Format("# Build Date: {0}", TAdvancedHealthMain.Instance._BuildDate));
+            Logger.Log(string.Format("# Build Version: {0}", TAdvancedHealth.Instance.Version));
+            Logger.Log(string.Format("# Build Date: {0}", TAdvancedHealth.Instance.BuildDate));
             Logger.Log("#########################################");
         }
     }

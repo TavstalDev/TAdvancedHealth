@@ -19,11 +19,11 @@ namespace Tavstal.TAdvancedHealth
         public void Execute(IRocketPlayer caller, string[] args)
         {
             UnturnedPlayer callerPlayer = (UnturnedPlayer)caller;
-            var chsettings = TAdvancedHealthMain.Instance.CHSCSettings;
-            var main = TAdvancedHealthMain.Instance;
+            var chsettings = TAdvancedHealth.Instance.CHSCSettings;
+            var main = TAdvancedHealth.Instance;
             if (args.Length == 0)
             {
-                TAdvancedHealthComponent comp = callerPlayer.GetComponent<TAdvancedHealthComponent>();
+                AdvancedHealthComponent comp = callerPlayer.GetComponent<AdvancedHealthComponent>();
                 comp.Revive();
 
                 UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_cure_success", callerPlayer.CharacterName));
@@ -37,7 +37,7 @@ namespace Tavstal.TAdvancedHealth
                     return;
                 }
 
-                TAdvancedHealthComponent targetComp = targetPlayer.GetComponent<TAdvancedHealthComponent>();
+                AdvancedHealthComponent targetComp = targetPlayer.GetComponent<AdvancedHealthComponent>();
                 targetComp.Revive();
 
                 UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_cure_success", targetPlayer.CharacterName));

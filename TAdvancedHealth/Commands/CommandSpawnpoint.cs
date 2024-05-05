@@ -1,9 +1,8 @@
-﻿using Rocket.Unturned.Player;
+﻿using Rocket.API;
+using Rocket.Unturned.Player;
 using System.Collections.Generic;
-using Rocket.API;
 using System.Linq;
 using Tavstal.TAdvancedHealth.Compatibility;
-using Tavstal.TAdvancedHealth.Helpers;
 
 namespace Tavstal.TAdvancedHealth
 {
@@ -19,7 +18,7 @@ namespace Tavstal.TAdvancedHealth
         public void Execute(IRocketPlayer caller, string[] args)
         {
             UnturnedPlayer player = (UnturnedPlayer)caller;
-            var TAdvancedHealthMain = TAdvancedHealth.TAdvancedHealthMain.Instance;
+            var TAdvancedHealthMain = Tavstal.TAdvancedHealth.TAdvancedHealth.Instance;
             var config = TAdvancedHealthMain.Configuration.Instance;
             if (args.Length == 1)
             {

@@ -1,32 +1,40 @@
-﻿using Rocket.API;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
 using SDG.Unturned;
-using Tavstal.TAdvancedHealth.Compatibility;
+using System.Collections.Generic;
+using Tavstal.TAdvancedHealth.Models.Config;
+using Tavstal.TAdvancedHealth.Models.Database;
+using Tavstal.TAdvancedHealth.Models.Enums;
+using Tavstal.TLibrary.Compatibility;
 
 namespace Tavstal.TAdvancedHealth
 {
-    public class TAdvancedHealthConfig : IRocketPluginConfiguration
+    public class TAdvancedHealthConfig : ConfigurationBase
     {
-        public DatabaseData databaseData { get; set; }
+        [JsonProperty(Order = 3)]
+        public DatabaseData Database { get; set; }
+        [JsonProperty(Order = 4)]
         public string MessageIcon { get; set; }
+        [JsonProperty(Order = 5)]
         public DefibrillatorSettings DefibrillatorSettings { get; set; }
+        [JsonProperty(Order = 6)]
         public HospitalSettings HospitalSettings { get; set; }
+        [JsonProperty(Order = 7)]
         public AntiGroupFriendlyFireSettings AntiGroupFriendlyFireSettings { get; set; }
-        public CustomHealtSystemAndComponentSettings CustomHealtSystemAndComponentSettings { get; set; }
+        [JsonProperty(Order = 8)]
+        public HealthSystemSettings HealthSystemSettings { get; set; }
+        [JsonProperty(Order = 9)]
         public List<HUDStyle> HUDStyles { get; set; }
+        [JsonProperty(Order = 10)]
         public List<Medicine> Medicines { get; set; }
-        public OneHandedItem oneHandedItems { get; set; }
-        public TwoHandedItem twoHandedItems { get; set; }
+        [JsonProperty(Order = 11)]
+        public OneHandedItem OneHandedItems { get; set; }
+        [JsonProperty(Order = 12)]
+        public TwoHandedItem TwoHandedItems { get; set; }
 
-        public void LoadDefaults()
+        public override void LoadDefaults()
         {
-            databaseData = new DatabaseData()
+            Database = new DatabaseData()
             {
-                DatabaseAddress = "127.0.0.1",
-                DatabasePort = 3306,
-                DatabaseUser = "root",
-                DatabasePassword = "ascent",
-                DatabaseName = "unturned",
                 DatabaseTable_PlayerData = "tadh_players"
             };
             MessageIcon = "https://raw.githubusercontent.com/TavstalDev/Icons/master/Plugins/icon_plugins_TAdvancedHealth.png";
@@ -57,7 +65,7 @@ namespace Tavstal.TAdvancedHealth
                 MessageIcon = "https://raw.githubusercontent.com/TavstalDev/Icons/master/Plugins/icon_plugins_TAdvancedHealth.png",
                 groups = new List<string> { "police", "swat" }
             };
-            CustomHealtSystemAndComponentSettings = new CustomHealtSystemAndComponentSettings
+            HealthSystemSettings = new HealthSystemSettings
             {
                 EnableTarkovLikeHealth = true,
                 PainEffectID = 0,
@@ -245,14 +253,14 @@ namespace Tavstal.TAdvancedHealth
             };
             Medicines = new List<Medicine>
             {
-                new Medicine { itemID = 15, HealsHeadHP = 26.25f, HealsBodyHP = 0, HealsLeftArmHP = 0, HealsLeftLegHP = 0, HealsRightArmHP = 0, HealsRightLegHP = 0, CuresPain = false },
-                new Medicine { itemID = 403, HealsHeadHP = 0, HealsBodyHP = 52.5f, HealsLeftArmHP = 0, HealsLeftLegHP = 0, HealsRightArmHP = 0, HealsRightLegHP = 0, CuresPain = false },
-                new Medicine { itemID = 96, HealsHeadHP = 0, HealsBodyHP = 0, HealsLeftArmHP = 0, HealsLeftLegHP = 45, HealsRightArmHP = 0, HealsRightLegHP = 45, CuresPain = false },
-                new Medicine { itemID = 95, HealsHeadHP = 0, HealsBodyHP = 0, HealsLeftArmHP = 32.5f, HealsLeftLegHP = 0, HealsRightArmHP = 32.5f, HealsRightLegHP = 0, CuresPain = false },
-                new Medicine { itemID = 394, HealsHeadHP = 0, HealsBodyHP = 0, HealsLeftArmHP = 45, HealsLeftLegHP = 0, HealsRightArmHP = 45, HealsRightLegHP = 0, CuresPain = false },
-                new Medicine { itemID = 390, HealsHeadHP = 0, HealsBodyHP = 0, HealsLeftArmHP = 0, HealsLeftLegHP = 30, HealsRightArmHP = 0, HealsRightLegHP = 30, CuresPain = true }
+                new Medicine { ItemID = 15, HealsHeadHP = 26.25f, HealsBodyHP = 0, HealsLeftArmHP = 0, HealsLeftLegHP = 0, HealsRightArmHP = 0, HealsRightLegHP = 0, CuresPain = false },
+                new Medicine { ItemID = 403, HealsHeadHP = 0, HealsBodyHP = 52.5f, HealsLeftArmHP = 0, HealsLeftLegHP = 0, HealsRightArmHP = 0, HealsRightLegHP = 0, CuresPain = false },
+                new Medicine { ItemID = 96, HealsHeadHP = 0, HealsBodyHP = 0, HealsLeftArmHP = 0, HealsLeftLegHP = 45, HealsRightArmHP = 0, HealsRightLegHP = 45, CuresPain = false },
+                new Medicine { ItemID = 95, HealsHeadHP = 0, HealsBodyHP = 0, HealsLeftArmHP = 32.5f, HealsLeftLegHP = 0, HealsRightArmHP = 32.5f, HealsRightLegHP = 0, CuresPain = false },
+                new Medicine { ItemID = 394, HealsHeadHP = 0, HealsBodyHP = 0, HealsLeftArmHP = 45, HealsLeftLegHP = 0, HealsRightArmHP = 45, HealsRightLegHP = 0, CuresPain = false },
+                new Medicine { ItemID = 390, HealsHeadHP = 0, HealsBodyHP = 0, HealsLeftArmHP = 0, HealsLeftLegHP = 30, HealsRightArmHP = 0, HealsRightLegHP = 30, CuresPain = true }
             };
-            oneHandedItems = new OneHandedItem
+            OneHandedItems = new OneHandedItem
             {
                  ItemTypes = new List<EItemType>
                  {
@@ -264,7 +272,7 @@ namespace Tavstal.TAdvancedHealth
                      138
                  }
             };
-            twoHandedItems = new TwoHandedItem
+            TwoHandedItems = new TwoHandedItem
             {
                 ItemTypes = new List<EItemType>
                  {

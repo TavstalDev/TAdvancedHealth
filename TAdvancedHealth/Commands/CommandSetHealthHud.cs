@@ -1,14 +1,9 @@
 ﻿using Rocket.API;
 using Rocket.Unturned.Player;
-using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Collections;
-using SDG.Unturned;
 using Tavstal.TAdvancedHealth.Compatibility;
-using Tavstal.TAdvancedHealth.Modules;
-using Tavstal.TAdvancedHealth.Managers;
 using Tavstal.TAdvancedHealth.Helpers;
+using Tavstal.TAdvancedHealth.Modules;
 
 namespace Tavstal.TAdvancedHealth.Commands
 {
@@ -24,29 +19,29 @@ namespace Tavstal.TAdvancedHealth.Commands
         public void Execute(IRocketPlayer caller, string[] args)
         {
             UnturnedPlayer player = (UnturnedPlayer)caller;
-            TAdvancedHealthComponent comp = player.GetComponent<TAdvancedHealthComponent>();
-            PlayerHealth health = TAdvancedHealthMain.Database.GetPlayerHealth(player.Id);
+            AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+            HealthData health = TAdvancedHealth.Database.GetPlayerHealth(player.Id);
 
             if (args.Length == 0)
             {
-                UnturnedHelper.SendChatMessage(player.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "error_command_sethealthhud_args"));
+                UnturnedHelper.SendChatMessage(player.SteamPlayer(), TAdvancedHealth.Instance.Translate(true, "error_command_sethealthhud_args"));
                 return;
             }
 
             if (args.Length == 1 && args[0].ToLower() != "list")
             {
                 
-                HUDStyle style = TAdvancedHealthMain.Instance.Configuration.Instance.HUDStyles.Find(x => x.Enabled && (x.Name == args[0] || x.Aliases.ContainsIgnoreCase(args[0])));
+                HUDStyle style = TAdvancedHealth.Instance.Configuration.Instance.HUDStyles.Find(x => x.Enabled && (x.Name == args[0] || x.Aliases.ContainsIgnoreCase(args[0])));
                 if (style == null)
                 {
-                    UnturnedHelper.SendChatMessage(player.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "error_command_sethealthhud_style_invalid", args[0]));
+                    UnturnedHelper.SendChatMessage(player.SteamPlayer(), TAdvancedHealth.Instance.Translate(true, "error_command_sethealthhud_style_invalid", args[0]));
                     return;
                 }
                 ushort oldId = health.HUDEffectID;
                 comp.EffectID = style.EffectID;
-                TAdvancedHealthMain.Database.UpdateHUDEffectId(player.Id, style.EffectID);
+                TAdvancedHealth.Database.UpdateHUDEffectIdAsync(player.Id, style.EffectID);
                 
-                if (health.isHUDEnabled)
+                if (health.IsHUDEnabled)
                 {
                     SDG.Unturned.EffectManager.askEffectClearByID(oldId, player.SteamPlayer().transportConnection);
                     SDG.Unturned.EffectManager.sendUIEffect(style.EffectID, (short)style.EffectID, player.SteamPlayer().transportConnection, true);
@@ -65,7 +60,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                     }
                     catch
                     {
-                        UnturnedHelper.SendChatMessage(player.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "error_command_sethealthhud_args"));
+                        UnturnedHelper.SendChatMessage(player.SteamPlayer(), TAdvancedHealth.Instance.Translate(true, "error_command_sethealthhud_args"));
                         return;
                     }
                 }
@@ -73,28 +68,28 @@ namespace Tavstal.TAdvancedHealth.Commands
                     page = 1;
 
                 bool isEnd = false;
-                List<HUDStyle> styles = TAdvancedHealthMain.Instance.Configuration.Instance.HUDStyles.FindAll(x => x.Enabled);
+                List<HUDStyle> styles = TAdvancedHealth.Instance.Configuration.Instance.HUDStyles.FindAll(x => x.Enabled);
                 for (int i = 0; i < 3; i++)
                 {
                     int index = i + (page - 1) * 3;
                     if (styles.isValidIndex(index))
                     {
-                        UnturnedHelper.SendChatMessage(player.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "command_sethealthhud_list_element", styles[index].Name));
+                        UnturnedHelper.SendChatMessage(player.SteamPlayer(), TAdvancedHealth.Instance.Translate(true, "command_sethealthhud_list_element", styles[index].Name));
                     }
                     else
                     {
                         
                         isEnd = true;
-                        UnturnedHelper.SendChatMessage(player.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "command_sethealthhud_list_end"));
+                        UnturnedHelper.SendChatMessage(player.SteamPlayer(), TAdvancedHealth.Instance.Translate(true, "command_sethealthhud_list_end"));
                         break;
                     }
                 }
 
                 if (!isEnd)
-                    UnturnedHelper.SendChatMessage(player.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "command_sethealthhud_list_next", page + 1));
+                    UnturnedHelper.SendChatMessage(player.SteamPlayer(), TAdvancedHealth.Instance.Translate(true, "command_sethealthhud_list_next", page + 1));
             }
             else
-                UnturnedHelper.SendChatMessage(player.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "error_command_sethealthhud_args"));
+                UnturnedHelper.SendChatMessage(player.SteamPlayer(), TAdvancedHealth.Instance.Translate(true, "error_command_sethealthhud_args"));
         }
     }
 }
