@@ -188,6 +188,7 @@ namespace Tavstal.TAdvancedHealth
         public override Dictionary<string, string> DefaultLocalization =>
             new Dictionary<string, string>
             {
+                // TODO, check translations
                { "prefix", "&e[TAH] " },
                { "error_healtbar_disabled", "&aYou should enable the custom healthbar to use this command." },
                { "error_command_sethealthhud_args", "&aUsage: /sethealthhud list <page> | [name]" },
