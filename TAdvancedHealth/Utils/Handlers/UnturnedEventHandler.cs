@@ -113,9 +113,9 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 comp.progressBarData.LastFood = value;
 
                 if (value <= 0)
-                    comp.TryAddState(EPlayerStates.NOFOOD);
+                    comp.TryAddStateAsync(EPlayerStates.NOFOOD);
                 else
-                    comp.TryRemoveState(EPlayerStates.NOFOOD);
+                    comp.TryRemoveStateAsync(EPlayerStates.NOFOOD);
             }
             catch (Exception e)
             {
@@ -160,9 +160,9 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 comp.progressBarData.LastWater = value;
 
                 if (value <= 0)
-                    comp.TryAddState(EPlayerStates.NOWATER);
+                    comp.TryAddStateAsync(EPlayerStates.NOWATER);
                 else
-                    comp.TryRemoveState(EPlayerStates.NOWATER);
+                    comp.TryRemoveStateAsync(EPlayerStates.NOWATER);
             }
             catch (Exception e)
             {
@@ -187,9 +187,9 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 comp.progressBarData.LastVirus = value;
 
                 if (value <= 0)
-                    comp.TryAddState(EPlayerStates.NOVIRUS);
+                    comp.TryAddStateAsync(EPlayerStates.NOVIRUS);
                 else
-                    comp.TryRemoveState(EPlayerStates.NOVIRUS);
+                    comp.TryRemoveStateAsync(EPlayerStates.NOVIRUS);
             }
             catch (Exception e)
             {
@@ -213,9 +213,9 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 comp.progressBarData.LastOxygen = value;
 
                 if (value <= 0)
-                    comp.TryAddState(EPlayerStates.NOOXYGEN);
+                    comp.TryAddStateAsync(EPlayerStates.NOOXYGEN);
                 else
-                    comp.TryRemoveState(EPlayerStates.NOOXYGEN);
+                    comp.TryRemoveStateAsync(EPlayerStates.NOOXYGEN);
             }
             catch (Exception e)
             {
@@ -248,12 +248,12 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     if (val <= c.HeavyBleedingChance)
                         comp.hasHeavyBleeding = true;
 
-                    comp.TryAddState(EPlayerStates.BLEEDING);
+                    comp.TryAddStateAsync(EPlayerStates.BLEEDING);
                 }
                 else
                 {
                     comp.hasHeavyBleeding = false;
-                    comp.TryRemoveState(EPlayerStates.BLEEDING);
+                    comp.TryRemoveStateAsync(EPlayerStates.BLEEDING);
                 }
 
             }
@@ -284,7 +284,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
 
                         if (painChance <= c.PainEffectChance)
                         {
-                            EffectManager.sendUIEffect(c.PainEffectID, (short)c.PainEffectID, comp.transCon, true);
+                            EffectManager.sendUIEffect(c.PainEffectID, (short)c.PainEffectID, comp.TranspConnection, true);
                             if (c.PainEffectDuration > 0)
                                 TAdvancedHealth.Instance.InvokeAction(c.PainEffectDuration, () => { SDG.Unturned.EffectManager.askEffectClearByID(c.PainEffectID, player.SteamPlayer().transportConnection); });
 
@@ -306,10 +306,10 @@ namespace Tavstal.TAdvancedHealth.Handlers
                         }
                     }
 
-                    comp.TryAddState(EPlayerStates.BROKENBONE);
+                    comp.TryAddStateAsync(EPlayerStates.BROKENBONE);
                 }
                 else
-                    comp.TryRemoveState(EPlayerStates.BROKENBONE);
+                    comp.TryRemoveStateAsync(EPlayerStates.BROKENBONE);
 
             }
             catch (Exception e)
@@ -333,9 +333,9 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
                     if (isFullMoon)
-                        comp.TryAddState(EPlayerStates.FULLMOON);
+                        comp.TryAddStateAsync(EPlayerStates.FULLMOON);
                     else
-                        comp.TryRemoveState(EPlayerStates.FULLMOON);
+                        comp.TryRemoveStateAsync(EPlayerStates.FULLMOON);
                 }
 
             }
@@ -357,9 +357,9 @@ namespace Tavstal.TAdvancedHealth.Handlers
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 if (isActive)
-                    comp.TryAddState(EPlayerStates.DEADZONE);
+                    comp.TryAddStateAsync(EPlayerStates.DEADZONE);
                 else
-                    comp.TryRemoveState(EPlayerStates.DEADZONE);
+                    comp.TryRemoveStateAsync(EPlayerStates.DEADZONE);
 
             }
             catch (Exception e)
@@ -380,9 +380,9 @@ namespace Tavstal.TAdvancedHealth.Handlers
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 if (isActive)
-                    comp.TryAddState(EPlayerStates.SAFEZONE);
+                    comp.TryAddStateAsync(EPlayerStates.SAFEZONE);
                 else
-                    comp.TryRemoveState(EPlayerStates.SAFEZONE);
+                    comp.TryRemoveStateAsync(EPlayerStates.SAFEZONE);
 
             }
             catch (Exception e)
@@ -420,7 +420,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 else if (newTemperature == EPlayerTemperature.NONE)
                     state = EPlayerStates.NONE_TEMPERATURE;
 
-                comp.TryAddState(state);
+                comp.TryAddStateAsync(state);
 
             }
             catch (Exception e)
@@ -464,11 +464,11 @@ namespace Tavstal.TAdvancedHealth.Handlers
 
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 var c = _config.HealthSystemSettings;
-                if (comp.lastEquipedItem == 0) { return; }
+                if (comp.LastEquipedItem == 0) { return; }
 
                 if (_config.Medicines != null)
                 {
-                    Medicine med = _config.Medicines.FirstOrDefault(x => x.ItemID == comp.lastEquipedItem);
+                    Medicine med = _config.Medicines.FirstOrDefault(x => x.ItemID == comp.LastEquipedItem);
                     if (med != null)
                     {
                         HealthData health = await _database.GetPlayerHealthAsync(player.Id);
@@ -535,7 +535,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
 
                         _database.UpdateHealthAsync(player.Id, health, EDatabaseEvent.ALL);
                     }
-                    comp.lastEquipedItem = 0;
+                    comp.LastEquipedItem = 0;
                 }
             }
             catch (Exception e)
@@ -676,7 +676,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 Event_OnPlayerTemperatureUpdate(player, player.Player.life.temperature);
 
                 if (TAdvancedHealth.Instance._hasFullMoon)
-                    comp.TryAddState(EPlayerStates.FULLMOON);
+                    comp.TryAddStateAsync(EPlayerStates.FULLMOON);
 
                 player.Player.equipment.onEquipRequested += Event_OnPlayerEquipRequested;
                 player.Player.equipment.onDequipRequested += Event_OnPlayerDequipRequested;
@@ -689,7 +689,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 #region HideHealth HUD
                 if (health.IsHUDEnabled)
                 {
-                    EffectManager.sendUIEffect(comp.EffectID, (short)comp.EffectID, comp.transCon, true);
+                    EffectManager.sendUIEffect(comp.EffectID, (short)comp.EffectID, comp.TranspConnection, true);
                     player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowFood, false);
                     player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowHealth, false);
                     player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowOxygen, false);
@@ -736,7 +736,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 bool isMedicine = false;
                 if (_config.Medicines.FirstOrDefault(x => x.ItemID == jar.item.id) != null)
                 {
-                    comp.lastEquipedItem = jar.item.id;
+                    comp.LastEquipedItem = jar.item.id;
                     isMedicine = true;
                 }
 
@@ -794,7 +794,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(equipment.player);
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                comp.lastEquipedItem = 0;
+                comp.LastEquipedItem = 0;
             }
             catch (Exception e)
             {
@@ -829,7 +829,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
 
                 if (EDeathCause.BLEEDING == cause)
                 {
-                    if (health.IsInjured && !cp.allowDamage)
+                    if (health.IsInjured && !cp.AllowDamage)
                     {
                         totaldamage = 0;
                         player.Bleeding = false;
@@ -847,7 +847,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 if (cause == EDeathCause.ANIMAL || cause == EDeathCause.ZOMBIE)
                     limb = ELimb.LEFT_FRONT;
 
-                cp.allowDamage = false;
+                cp.AllowDamage = false;
 
                 if (!allow || player.Features.GodMode)
                     totaldamage = 0;
@@ -883,7 +883,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
 
                         if (c.DieWhenHeadHealthIsZero)
                         {
-                            cp.allowDamage = true;
+                            cp.AllowDamage = true;
                             CSteamID id = CSteamID.Nil;
                             if (EDeathCause.ZOMBIE != cause)
                             {
@@ -914,7 +914,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     {
                         if (c.DieWhenLegsHealthIsZero)
                         {
-                            cp.allowDamage = true;
+                            cp.AllowDamage = true;
                             CSteamID id = CSteamID.Nil;
                             if (EDeathCause.ZOMBIE != cause)
                             {
@@ -940,7 +940,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     {
                         if (c.DieWhenLegsHealthIsZero)
                         {
-                            cp.allowDamage = true;
+                            cp.AllowDamage = true;
                             CSteamID id = CSteamID.Nil;
                             if (EDeathCause.ZOMBIE != cause)
                             {
@@ -981,7 +981,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
 
                         if (c.DieWhenBodyHealthIsZero)
                         {
-                            cp.allowDamage = true;
+                            cp.AllowDamage = true;
                             CSteamID id = CSteamID.Nil;
                             if (EDeathCause.ZOMBIE != cause)
                             {
@@ -1012,7 +1012,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     {
                         if (c.DieWhenArmsHealthIsZero)
                         {
-                            cp.allowDamage = true;
+                            cp.AllowDamage = true;
                             CSteamID id = CSteamID.Nil;
                             if (EDeathCause.ZOMBIE != cause)
                             {
@@ -1043,7 +1043,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     {
                         if (c.DieWhenArmsHealthIsZero)
                         {
-                            cp.allowDamage = true;
+                            cp.AllowDamage = true;
                             CSteamID id = CSteamID.Nil;
                             if (EDeathCause.ZOMBIE != cause)
                             {
@@ -1074,7 +1074,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     {
                         if (c.DieWhenLegsHealthIsZero)
                         {
-                            cp.allowDamage = true;
+                            cp.AllowDamage = true;
                             CSteamID id = CSteamID.Nil;
                             if (EDeathCause.ZOMBIE != cause)
                             {
@@ -1105,7 +1105,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     {
                         if (c.DieWhenLegsHealthIsZero)
                         {
-                            cp.allowDamage = true;
+                            cp.AllowDamage = true;
                             CSteamID id = CSteamID.Nil;
                             if (EDeathCause.ZOMBIE != cause)
                             {
@@ -1146,7 +1146,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
 
                         if (c.DieWhenBodyHealthIsZero)
                         {
-                            cp.allowDamage = true;
+                            cp.AllowDamage = true;
                             CSteamID id = CSteamID.Nil;
                             if (EDeathCause.ZOMBIE != cause)
                             {
@@ -1187,20 +1187,20 @@ namespace Tavstal.TAdvancedHealth.Handlers
                             Defibrillator defibrillator = _config.DefibrillatorSettings.DefibrillatorItems.Find(x => x.ItemID == killerPlayer.Player.equipment.ItemID);
                             if (defibrillator != null)
                             {
-                                if (killerComp.lastDefibliratorUses.TryGetValue(defibrillator.ItemID, out DateTime value))
+                                if (killerComp.LastDefibliratorUses.TryGetValue(defibrillator.ItemID, out DateTime value))
                                 {
                                     if (value > DateTime.Now)
                                     {
                                         Helper.SendChatMessage(killerPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "error_defiblirator_cooldown", (value - DateTime.Now).TotalSeconds.ToString("0.00")));
                                         return;
                                     }
-                                    killerComp.lastDefibliratorUses.Remove(defibrillator.ItemID);
+                                    killerComp.LastDefibliratorUses.Remove(defibrillator.ItemID);
                                 }
 
                                 int chance = MathHelper.Next(1, 100);
                                 if (chance != 0 && chance <= defibrillator.ReviveChance)
-                                    cp.Revive();
-                                killerComp.lastDefibliratorUses.Add(defibrillator.ItemID, DateTime.Now.AddSeconds(defibrillator.RechargeTimeSecs));
+                                    cp.ReviveAsync();
+                                killerComp.LastDefibliratorUses.Add(defibrillator.ItemID, DateTime.Now.AddSeconds(defibrillator.RechargeTimeSecs));
                                 return;
                             }
                         }
@@ -1268,7 +1268,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
 
                 if (EDeathCause.BLEEDING == cause)
                 {
-                    if (health.IsInjured && !cp.allowDamage)
+                    if (health.IsInjured && !cp.AllowDamage)
                     {
                         parameters.damage = 0;
                         player.Bleeding = false;
@@ -1287,7 +1287,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 {
                     limb = ELimb.LEFT_FRONT;
                 }
-                cp.allowDamage = false;
+                cp.AllowDamage = false;
 
                 if (parameters.respectArmor)
                 {
@@ -1334,7 +1334,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
 
                         if (c.DieWhenHeadHealthIsZero)
                         {
-                            cp.allowDamage = true;
+                            cp.AllowDamage = true;
                             CSteamID id = CSteamID.Nil;
                             if (EDeathCause.ZOMBIE != cause)
                             {
@@ -1365,7 +1365,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     {
                         if (c.DieWhenLegsHealthIsZero)
                         {
-                            cp.allowDamage = true;
+                            cp.AllowDamage = true;
                             CSteamID id = CSteamID.Nil;
                             if (EDeathCause.ZOMBIE != cause)
                             {
@@ -1391,7 +1391,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     {
                         if (c.DieWhenLegsHealthIsZero)
                         {
-                            cp.allowDamage = true;
+                            cp.AllowDamage = true;
                             CSteamID id = CSteamID.Nil;
                             if (EDeathCause.ZOMBIE != cause)
                             {
@@ -1432,7 +1432,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
 
                         if (c.DieWhenBodyHealthIsZero)
                         {
-                            cp.allowDamage = true;
+                            cp.AllowDamage = true;
                             CSteamID id = CSteamID.Nil;
                             if (EDeathCause.ZOMBIE != cause)
                             {
@@ -1463,7 +1463,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     {
                         if (c.DieWhenArmsHealthIsZero)
                         {
-                            cp.allowDamage = true;
+                            cp.AllowDamage = true;
                             CSteamID id = CSteamID.Nil;
                             if (EDeathCause.ZOMBIE != cause)
                             {
@@ -1494,7 +1494,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     {
                         if (c.DieWhenArmsHealthIsZero)
                         {
-                            cp.allowDamage = true;
+                            cp.AllowDamage = true;
                             CSteamID id = CSteamID.Nil;
                             if (EDeathCause.ZOMBIE != cause)
                             {
@@ -1525,7 +1525,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     {
                         if (c.DieWhenLegsHealthIsZero)
                         {
-                            cp.allowDamage = true;
+                            cp.AllowDamage = true;
                             CSteamID id = CSteamID.Nil;
                             if (EDeathCause.ZOMBIE != cause)
                             {
@@ -1556,7 +1556,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     {
                         if (c.DieWhenLegsHealthIsZero)
                         {
-                            cp.allowDamage = true;
+                            cp.AllowDamage = true;
                             CSteamID id = CSteamID.Nil;
                             if (EDeathCause.ZOMBIE != cause)
                             {
@@ -1597,7 +1597,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
 
                         if (c.DieWhenBodyHealthIsZero)
                         {
-                            cp.allowDamage = true;
+                            cp.AllowDamage = true;
                             CSteamID id = CSteamID.Nil;
                             if (EDeathCause.ZOMBIE != cause)
                             {
@@ -1636,7 +1636,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     {
                         UnturnedPlayer targetPlayer = UnturnedPlayer.FromPlayer(victimPlayer);
                         AdvancedHealthComponent playerComp = player.GetComponent<AdvancedHealthComponent>();
-                        playerComp.Drag(targetPlayer);
+                        playerComp.DragAsync(targetPlayer);
                     }
                 }
                 else if (gesture == UnturnedPlayerEvents.PlayerGesture.SurrenderStop)
@@ -1659,12 +1659,12 @@ namespace Tavstal.TAdvancedHealth.Handlers
             try
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                comp.Revive();
+                comp.ReviveAsync();
                 if (comp.DragState != EDragState.NONE)
                     comp.UnDrag();
 
 
-                EffectManager.sendUIEffectVisibility((short)comp.EffectID, comp.transCon, true, "RevivePanel", false);
+                EffectManager.sendUIEffectVisibility((short)comp.EffectID, comp.TranspConnection, true, "RevivePanel", false);
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
 
                 TAdvancedHealth.Instance.StartCoroutine(TAdvancedHealth.Instance.DelayedInvoke(0.1f, () =>
@@ -1725,7 +1725,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 if (comp.DragState != EDragState.NONE)
                     comp.UnDrag();
 
-                EffectManager.sendUIEffectVisibility((short)comp.EffectID, comp.transCon, true, "RevivePanel", false);
+                EffectManager.sendUIEffectVisibility((short)comp.EffectID, comp.TranspConnection, true, "RevivePanel", false);
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
             }
             catch (Exception e)
@@ -1746,7 +1746,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     HealthData health = _database.GetPlayerHealth(player.Id);
                     if (health.IsInjured)
                     {
-                        comp.allowDamage = true;
+                        comp.AllowDamage = true;
                         player.Player.life.askDamage(100, player.Position.normalized, EDeathCause.BLEEDING, ELimb.SKULL, CSteamID.Nil, out EPlayerKill outKill);
 
                         if (player.Player.movement.pluginSpeedMultiplier == 0)
@@ -1756,7 +1756,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                             comp.UnDrag();
 
                         player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
-                        EffectManager.sendUIEffectVisibility((short)comp.EffectID, comp.transCon, true, "RevivePanel", false);
+                        EffectManager.sendUIEffectVisibility((short)comp.EffectID, comp.TranspConnection, true, "RevivePanel", false);
                     }
                 }
             }

@@ -123,23 +123,23 @@ namespace Tavstal.TAdvancedHealth
 
                     #region Regeneration
                     // Head
-                    if (comp.nextHeadHealDate <= DateTime.Now)
+                    if (comp.NextHeadHealDate <= DateTime.Now)
                     {
                         if (healthData.HeadHealth + 1 <= CHSCSettings.HeadHealth && player.Player.life.food >= CHSCSettings.HealthRegenMinFood && player.Player.life.water >= CHSCSettings.HealthRegenMinWater && player.Player.life.virus >= CHSCSettings.HealthRegenMinVirus)
                             await Database.UpdateHealthAsync(player.Id, healthData.HeadHealth + 1, EHealth.HEAD);
-                        comp.nextHeadHealDate = DateTime.Now.AddSeconds(CHSCSettings.HeadRegenTicks);
+                        comp.NextHeadHealDate = DateTime.Now.AddSeconds(CHSCSettings.HeadRegenTicks);
                     }
 
                     // Body
-                    if (comp.nextBodyHealDate <= DateTime.Now)
+                    if (comp.NextBodyHealDate <= DateTime.Now)
                     {
                         if (healthData.BodyHealth + 1 <= CHSCSettings.BodyHealth && player.Player.life.food >= CHSCSettings.HealthRegenMinFood && player.Player.life.water >= CHSCSettings.HealthRegenMinWater && player.Player.life.virus >= CHSCSettings.HealthRegenMinVirus)
                             await Database.UpdateHealthAsync(player.Id, healthData.BodyHealth + 1, EHealth.BODY);
-                        comp.nextBodyHealDate = DateTime.Now.AddSeconds(CHSCSettings.BodyRegenTicks);
+                        comp.NextBodyHealDate = DateTime.Now.AddSeconds(CHSCSettings.BodyRegenTicks);
                     }
 
                     // Arm
-                    if (comp.nextArmHealDate <= DateTime.Now)
+                    if (comp.NextArmHealDate <= DateTime.Now)
                     {
                         if (player.Player.life.food >= CHSCSettings.HealthRegenMinFood && player.Player.life.water >= CHSCSettings.HealthRegenMinWater && player.Player.life.virus >= CHSCSettings.HealthRegenMinVirus)
                         {
@@ -148,11 +148,11 @@ namespace Tavstal.TAdvancedHealth
                             if (healthData.RightArmHealth + 1 <= CHSCSettings.RightArmHealth)
                                 await Database.UpdateHealthAsync(player.Id, healthData.RightArmHealth + 1, EHealth.RIGHT_ARM);
                         }
-                        comp.nextArmHealDate = DateTime.Now.AddSeconds(CHSCSettings.ArmRegenTicks);
+                        comp.NextArmHealDate = DateTime.Now.AddSeconds(CHSCSettings.ArmRegenTicks);
                     }
 
                     // Leg
-                    if (comp.nextLegHealDate <= DateTime.Now)
+                    if (comp.NextLegHealDate <= DateTime.Now)
                     {
                         if (player.Player.life.food >= CHSCSettings.HealthRegenMinFood && player.Player.life.water >= CHSCSettings.HealthRegenMinWater && player.Player.life.virus >= CHSCSettings.HealthRegenMinVirus)
                         {
@@ -161,7 +161,7 @@ namespace Tavstal.TAdvancedHealth
                             if (healthData.RightLegHealth + 1 <= CHSCSettings.RightLegHealth)
                                 await Database.UpdateHealthAsync(player.Id, healthData.RightLegHealth + 1, EHealth.RIGHT_LEG);
                         }
-                        comp.nextLegHealDate = DateTime.Now.AddSeconds(CHSCSettings.LegRegenTicks);
+                        comp.NextLegHealDate = DateTime.Now.AddSeconds(CHSCSettings.LegRegenTicks);
                     }
                     #endregion
 

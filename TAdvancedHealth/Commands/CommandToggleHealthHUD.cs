@@ -1,9 +1,9 @@
 ﻿using Rocket.API;
 using Rocket.Unturned.Player;
-using System.Collections.Generic;
 using SDG.Unturned;
-using Tavstal.TAdvancedHealth.Compatibility;
-using Tavstal.TAdvancedHealth.Helpers;
+using System.Collections.Generic;
+using Tavstal.TAdvancedHealth.Models.Database;
+using Tavstal.TAdvancedHealth.Utils.Helpers;
 
 namespace Tavstal.TAdvancedHealth.Commands
 {
@@ -16,10 +16,10 @@ namespace Tavstal.TAdvancedHealth.Commands
         public List<string> Aliases => new List<string> { "thealthhud", "togglehhud", "togglehh" };
         public List<string> Permissions => new List<string> { "TAdvancedHealth.command.togglehud" };
 
-        public void Execute(IRocketPlayer caller, string[] args)
+        public async void Execute(IRocketPlayer caller, string[] args)
         {
             UnturnedPlayer player = (UnturnedPlayer)caller;
-            HealthData health = TAdvancedHealth.Database.GetPlayerHealth(player.Id);
+            HealthData health = await TAdvancedHealth.Database.GetPlayerHealthAsync(player.Id);
 
             if (!health.IsHUDEnabled)
             {
@@ -32,7 +32,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStatusIcons, false);
                 health.IsHUDEnabled = true;
                 EffectManager.sendUIEffect(health.HUDEffectID, (short)health.HUDEffectID, player.SteamPlayer().transportConnection, true);
-                HealthHelper.UpdateHealthAllUI(player);
+                await EffectHelper.UpdateWholeHealthUIAsync(player);
             }
             else
             {
@@ -48,7 +48,7 @@ namespace Tavstal.TAdvancedHealth.Commands
 
             }
 
-            TAdvancedHealth.Database.UpdateHUDEnabledAsync(player.Id, health.IsHUDEnabled);
+            await TAdvancedHealth.Database.UpdateHUDEnabledAsync(player.Id, health.IsHUDEnabled);
         }
     }
 }

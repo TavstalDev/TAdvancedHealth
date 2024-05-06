@@ -1,9 +1,8 @@
 ﻿using Rocket.API;
 using Rocket.Unturned.Player;
 using System.Collections.Generic;
-using Tavstal.TAdvancedHealth.Compatibility;
-using Tavstal.TAdvancedHealth.Helpers;
-using Tavstal.TAdvancedHealth.Modules;
+using Tavstal.TAdvancedHealth.Components;
+using Tavstal.TLibrary.Helpers.Unturned;
 
 namespace Tavstal.TAdvancedHealth
 {
@@ -24,26 +23,26 @@ namespace Tavstal.TAdvancedHealth
             if (args.Length == 0)
             {
                 AdvancedHealthComponent comp = callerPlayer.GetComponent<AdvancedHealthComponent>();
-                comp.Revive();
+                comp.ReviveAsync();
 
-                UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_cure_success", callerPlayer.CharacterName));
+                TAdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_cure_success", callerPlayer.CharacterName);
             }
             else if (args.Length == 1)
             {
                 UnturnedPlayer targetPlayer = UnturnedPlayer.FromName(args[0]);
                 if (targetPlayer == null)
                 {
-                    UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), "error_playet_not_found");
+                    TAdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "error_playet_not_found");
                     return;
                 }
 
                 AdvancedHealthComponent targetComp = targetPlayer.GetComponent<AdvancedHealthComponent>();
-                targetComp.Revive();
+                targetComp.ReviveAsync();
 
-                UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_cure_success", targetPlayer.CharacterName));
+                TAdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_cure_success", targetPlayer.CharacterName);
             }
             else
-                UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), "<color=yellow>" + Syntax + "</color>");
+                TAdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), $"<color=yellow>{Syntax}</color>");
         }
     }
 }

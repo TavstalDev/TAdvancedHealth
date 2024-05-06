@@ -5,6 +5,7 @@ using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Models.Enums;
@@ -14,29 +15,34 @@ namespace Tavstal.TAdvancedHealth.Components
 {
     public class AdvancedHealthComponent : UnturnedPlayerComponent
     {
-        public ITransportConnection transCon => Player.SteamPlayer().transportConnection;
+        public ITransportConnection TranspConnection => Player.SteamPlayer().transportConnection;
         public bool hasHeavyBleeding = false;
         public ProgressBarDatas progressBarData = new ProgressBarDatas();
         public EDragState DragState = EDragState.NONE;
         public CSteamID DragPartnerId = CSteamID.Nil;
 
-        public Dictionary<ushort, DateTime> lastDefibliratorUses { get; set; } = new Dictionary<ushort, DateTime>();
-        public DateTime nextHeadHealDate { get; set; }
-        public DateTime nextBodyHealDate { get; set; }
-        public DateTime nextArmHealDate { get; set; }
-        public DateTime nextLegHealDate { get; set; }
+        public Dictionary<ushort, DateTime> LastDefibliratorUses { get; set; } = new Dictionary<ushort, DateTime>();
+        public DateTime NextHeadHealDate { get; set; }
+        public DateTime NextBodyHealDate { get; set; }
+        public DateTime NextArmHealDate { get; set; }
+        public DateTime NextLegHealDate { get; set; }
 
 
-        public bool allowDamage = false;
-        public ushort lastEquipedItem = 0;
+        public bool AllowDamage = false;
+        public ushort LastEquipedItem = 0;
         public ushort EffectID = 0;
-        public List<EPlayerStates> states = new List<EPlayerStates>();
+        public List<EPlayerStates> States = new List<EPlayerStates>();
 
-        public void TryAddState(EPlayerStates state)
+        /// <summary>
+        /// Tries to add the specified player state asynchronously.
+        /// </summary>
+        /// <param name="state">The player state to add.</param>
+        /// <returns>A task representing the asynchronous operation. True if the state was added successfully; otherwise, false.</returns>
+        public async Task TryAddStateAsync(EPlayerStates state)
         {
             try
             {
-                if (!states.Contains(state))
+                if (!States.Contains(state))
                 {
                     var config = TAdvancedHealth.Instance.Config;
 
@@ -48,9 +54,9 @@ namespace Tavstal.TAdvancedHealth.Components
                             List<StatusIcon> icons = config.HealthSystemSettings.statusIcons.FindAll(x => x.GroupIndex == icon2.GroupIndex && x.Status != state);
                             foreach (StatusIcon ic in icons)
                             {
-                                TryRemoveState(ic.Status, false);
+                                await  TryRemoveStateAsync(ic.Status, false);
                             }
-                            RefreshStateUI();
+                            await RefreshStateUIAsync();
                         }
                         return;
                     }
@@ -61,78 +67,94 @@ namespace Tavstal.TAdvancedHealth.Components
                     {
                         if (icon.GroupIndex == -1)
                         {
-                            states.Add(state);
-                            RefreshStateUI();
+                            States.Add(state);
+                            await RefreshStateUIAsync();
                         }
                         else
                         {
                             List<StatusIcon> icons = config.HealthSystemSettings.statusIcons.FindAll(x => x.GroupIndex == icon.GroupIndex && x.Status != state);
                             foreach (StatusIcon ic in icons)
                             {
-                                TryRemoveState(ic.Status, false);
+                                await TryRemoveStateAsync(ic.Status, false);
                             }
 
-                            states.Add(state);
-                            RefreshStateUI();
+                            States.Add(state);
+                            await RefreshStateUIAsync();
                         }
                     }
                 }
             }
             catch (Exception e)
             {
-                LoggerHelper.LogError(e.ToString());
+                TAdvancedHealth.Logger.LogError(e.ToString());
             }
         }
 
-        public void TryRemoveState(EPlayerStates state, bool shouldUpdate = true)
+        /// <summary>
+        /// Tries to remove the specified player state asynchronously.
+        /// </summary>
+        /// <param name="state">The player state to remove.</param>
+        /// <param name="shouldUpdate">A boolean indicating whether to update after removing the state. Default is true.</param>
+        /// <returns>A task representing the asynchronous operation. True if the state was removed successfully; otherwise, false.</returns>
+        public async Task TryRemoveStateAsync(EPlayerStates state, bool shouldUpdate = true)
         {
             try
             {
-                if (states.Contains(state))
+                if (States.Contains(state))
                 {
-                    states.RemoveAt(states.FindIndex(x => x == state));
+                    States.RemoveAt(States.FindIndex(x => x == state));
                     if (shouldUpdate)
-                        RefreshStateUI();
+                        await RefreshStateUIAsync();
                 }
             }
             catch (Exception e)
             {
-                LoggerHelper.LogError(e.ToString());
+                TAdvancedHealth.Logger.LogError(e.ToString());
             }
         }
 
-        private void RefreshStateUI()
+        /// <summary>
+        /// Asynchronously refreshes the user interface (UI) to reflect the current player state.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private async Task RefreshStateUIAsync()
         {
-            HealthData health = TAdvancedHealth.Database.GetPlayerHealth(this.Player.Id);
+            HealthData health =  await TAdvancedHealth.Database.GetPlayerHealthAsync(this.Player.Id);
             short effectID = (short)health.HUDEffectID;
 
             for (int i = 0; i < 12; i++)
             {
                 int localuiname = i + 1;
 
-                if (states.Count - 1 >= i)
+                if (States.Count - 1 >= i)
                 {
-                    EPlayerStates value = states.ElementAt(i);
+                    EPlayerStates value = States.ElementAt(i);
                     StatusIcon icon = HealthHelper.GetStatusIcon(value);
 
                     EffectManager.sendUIEffectImageURL(effectID, this.Player.CSteamID, true, "Status#" + localuiname + "_img", icon.IconUrl);
                     TAdvancedHealth.Instance.InvokeAction(0.1f, () => {
-                        if (states.Count >= localuiname)
-                            EffectManager.sendUIEffectVisibility(effectID, transCon, true, "Status#" + localuiname, true);
+                        if (States.Count >= localuiname)
+                            EffectManager.sendUIEffectVisibility(effectID, TranspConnection, true, "Status#" + localuiname, true);
                     });
                 }
                 else
                 {
-                    EffectManager.sendUIEffectVisibility(effectID, transCon, true, "Status#" + localuiname, false);
+                    EffectManager.sendUIEffectVisibility(effectID, TranspConnection, true, "Status#" + localuiname, false);
                 }
             }
         }
-    
-        public void Drag(UnturnedPlayer target)
+
+        /// <summary>
+        /// Asynchronously drags the specified target Unturned player.
+        /// </summary>
+        /// <param name="target">The Unturned player to be dragged.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task DragAsync(UnturnedPlayer target)
         {
             AdvancedHealthComponent targetComp = target.GetComponent<AdvancedHealthComponent>();
+            HealthData healthData = await TAdvancedHealth.Database.GetPlayerHealthAsync(target.Id);
 
-            if (TAdvancedHealth.Database.GetPlayerHealth(this.Player.Id).IsInjured || targetComp.DragState != EDragState.NONE || !TAdvancedHealth.Database.GetPlayerHealth(target.Id).IsInjured || DragState != EDragState.NONE)
+            if (healthData.IsInjured || targetComp.DragState != EDragState.NONE || !healthData.IsInjured || DragState != EDragState.NONE)
                 return;
 
             DragPartnerId = target.CSteamID;
@@ -141,6 +163,10 @@ namespace Tavstal.TAdvancedHealth.Components
             targetComp.DragState = EDragState.DRAGGED;
         }
 
+        /// <summary>
+        /// Stops dragging the player.
+        /// </summary>
+        /// <param name="recievedFromPartner">A boolean indicating whether the command to stop dragging was received from a partner. Default is false.</param>
         public void UnDrag(bool recievedFromPartner = false)
         {
             if (recievedFromPartner)
@@ -158,18 +184,23 @@ namespace Tavstal.TAdvancedHealth.Components
             DragPartnerId = CSteamID.Nil;
         }
 
-        public void Revive(bool recievedFromPartner = false)
+        /// <summary>
+        /// Asynchronously revives the player.
+        /// </summary>
+        /// <param name="recievedFromPartner">A boolean indicating whether the revival command was received from a partner. Default is false.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task ReviveAsync(bool recievedFromPartner = false)
         {
             var chsettings = TAdvancedHealth.Instance.CHSCSettings;
 
             if (this.Player.Player.movement.pluginSpeedMultiplier != chsettings.DefaultWalkSpeed)
                 this.Player.Player.movement.sendPluginSpeedMultiplier(chsettings.DefaultWalkSpeed);
             this.Player.Player.movement.sendPluginJumpMultiplier(1f);
-            allowDamage = false;
+            AllowDamage = false;
             hasHeavyBleeding = false;
             
-            HealthData health = TAdvancedHealth.Database.GetPlayerHealth(this.Player.Id);
-            TAdvancedHealth.Database.UpdateHealthAsync(this.Player.Id, new HealthData 
+            HealthData health = await TAdvancedHealth.Database.GetPlayerHealthAsync(this.Player.Id);
+            await TAdvancedHealth.Database.UpdateHealthAsync(this.Player.Id, new HealthData 
             {
                 BaseHealth = chsettings.BaseHealth,
                 BodyHealth = chsettings.BodyHealth,
@@ -191,20 +222,25 @@ namespace Tavstal.TAdvancedHealth.Components
             this.Player.Infection = 0;
             this.Player.Heal(100);
 
-            EffectManager.sendUIEffectVisibility((short)EffectID, transCon, true, "RevivePanel", false);
+            EffectManager.sendUIEffectVisibility((short)EffectID, TranspConnection, true, "RevivePanel", false);
             this.Player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
         }
 
-        public void BleedOut(bool recievedFromPartner = false)
+        /// <summary>
+        /// Asynchronously initiates the bleeding out process for the player.
+        /// </summary>
+        /// <param name="recievedFromPartner">A boolean indicating whether the command to bleed out was received from a partner. Default is false.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task BleedOutAsync(bool recievedFromPartner = false)
         {
-            allowDamage = true;
+            AllowDamage = true;
             this.Player.Player.life.askDamage(100, this.Player.Position.normalized, EDeathCause.BLEEDING, ELimb.SKULL, CSteamID.Nil, out EPlayerKill outKill);
             var chsettings = TAdvancedHealth.Instance.CHSCSettings;
             if (this.Player.Player.movement.pluginSpeedMultiplier != chsettings.DefaultWalkSpeed)
                 this.Player.Player.movement.sendPluginSpeedMultiplier(chsettings.DefaultWalkSpeed);
             this.Player.Player.movement.sendPluginJumpMultiplier(1f);
-            TAdvancedHealth.Database.UpdateInjured(this.Player.Id, false, DateTime.Now);
-            EffectManager.sendUIEffectVisibility((short)EffectID, transCon, true, "RevivePanel", false);
+            await TAdvancedHealth.Database.UpdateInjuredAsync(this.Player.Id, false, DateTime.Now);
+            EffectManager.sendUIEffectVisibility((short)EffectID, TranspConnection, true, "RevivePanel", false);
             this.Player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
         }
     }

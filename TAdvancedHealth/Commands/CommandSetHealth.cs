@@ -1,9 +1,9 @@
-﻿using System;
-using Rocket.API;
+﻿using Rocket.API;
 using Rocket.Unturned.Player;
+using System;
 using System.Collections.Generic;
-using Tavstal.TAdvancedHealth.Compatibility;
-using Tavstal.TAdvancedHealth.Helpers;
+using Tavstal.TAdvancedHealth.Models.Enums;
+using Tavstal.TLibrary.Helpers.Unturned;
 
 namespace Tavstal.TAdvancedHealth
 {
@@ -12,248 +12,169 @@ namespace Tavstal.TAdvancedHealth
         public AllowedCaller AllowedCaller => AllowedCaller.Player;
         public string Name => "sethealth";
         public string Help => "Changes your health or somebody else's.";
-        public string Syntax => "/sethealth <player> [bodypart] [newhealth]";
+        public string Syntax => "/sethealth <player> [bodypart] [newHealth]";
         public List<string> Aliases => new List<string>();
         public List<string> Permissions => new List<string> { "TAdvancedHealth.command.sethealth" };
 
-        public void Execute(IRocketPlayer caller, string[] args)
+
+        public async void Execute(IRocketPlayer caller, string[] args)
         {
             try
             {
                 UnturnedPlayer callerPlayer = (UnturnedPlayer)caller;
-                var hsettings = TAdvancedHealth.Instance.Configuration.Instance.HealthSystemSettings;
-                var config = TAdvancedHealth.Instance.Configuration.Instance;
-                var main = TAdvancedHealth.Instance;
-                if (args.Length == 2)
+                if (args.Length == 3 || args.Length == 2)
                 {
-                    if (args[0].ToLower() == "head")
+                    UnturnedPlayer targetPlayer = callerPlayer;
+                    string bodyPart = string.Empty;
+                    float newHealth = 0;
+                    if (args.Length == 3)
                     {
-                        float newhealth = Convert.ToSingle(args[1]);
-                        float settingsHealth = hsettings.HeadHealth;
-                        if (newhealth > settingsHealth)
-                            newhealth = settingsHealth;
-                        else if (newhealth < 0)
+                        targetPlayer = UnturnedPlayer.FromName(args[0]);
+                        if (targetPlayer == null)
                         {
-                            if (newhealth * -1 > settingsHealth)
-                                newhealth = settingsHealth;
-                            else
-                                newhealth *= -1;
+                            TAdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "error_playet_not_found");
+                            return;
                         }
 
-                        TAdvancedHealth.Database.UpdateHeadHealth(callerPlayer.Id, newhealth);
-                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", main.Translate(true, "head"), newhealth));
+                        bodyPart = args[1].ToLower();
+                        newHealth = Convert.ToSingle(args[2]);
                     }
-                    else if (args[0].ToLower() == "body")
+                    else
                     {
-                        float newhealth = Convert.ToSingle(args[1]);
-                        float settingsHealth = hsettings.BodyHealth;
-                        if (newhealth > settingsHealth)
-                            newhealth = settingsHealth;
-                        else if (newhealth < 0)
-                        {
-                            if (newhealth * -1 > settingsHealth)
-                                newhealth = settingsHealth;
-                            else
-                                newhealth *= -1;
-                        }
-
-                        TAdvancedHealth.Database.UpdateBodyHealth(callerPlayer.Id, newhealth);
-                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", main.Translate(true, "body"), newhealth));
-                    }
-                    else if (args[0].ToLower() == "rightarm")
-                    {
-                        float newhealth = Convert.ToSingle(args[1]);
-                        float settingsHealth = hsettings.RightArmHealth;
-                        if (newhealth > settingsHealth)
-                            newhealth = settingsHealth;
-                        else if (newhealth < 0)
-                        {
-                            if (newhealth * -1 > settingsHealth)
-                                newhealth = settingsHealth;
-                            else
-                                newhealth *= -1;
-                        }
-
-                        TAdvancedHealth.Database.UpdateRightArmHealth(callerPlayer.Id, newhealth);
-                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", main.Translate(true, "rightarm"), newhealth));
-                    }
-                    else if (args[0].ToLower() == "leftarm")
-                    {
-                        float newhealth = Convert.ToSingle(args[1]);
-                        float settingsHealth = hsettings.LeftArmHealth;
-                        if (newhealth > settingsHealth)
-                            newhealth = settingsHealth;
-                        else if (newhealth < 0)
-                        {
-                            if (newhealth * -1 > settingsHealth)
-                                newhealth = settingsHealth;
-                            else
-                                newhealth *= -1;
-                        }
-
-                        TAdvancedHealth.Database.UpdateLeftArmHealth(callerPlayer.Id, newhealth);
-                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", main.Translate(true, "leftarm"), newhealth));
-                    }
-                    else if (args[0].ToLower() == "leftleg")
-                    {
-                        float newhealth = Convert.ToSingle(args[1]);
-                        float settingsHealth = hsettings.LeftLegHealth;
-                        if (newhealth > settingsHealth)
-                            newhealth = settingsHealth;
-                        else if (newhealth < 0)
-                        {
-                            if (newhealth * -1 > settingsHealth)
-                                newhealth = settingsHealth;
-                            else
-                                newhealth *= -1;
-                        }
-
-                        TAdvancedHealth.Database.UpdateLeftLegHealth(callerPlayer.Id, newhealth);
-                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", main.Translate(true, "leftleg"), newhealth));
-                    }
-                    else if (args[0].ToLower() == "rightleg")
-                    {
-                        float newhealth = Convert.ToSingle(args[1]);
-                        float settingsHealth = hsettings.RightLegHealth;
-                        if (newhealth > settingsHealth)
-                            newhealth = settingsHealth;
-                        else if (newhealth < 0)
-                        {
-                            if (newhealth * -1 > settingsHealth)
-                                newhealth = settingsHealth;
-                            else
-                                newhealth *= -1;
-                        }
-
-                        TAdvancedHealth.Database.UpdateRightLegHealth(callerPlayer.Id, newhealth);
-                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", main.Translate(true, "rightleg"), newhealth));
+                        bodyPart = args[0].ToLower();
+                        newHealth = Convert.ToSingle(args[1]);
                     }
 
-                }
-                else if (args.Length == 3)
-                {
-                    UnturnedPlayer targetPlayer = UnturnedPlayer.FromName(args[0]);
-                    if (targetPlayer == null)
-                    {
-                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), "error_playet_not_found");
-                        return;
-                    }
 
-                    if (args[1].ToLower() == "head")
+                    switch (bodyPart)
                     {
-                        float newhealth = Convert.ToSingle(args[2]);
-                        float settingsHealth = hsettings.HeadHealth;
-                        if (newhealth > settingsHealth)
-                            newhealth = settingsHealth;
-                        else if (newhealth < 0)
-                        {
-                            if (newhealth * -1 > settingsHealth)
-                                newhealth = settingsHealth;
-                            else
-                                newhealth *= -1;
-                        }
+                        case "head":
+                            {
+                                float settingsHealth = TAdvancedHealth.Instance.Config.HealthSystemSettings.HeadHealth;
+                                if (newHealth > settingsHealth)
+                                    newHealth = settingsHealth;
+                                else if (newHealth < 0)
+                                {
+                                    if (newHealth * -1 > settingsHealth)
+                                        newHealth = settingsHealth;
+                                    else
+                                        newHealth *= -1;
+                                }
 
-                        TAdvancedHealth.Database.UpdateHeadHealth(targetPlayer.Id, newhealth);
-                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", targetPlayer.CharacterName, main.Translate(true, "head"), newhealth));
-                        UnturnedHelper.SendChatMessage(targetPlayer.SteamPlayer(), main.Translate(true, "command_sethealth_other", callerPlayer.CharacterName, main.Translate(true, "head"), newhealth));
-                    }
-                    else if (args[1].ToLower() == "body")
-                    {
-                        float newhealth = Convert.ToSingle(args[2]);
-                        float settingsHealth = hsettings.BodyHealth;
-                        if (newhealth > settingsHealth)
-                            newhealth = settingsHealth;
-                        else if (newhealth < 0)
-                        {
-                            if (newhealth * -1 > settingsHealth)
-                                newhealth = settingsHealth;
-                            else
-                                newhealth *= -1;
-                        }
+                                await TAdvancedHealth.Database.UpdateHealthAsync(callerPlayer.Id, newHealth, EHealth.HEAD);
+                                TAdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_succcess_sethealth", targetPlayer.CharacterName, TAdvancedHealth.Instance.Localize("head"), newHealth);
+                                if (targetPlayer != callerPlayer)
+                                    TAdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_other", callerPlayer.CharacterName, TAdvancedHealth.Instance.Localize("head"), newHealth);
+                                break;
+                            }
+                        case "body":
+                            {
+                                float settingsHealth = TAdvancedHealth.Instance.Config.HealthSystemSettings.BodyHealth;
+                                if (newHealth > settingsHealth)
+                                    newHealth = settingsHealth;
+                                else if (newHealth < 0)
+                                {
+                                    if (newHealth * -1 > settingsHealth)
+                                        newHealth = settingsHealth;
+                                    else
+                                        newHealth *= -1;
+                                }
 
-                        TAdvancedHealth.Database.UpdateBodyHealth(targetPlayer.Id, newhealth);
-                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", targetPlayer.CharacterName, main.Translate(true, "body"), newhealth));
-                        UnturnedHelper.SendChatMessage(targetPlayer.SteamPlayer(), main.Translate(true, "command_sethealth_other", callerPlayer.CharacterName, main.Translate(true, "body"), newhealth));
-                    }
-                    else if (args[1].ToLower() == "rightarm")
-                    {
-                        float newhealth = Convert.ToSingle(args[2]);
-                        float settingsHealth = hsettings.RightArmHealth;
-                        if (newhealth > settingsHealth)
-                            newhealth = settingsHealth;
-                        else if (newhealth < 0)
-                        {
-                            if (newhealth * -1 > settingsHealth)
-                                newhealth = settingsHealth;
-                            else
-                                newhealth *= -1;
-                        }
+                                await TAdvancedHealth.Database.UpdateHealthAsync(callerPlayer.Id, newHealth, EHealth.BODY);
+                                TAdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_succcess_sethealth", targetPlayer.CharacterName, TAdvancedHealth.Instance.Localize("body"), newHealth);
+                                if (targetPlayer != callerPlayer)
+                                    TAdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_other", callerPlayer.CharacterName, TAdvancedHealth.Instance.Localize("body"), newHealth);
+                                break;
+                            }
+                        case "rightarm":
+                        case "rarm":
+                            {
+                                float settingsHealth = TAdvancedHealth.Instance.Config.HealthSystemSettings.RightArmHealth;
+                                if (newHealth > settingsHealth)
+                                    newHealth = settingsHealth;
+                                else if (newHealth < 0)
+                                {
+                                    if (newHealth * -1 > settingsHealth)
+                                        newHealth = settingsHealth;
+                                    else
+                                        newHealth *= -1;
+                                }
 
-                        TAdvancedHealth.Database.UpdateRightArmHealth(targetPlayer.Id, newhealth);
-                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", targetPlayer.CharacterName, main.Translate(true, "rightarm"), newhealth));
-                        UnturnedHelper.SendChatMessage(targetPlayer.SteamPlayer(), main.Translate(true, "command_sethealth_other", callerPlayer.CharacterName, main.Translate(true, "rightarm"), newhealth));
-                    }
-                    else if (args[1].ToLower() == "leftarm")
-                    {
-                        float newhealth = Convert.ToSingle(args[2]);
-                        float settingsHealth = hsettings.LeftArmHealth;
-                        if (newhealth > settingsHealth)
-                            newhealth = settingsHealth;
-                        else if (newhealth < 0)
-                        {
-                            if (newhealth * -1 > settingsHealth)
-                                newhealth = settingsHealth;
-                            else
-                                newhealth *= -1;
-                        }
+                                await TAdvancedHealth.Database.UpdateHealthAsync(callerPlayer.Id, newHealth, EHealth.RIGHT_ARM);
+                                TAdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_succcess_sethealth", targetPlayer.CharacterName, TAdvancedHealth.Instance.Localize("rightarm"), newHealth);
+                                if (targetPlayer != callerPlayer)
+                                    TAdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_other", callerPlayer.CharacterName, TAdvancedHealth.Instance.Localize("rightarm"), newHealth);
+                                break;
+                            }
+                        case "leftarm":
+                        case "larm":
+                            {
+                                float settingsHealth = TAdvancedHealth.Instance.Config.HealthSystemSettings.LeftArmHealth;
+                                if (newHealth > settingsHealth)
+                                    newHealth = settingsHealth;
+                                else if (newHealth < 0)
+                                {
+                                    if (newHealth * -1 > settingsHealth)
+                                        newHealth = settingsHealth;
+                                    else
+                                        newHealth *= -1;
+                                }
 
-                        TAdvancedHealth.Database.UpdateLeftArmHealth(targetPlayer.Id, newhealth);
-                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", targetPlayer.CharacterName, main.Translate(true, "leftarm"), newhealth));
-                        UnturnedHelper.SendChatMessage(targetPlayer.SteamPlayer(), main.Translate(true, "command_sethealth_other", callerPlayer.CharacterName, main.Translate(true, "leftarm"), newhealth));
-                    }
-                    else if (args[1].ToLower() == "leftleg")
-                    {
-                        float newhealth = Convert.ToSingle(args[2]);
-                        float settingsHealth = hsettings.LeftLegHealth;
-                        if (newhealth > settingsHealth)
-                            newhealth = settingsHealth;
-                        else if (newhealth < 0)
-                        {
-                            if (newhealth * -1 > settingsHealth)
-                                newhealth = settingsHealth;
-                            else
-                                newhealth *= -1;
-                        }
+                                await TAdvancedHealth.Database.UpdateHealthAsync(callerPlayer.Id, newHealth, EHealth.LEFT_ARM);
+                                TAdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_succcess_sethealth", targetPlayer.CharacterName, TAdvancedHealth.Instance.Localize("leftarm"), newHealth);
+                                if (targetPlayer != callerPlayer)
+                                    TAdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_other", callerPlayer.CharacterName, TAdvancedHealth.Instance.Localize("leftarm"), newHealth);
+                                break;
+                            }
+                        case "leftleg":
+                        case "lleg":
+                            {
+                                float settingsHealth = TAdvancedHealth.Instance.Config.HealthSystemSettings.LeftLegHealth;
+                                if (newHealth > settingsHealth)
+                                    newHealth = settingsHealth;
+                                else if (newHealth < 0)
+                                {
+                                    if (newHealth * -1 > settingsHealth)
+                                        newHealth = settingsHealth;
+                                    else
+                                        newHealth *= -1;
+                                }
 
-                        TAdvancedHealth.Database.UpdateLeftLegHealth(targetPlayer.Id, newhealth);
-                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", targetPlayer.CharacterName, main.Translate(true, "leftleg"), newhealth));
-                        UnturnedHelper.SendChatMessage(targetPlayer.SteamPlayer(), main.Translate(true, "command_sethealth_other", callerPlayer.CharacterName, main.Translate(true, "leftleg"), newhealth));
-                    }
-                    else if (args[1].ToLower() == "rightleg")
-                    {
-                        float newhealth = Convert.ToSingle(args[2]);
-                        float settingsHealth = hsettings.RightLegHealth;
-                        if (newhealth > settingsHealth)
-                            newhealth = settingsHealth;
-                        else if (newhealth < 0)
-                        {
-                            if (newhealth * -1 > settingsHealth)
-                                newhealth = settingsHealth;
-                            else
-                                newhealth *= -1;
-                        }
+                                await TAdvancedHealth.Database.UpdateHealthAsync(callerPlayer.Id, newHealth, EHealth.LEFT_LEG);
+                                TAdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_succcess_sethealth", targetPlayer.CharacterName, TAdvancedHealth.Instance.Localize("leftleg"), newHealth);
+                                if (targetPlayer != callerPlayer)
+                                    TAdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_other", callerPlayer.CharacterName, TAdvancedHealth.Instance.Localize("leftleg"), newHealth);
+                                break;
+                            }
+                        case "rightleg":
+                        case "rleg":
+                            {
+                                float settingsHealth = TAdvancedHealth.Instance.Config.HealthSystemSettings.RightLegHealth;
+                                if (newHealth > settingsHealth)
+                                    newHealth = settingsHealth;
+                                else if (newHealth < 0)
+                                {
+                                    if (newHealth * -1 > settingsHealth)
+                                        newHealth = settingsHealth;
+                                    else
+                                        newHealth *= -1;
+                                }
 
-                        TAdvancedHealth.Database.UpdateRightLegHealth(targetPlayer.Id, newhealth);
-                        UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), main.Translate(true, "command_succcess_sethealth", targetPlayer.CharacterName, main.Translate(true, "rightleg"), newhealth));
-                        UnturnedHelper.SendChatMessage(targetPlayer.SteamPlayer(), main.Translate(true, "command_sethealth_other", callerPlayer.CharacterName, main.Translate(true, "rightleg"), newhealth));
+                                await TAdvancedHealth.Database.UpdateHealthAsync(callerPlayer.Id, newHealth, EHealth.RIGHT_LEG);
+                                TAdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_succcess_sethealth", targetPlayer.CharacterName, TAdvancedHealth.Instance.Localize("rightleg"), newHealth);
+                                if (targetPlayer != callerPlayer)
+                                    TAdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_other", callerPlayer.CharacterName, TAdvancedHealth.Instance.Localize("rightleg"), newHealth);
+                                break;
+                            }
                     }
                 }
                 else
-                    UnturnedHelper.SendChatMessage(callerPlayer.SteamPlayer(), Syntax);
+                    UChatHelper.SendPlainChatMessage(callerPlayer.SteamPlayer(), Syntax);
             }
             catch (Exception e)
             {
-                Console.Write(e);
+                TAdvancedHealth.Logger.LogException("Error in SetHealth command:");
+                TAdvancedHealth.Logger.LogError(e);
             }
         }
     }

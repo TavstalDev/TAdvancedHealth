@@ -2,7 +2,9 @@
 using Rocket.Unturned.Player;
 using System.Collections.Generic;
 using System.Linq;
-using Tavstal.TAdvancedHealth.Compatibility;
+using Tavstal.TAdvancedHealth.Models.Config;
+using Tavstal.TLibrary.Extensions;
+using Tavstal.TLibrary.Helpers.Unturned;
 
 namespace Tavstal.TAdvancedHealth
 {
@@ -18,25 +20,23 @@ namespace Tavstal.TAdvancedHealth
         public void Execute(IRocketPlayer caller, string[] args)
         {
             UnturnedPlayer player = (UnturnedPlayer)caller;
-            var TAdvancedHealthMain = Tavstal.TAdvancedHealth.TAdvancedHealth.Instance;
-            var config = TAdvancedHealthMain.Configuration.Instance;
             if (args.Length == 1)
             {
-                Hospital h = config.HospitalSettings.hospitals.FirstOrDefault(x => x.Name.ToLower() == args[0].ToLower());
-                if (h != null)
+                Hospital hospital = TAdvancedHealth.Instance.Config.HospitalSettings.hospitals.FirstOrDefault(x => x.Name.ToLower() == args[0].ToLower());
+                if (hospital != null)
                 {
-                    h.Position.Add(new SerializableVector3(player.Position));
-                    TAdvancedHealthMain.Configuration.Save();
+                    hospital.Position.Add(new TLibrary.Compatibility.SerializableVector3(player.Position));
+                    TAdvancedHealth.Instance.Config.SaveConfig();
                 }
                 else
                 {
-                    UnturnedHelper.SendChatMessage(player.SteamPlayer(), TAdvancedHealthMain.Translate(true, "Hospital_isnot_exists"));
+                    TAdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "Hospital_isnot_exists");
                     return;
                 }
             }
             else
             {
-                UnturnedHelper.SendChatMessage(player.SteamPlayer(), Syntax);
+                UChatHelper.SendPlainChatMessage(player.SteamPlayer(), Syntax);
                 return;
             }
         }
