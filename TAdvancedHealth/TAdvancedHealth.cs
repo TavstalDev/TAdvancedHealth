@@ -8,7 +8,6 @@ using Tavstal.TAdvancedHealth.Handlers;
 using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Models.Enums;
-using Tavstal.TAdvancedHealth.Utils.Helpers;
 using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Compatibility;
 using UnityEngine;
@@ -102,13 +101,14 @@ namespace Tavstal.TAdvancedHealth
                     UnturnedEventHandler.Event_OnMoonUpdated(LightingManager.isFullMoon);
                 }
 
+                // Should be rechecked
                 foreach (SteamPlayer steamPlayer in Provider.clients)
                 {
                     UnturnedPlayer player = UnturnedPlayer.FromSteamPlayer(steamPlayer);
                     var transCon = steamPlayer.transportConnection;
                     AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
-                    HealthData healthData = HealthHelper.GetPlayerHealth(player.Id);
+                    HealthData healthData = await Database.GetPlayerHealthAsync(player.Id);
                     #region Injured
                     if (healthData.IsInjured)
                     {
@@ -117,7 +117,7 @@ namespace Tavstal.TAdvancedHealth
                         int secs = (int)(healthData.DeathDate - DateTime.Now).TotalSeconds;
                         EffectManager.sendUIEffectText((short)comp.EffectID, transCon, true, "tb_message", Localize("ui_bleeding", secs.ToString()));
                         if (healthData.DeathDate < DateTime.Now)
-                            comp.BleedOut();
+                            await comp.BleedOutAsync();
                     }
                     #endregion
 

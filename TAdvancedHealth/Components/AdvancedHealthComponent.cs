@@ -31,14 +31,14 @@ namespace Tavstal.TAdvancedHealth.Components
         public bool AllowDamage = false;
         public ushort LastEquipedItem = 0;
         public ushort EffectID = 0;
-        public List<EPlayerStates> States = new List<EPlayerStates>();
+        public List<EPlayerState> States = new List<EPlayerState>();
 
         /// <summary>
         /// Tries to add the specified player state asynchronously.
         /// </summary>
         /// <param name="state">The player state to add.</param>
         /// <returns>A task representing the asynchronous operation. True if the state was added successfully; otherwise, false.</returns>
-        public async Task TryAddStateAsync(EPlayerStates state)
+        public async Task TryAddStateAsync(EPlayerState state)
         {
             try
             {
@@ -46,12 +46,12 @@ namespace Tavstal.TAdvancedHealth.Components
                 {
                     var config = TAdvancedHealth.Instance.Config;
 
-                    if (state == EPlayerStates.NONE_TEMPERATURE)
+                    if (state == EPlayerState.NONE_TEMPERATURE)
                     {
-                        StatusIcon icon2 = HealthHelper.GetStatusIcon(EPlayerStates.WARM);
+                        StatusIcon icon2 = HealthHelper.GetStatusIcon(EPlayerState.WARM);
                         if (icon2 != null)
                         {
-                            List<StatusIcon> icons = config.HealthSystemSettings.statusIcons.FindAll(x => x.GroupIndex == icon2.GroupIndex && x.Status != state);
+                            List<StatusIcon> icons = config.HealthSystemSettings.StatusIcons.FindAll(x => x.GroupIndex == icon2.GroupIndex && x.Status != state);
                             foreach (StatusIcon ic in icons)
                             {
                                 await  TryRemoveStateAsync(ic.Status, false);
@@ -72,7 +72,7 @@ namespace Tavstal.TAdvancedHealth.Components
                         }
                         else
                         {
-                            List<StatusIcon> icons = config.HealthSystemSettings.statusIcons.FindAll(x => x.GroupIndex == icon.GroupIndex && x.Status != state);
+                            List<StatusIcon> icons = config.HealthSystemSettings.StatusIcons.FindAll(x => x.GroupIndex == icon.GroupIndex && x.Status != state);
                             foreach (StatusIcon ic in icons)
                             {
                                 await TryRemoveStateAsync(ic.Status, false);
@@ -96,7 +96,7 @@ namespace Tavstal.TAdvancedHealth.Components
         /// <param name="state">The player state to remove.</param>
         /// <param name="shouldUpdate">A boolean indicating whether to update after removing the state. Default is true.</param>
         /// <returns>A task representing the asynchronous operation. True if the state was removed successfully; otherwise, false.</returns>
-        public async Task TryRemoveStateAsync(EPlayerStates state, bool shouldUpdate = true)
+        public async Task TryRemoveStateAsync(EPlayerState state, bool shouldUpdate = true)
         {
             try
             {
@@ -128,7 +128,7 @@ namespace Tavstal.TAdvancedHealth.Components
 
                 if (States.Count - 1 >= i)
                 {
-                    EPlayerStates value = States.ElementAt(i);
+                    EPlayerState value = States.ElementAt(i);
                     StatusIcon icon = HealthHelper.GetStatusIcon(value);
 
                     EffectManager.sendUIEffectImageURL(effectID, this.Player.CSteamID, true, "Status#" + localuiname + "_img", icon.IconUrl);

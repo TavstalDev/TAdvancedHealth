@@ -6,6 +6,15 @@ namespace Tavstal.TAdvancedHealth.Models.Config
     {
         public bool EnableRespawnInHospital { get; set; }
         public bool RandomSpawn { get; set; }
-        public List<Hospital> hospitals { get; set; }
+        public List<Hospital> Hospitals { get; set; }
+
+        public HospitalSettings() { }
+
+        public HospitalSettings(bool enableRespawnInHospital, bool randomSpawn, List<Hospital> hospitals)
+        {
+            EnableRespawnInHospital = enableRespawnInHospital;
+            RandomSpawn = randomSpawn;
+            Hospitals = hospitals;
+        }
     }
 }

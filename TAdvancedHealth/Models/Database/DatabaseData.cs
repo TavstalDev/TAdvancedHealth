@@ -11,5 +11,7 @@ namespace Tavstal.TAdvancedHealth.Models.Database
         public string DatabaseTable_PlayerData { get; set; }
 
         public DatabaseData() { }
+
+
     }
 }

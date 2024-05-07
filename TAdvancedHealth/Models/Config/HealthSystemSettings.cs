@@ -139,6 +139,58 @@ namespace Tavstal.TAdvancedHealth.Models.Config
         public float ArmRegenTicks { get; set; }
         public float BodyRegenTicks { get; set; }
         public float HeadRegenTicks { get; set; }
-        public List<StatusIcon> statusIcons { get; set; }
+        public List<StatusIcon> StatusIcons { get; set; }
+
+        public HealthSystemSettings() { }
+
+        public HealthSystemSettings(ushort painEffectID, bool enableTarkovLikeHealth, float baseHealth, float headHealth, float bodyHealth, float rightArmHealth, float rightLegHealth, float leftArmHealth, float leftLegHealth, float defaultWalkSpeed, float walkSpeedWithOneBrokenLeg, float walkSpeedWithBrokenLegs, bool dieWhenArmsHealthIsZero, bool dieWhenLegsHealthIsZero, bool dieWhenBodyHealthIsZero, bool dieWhenHeadHealthIsZero, bool canDriveWithOneBrokenLeg, bool canDriveWithBrokenLegs, bool canDriveWithOneBrokenArm, bool canDriveWithBrokenArms, bool canHoldOneHandItemsWithOneBrokenArm, bool canHoldTwoHandItemsWithOneBrokenArm, bool canHoldOneHandItemsWithBrokenArms, bool canHoldTwoHandItemsWithBrokenArms, bool canJumpWithOneBrokenLeg, bool canJumpWithBrokenLegs, bool canStartBleeding, float heavyBleedingChance, float bleedingDamage, float heavyBleedingDamage, bool canWalkWithOneBrokenLeg, bool canWalkWithBrokenLegs, bool canBeInjured, double injuredDeathTimeSecs, float healthRegenMinFood, float healthRegenMinWater, float healthRegenMinVirus, bool canHavePainEffect, float painEffectChance, float painEffectDuration, float injuredChance, float legRegenTicks, float armRegenTicks, float bodyRegenTicks, float headRegenTicks, List<StatusIcon> statusIcons)
+        {
+            PainEffectID = painEffectID;
+            EnableTarkovLikeHealth = enableTarkovLikeHealth;
+            BaseHealth = baseHealth;
+            _headHealth = headHealth;
+            _bodyHealth = bodyHealth;
+            _rightArmHealth = rightArmHealth;
+            _rightLegHealth = rightLegHealth;
+            _leftArmHealth = leftArmHealth;
+            _leftLegHealth = leftLegHealth;
+            DefaultWalkSpeed = defaultWalkSpeed;
+            WalkSpeedWithOneBrokenLeg = walkSpeedWithOneBrokenLeg;
+            WalkSpeedWithBrokenLegs = walkSpeedWithBrokenLegs;
+            DieWhenArmsHealthIsZero = dieWhenArmsHealthIsZero;
+            DieWhenLegsHealthIsZero = dieWhenLegsHealthIsZero;
+            DieWhenBodyHealthIsZero = dieWhenBodyHealthIsZero;
+            DieWhenHeadHealthIsZero = dieWhenHeadHealthIsZero;
+            CanDriveWithOneBrokenLeg = canDriveWithOneBrokenLeg;
+            CanDriveWithBrokenLegs = canDriveWithBrokenLegs;
+            CanDriveWithOneBrokenArm = canDriveWithOneBrokenArm;
+            CanDriveWithBrokenArms = canDriveWithBrokenArms;
+            CanHoldOneHandItemsWithOneBrokenArm = canHoldOneHandItemsWithOneBrokenArm;
+            CanHoldTwoHandItemsWithOneBrokenArm = canHoldTwoHandItemsWithOneBrokenArm;
+            CanHoldOneHandItemsWithBrokenArms = canHoldOneHandItemsWithBrokenArms;
+            CanHoldTwoHandItemsWithBrokenArms = canHoldTwoHandItemsWithBrokenArms;
+            CanJumpWithOneBrokenLeg = canJumpWithOneBrokenLeg;
+            CanJumpWithBrokenLegs = canJumpWithBrokenLegs;
+            CanStartBleeding = canStartBleeding;
+            HeavyBleedingChance = heavyBleedingChance;
+            BleedingDamage = bleedingDamage;
+            HeavyBleedingDamage = heavyBleedingDamage;
+            CanWalkWithOneBrokenLeg = canWalkWithOneBrokenLeg;
+            CanWalkWithBrokenLegs = canWalkWithBrokenLegs;
+            CanBeInjured = canBeInjured;
+            InjuredDeathTimeSecs = injuredDeathTimeSecs;
+            HealthRegenMinFood = healthRegenMinFood;
+            HealthRegenMinWater = healthRegenMinWater;
+            HealthRegenMinVirus = healthRegenMinVirus;
+            CanHavePainEffect = canHavePainEffect;
+            PainEffectChance = painEffectChance;
+            PainEffectDuration = painEffectDuration;
+            InjuredChance = injuredChance;
+            LegRegenTicks = legRegenTicks;
+            ArmRegenTicks = armRegenTicks;
+            BodyRegenTicks = bodyRegenTicks;
+            HeadRegenTicks = headRegenTicks;
+            StatusIcons = statusIcons;
+        }
     }
 }

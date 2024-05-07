@@ -54,7 +54,7 @@ namespace Tavstal.TAdvancedHealth.Harmony
                     int chance = MathHelper.Next(1, 100);
                     if (chance != 0 && chance <= defibrillator.ReviveChance)
                     {
-                        targetComp.ReviveAsync();
+                        await targetComp.ReviveAsync();
                         TAdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "success_defiblirator_revive", targetPlayer.CharacterName);
                         TAdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "success_defiblirator_revive_other", userPlayer.CharacterName);
                     }

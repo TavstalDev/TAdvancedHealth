@@ -104,9 +104,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
         /// </summary>
         /// <param name="state">The player state for which to retrieve the status icon.</param>
         /// <returns>The status icon corresponding to the specified player state.</returns>
-        public static StatusIcon GetStatusIcon(EPlayerStates state)
+        public static StatusIcon GetStatusIcon(EPlayerState state)
         {
-            return _config.HealthSystemSettings.statusIcons.Find(x => x.Status == state);
+            return _config.HealthSystemSettings.StatusIcons.Find(x => x.Status == state);
         }
     }
 }

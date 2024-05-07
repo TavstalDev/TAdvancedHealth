@@ -8,6 +8,7 @@ using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Database;
@@ -15,6 +16,7 @@ using Tavstal.TAdvancedHealth.Models.Enums;
 using Tavstal.TAdvancedHealth.Utils.Helpers;
 using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Helpers.General;
+using Tavstal.TLibrary.Helpers.Unturned;
 using UnityEngine;
 
 namespace Tavstal.TAdvancedHealth.Handlers
@@ -92,7 +94,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
 
@@ -106,20 +108,19 @@ namespace Tavstal.TAdvancedHealth.Handlers
             string voidname = "OnPlayerFoodUpdate";
             try
             {
-                var c = _config.HealthSystemSettings;
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
                 await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Food, player.Player.life.food, (int)comp.progressBarData.LastFood);
                 comp.progressBarData.LastFood = value;
 
                 if (value <= 0)
-                    comp.TryAddStateAsync(EPlayerStates.NOFOOD);
+                   await comp.TryAddStateAsync(EPlayerState.NOFOOD);
                 else
-                    comp.TryRemoveStateAsync(EPlayerStates.NOFOOD);
+                   await comp.TryRemoveStateAsync(EPlayerState.NOFOOD);
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
 
@@ -139,7 +140,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
 
@@ -153,20 +154,19 @@ namespace Tavstal.TAdvancedHealth.Handlers
             string voidname = "OnPlayerWaterUpdate";
             try
             {
-                var c = _config.HealthSystemSettings;
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
                 await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Water, player.Player.life.water, (int)comp.progressBarData.LastWater);
                 comp.progressBarData.LastWater = value;
 
                 if (value <= 0)
-                    comp.TryAddStateAsync(EPlayerStates.NOWATER);
+                   await comp.TryAddStateAsync(EPlayerState.NOWATER);
                 else
-                    comp.TryRemoveStateAsync(EPlayerStates.NOWATER);
+                   await comp.TryRemoveStateAsync(EPlayerState.NOWATER);
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
 
@@ -180,20 +180,19 @@ namespace Tavstal.TAdvancedHealth.Handlers
             string voidname = "OnPlayerVirusUpdate";
             try
             {
-                var c = _config.HealthSystemSettings;
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
                 await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Radiation, player.Player.life.virus, (int)comp.progressBarData.LastVirus);
                 comp.progressBarData.LastVirus = value;
 
                 if (value <= 0)
-                    comp.TryAddStateAsync(EPlayerStates.NOVIRUS);
+                   await comp.TryAddStateAsync(EPlayerState.NOVIRUS);
                 else
-                    comp.TryRemoveStateAsync(EPlayerStates.NOVIRUS);
+                   await comp.TryRemoveStateAsync(EPlayerState.NOVIRUS);
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
 
@@ -207,19 +206,18 @@ namespace Tavstal.TAdvancedHealth.Handlers
             string voidname = "OnPlayerOxygenUpdate";
             try
             {
-                var c = _config.HealthSystemSettings;
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Oxygen, player.Player.life.oxygen, (int)comp.progressBarData.LastOxygen);
                 comp.progressBarData.LastOxygen = value;
 
                 if (value <= 0)
-                    comp.TryAddStateAsync(EPlayerStates.NOOXYGEN);
+                   await comp.TryAddStateAsync(EPlayerState.NOOXYGEN);
                 else
-                    comp.TryRemoveStateAsync(EPlayerStates.NOOXYGEN);
+                   await comp.TryRemoveStateAsync(EPlayerState.NOOXYGEN);
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
 
@@ -228,38 +226,35 @@ namespace Tavstal.TAdvancedHealth.Handlers
         /// </summary>
         /// <param name="player">The Unturned player whose bleeding state is being updated.</param>
         /// <param name="state">A boolean indicating whether the player is bleeding.</param>
-        private static void Event_OnPlayerBleedingUpdate(UnturnedPlayer player, bool state)
+        private static async void Event_OnPlayerBleedingUpdate(UnturnedPlayer player, bool state)
         {
             string voidname = "OnPlayerBleedingUpdate";
             try
             {
-                var c = _config.HealthSystemSettings;
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 if (state)
                 {
-                    if (!c.CanStartBleeding && state)
+                    if (!_config.HealthSystemSettings.CanStartBleeding && state)
                     {
                         player.Bleeding = false;
                         return;
                     }
 
-                    int val = MathHelper.Next(1, 100);
-
-                    if (val <= c.HeavyBleedingChance)
+                    if (MathHelper.Next(1, 100) <= _config.HealthSystemSettings.HeavyBleedingChance)
                         comp.hasHeavyBleeding = true;
 
-                    comp.TryAddStateAsync(EPlayerStates.BLEEDING);
+                    await comp.TryAddStateAsync(EPlayerState.BLEEDING);
                 }
                 else
                 {
                     comp.hasHeavyBleeding = false;
-                    comp.TryRemoveStateAsync(EPlayerStates.BLEEDING);
+                    await comp.TryRemoveStateAsync(EPlayerState.BLEEDING);
                 }
 
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
 
@@ -273,48 +268,43 @@ namespace Tavstal.TAdvancedHealth.Handlers
             string voidname = "OnPlayerBrokenUpdate";
             try
             {
-                var c = _config.HealthSystemSettings;
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 HealthData health = await _database.GetPlayerHealthAsync(player.Id);
                 if (state)
                 {
-                    if (c.CanHavePainEffect)
+                    if (_config.HealthSystemSettings.CanHavePainEffect)
                     {
                         int painChance = MathHelper.Next(1, 100);
 
-                        if (painChance <= c.PainEffectChance)
+                        if (painChance <= _config.HealthSystemSettings.PainEffectChance)
                         {
-                            EffectManager.sendUIEffect(c.PainEffectID, (short)c.PainEffectID, comp.TranspConnection, true);
-                            if (c.PainEffectDuration > 0)
-                                TAdvancedHealth.Instance.InvokeAction(c.PainEffectDuration, () => { SDG.Unturned.EffectManager.askEffectClearByID(c.PainEffectID, player.SteamPlayer().transportConnection); });
+                            EffectManager.sendUIEffect(_config.HealthSystemSettings.PainEffectID, (short)_config.HealthSystemSettings.PainEffectID, comp.TranspConnection, true);
+                            if (_config.HealthSystemSettings.PainEffectDuration > 0)
+                                TAdvancedHealth.Instance.InvokeAction(_config.HealthSystemSettings.PainEffectDuration, () => { EffectManager.askEffectClearByID(_config.HealthSystemSettings.PainEffectID, player.SteamPlayer().transportConnection); });
 
                         }
                     }
 
                     if (health.LeftLegHealth == 0 && health.RightLegHealth == 0)
                     {
-                        if (!c.CanWalkWithBrokenLegs)
-                        {
+                        if (!_config.HealthSystemSettings.CanWalkWithBrokenLegs)
                             player.Player.stance.checkStance(EPlayerStance.PRONE, true);
-                        }
                     }
                     else if (health.LeftLegHealth == 0 || health.RightLegHealth == 0)
                     {
-                        if (!c.CanWalkWithOneBrokenLeg)
-                        {
+                        if (!_config.HealthSystemSettings.CanWalkWithOneBrokenLeg)
                             player.Player.stance.checkStance(EPlayerStance.PRONE, true);
-                        }
                     }
 
-                    comp.TryAddStateAsync(EPlayerStates.BROKENBONE);
+                    await comp.TryAddStateAsync(EPlayerState.BROKENBONE);
                 }
                 else
-                    comp.TryRemoveStateAsync(EPlayerStates.BROKENBONE);
+                   await comp.TryRemoveStateAsync(EPlayerState.BROKENBONE);
 
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
 
@@ -322,7 +312,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
         /// Event handler for updates to the moon state.
         /// </summary>
         /// <param name="isFullMoon">A boolean indicating whether the moon is in a full state.</param>
-        internal static void Event_OnMoonUpdated(bool isFullMoon)
+        internal static async void Event_OnMoonUpdated(bool isFullMoon)
         {
             string voidname = "OnMoonUpdated";
             try
@@ -333,15 +323,15 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
                     if (isFullMoon)
-                        comp.TryAddStateAsync(EPlayerStates.FULLMOON);
+                       await comp.TryAddStateAsync(EPlayerState.FULLMOON);
                     else
-                        comp.TryRemoveStateAsync(EPlayerStates.FULLMOON);
+                       await comp.TryRemoveStateAsync(EPlayerState.FULLMOON);
                 }
 
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
 
@@ -350,21 +340,21 @@ namespace Tavstal.TAdvancedHealth.Handlers
         /// </summary>
         /// <param name="player">The Unturned player whose deadzone status is being updated.</param>
         /// <param name="isActive">A boolean indicating whether the player is currently in a deadzone.</param>
-        private static void Event_OnPlayerDeadzoneUpdated(UnturnedPlayer player, bool isActive)
+        private static async void Event_OnPlayerDeadzoneUpdated(UnturnedPlayer player, bool isActive)
         {
             string voidname = "OnPlayerDeadzoneUpdated";
             try
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 if (isActive)
-                    comp.TryAddStateAsync(EPlayerStates.DEADZONE);
+                   await comp.TryAddStateAsync(EPlayerState.DEADZONE);
                 else
-                    comp.TryRemoveStateAsync(EPlayerStates.DEADZONE);
+                   await comp.TryRemoveStateAsync(EPlayerState.DEADZONE);
 
             }
             catch (Exception e)
             {
-               TAdvancedHealth.Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+               TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
 
@@ -373,21 +363,21 @@ namespace Tavstal.TAdvancedHealth.Handlers
         /// </summary>
         /// <param name="player">The Unturned player whose safezone status is being updated.</param>
         /// <param name="isActive">A boolean indicating whether the player is currently in a safezone.</param>
-        private static void Event_OnPlayerSafezoneUpdated(UnturnedPlayer player, bool isActive)
+        private static async void Event_OnPlayerSafezoneUpdated(UnturnedPlayer player, bool isActive)
         {
             string voidname = "OnPlayerSafezoneUpdated";
             try
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 if (isActive)
-                    comp.TryAddStateAsync(EPlayerStates.SAFEZONE);
+                    await comp.TryAddStateAsync(EPlayerState.SAFEZONE);
                 else
-                    comp.TryRemoveStateAsync(EPlayerStates.SAFEZONE);
+                   await comp.TryRemoveStateAsync(EPlayerState.SAFEZONE);
 
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
 
@@ -396,36 +386,36 @@ namespace Tavstal.TAdvancedHealth.Handlers
         /// </summary>
         /// <param name="player">The Unturned player whose temperature is being updated.</param>
         /// <param name="newTemperature">The new temperature state of the player.</param>
-        private static void Event_OnPlayerTemperatureUpdate(UnturnedPlayer player, EPlayerTemperature newTemperature)
+        private static async void Event_OnPlayerTemperatureUpdate(UnturnedPlayer player, EPlayerTemperature newTemperature)
         {
             string voidname = "OnPlayerTemperatureUpdate";
             try
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
-                EPlayerStates state = EPlayerStates.ACID;
+                EPlayerState state = EPlayerState.ACID;
 
                 if (newTemperature == EPlayerTemperature.ACID)
-                    state = EPlayerStates.ACID;
+                    state = EPlayerState.ACID;
                 else if (newTemperature == EPlayerTemperature.BURNING)
-                    state = EPlayerStates.BURNING;
+                    state = EPlayerState.BURNING;
                 else if (newTemperature == EPlayerTemperature.COLD)
-                    state = EPlayerStates.COLD;
+                    state = EPlayerState.COLD;
                 else if (newTemperature == EPlayerTemperature.COVERED)
-                    state = EPlayerStates.COVERED;
+                    state = EPlayerState.COVERED;
                 else if (newTemperature == EPlayerTemperature.FREEZING)
-                    state = EPlayerStates.FREEZING;
+                    state = EPlayerState.FREEZING;
                 else if (newTemperature == EPlayerTemperature.WARM)
-                    state = EPlayerStates.WARM;
+                    state = EPlayerState.WARM;
                 else if (newTemperature == EPlayerTemperature.NONE)
-                    state = EPlayerStates.NONE_TEMPERATURE;
+                    state = EPlayerState.NONE_TEMPERATURE;
 
-                comp.TryAddStateAsync(state);
+                await comp.TryAddStateAsync(state);
 
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
 
@@ -436,299 +426,40 @@ namespace Tavstal.TAdvancedHealth.Handlers
         /// <param name="stance">The new stance value of the player.</param>
         private static async void Event_OnPlayerStanceUpdate(UnturnedPlayer player, byte stance)
         {
-            HealthData health = await _database.GetPlayerHealthAsync(player.Id);
-            if (health.IsInjured)
-                player.Player.stance.checkStance(EPlayerStance.PRONE, true);
-            else
+            string voidname = "OnPlayerStanceUpdate";
+            try
             {
-                var c = _config.HealthSystemSettings;
-                if (health.LeftLegHealth == 0 || health.RightLegHealth == 0)
+                HealthData health = await _database.GetPlayerHealthAsync(player.Id);
+                if (health.IsInjured)
+                    player.Player.stance.checkStance(EPlayerStance.PRONE, true);
+                else
                 {
-                    if (!c.CanWalkWithOneBrokenLeg)
-                        player.Player.stance.checkStance(EPlayerStance.PRONE, true);
-                    else if (!c.CanWalkWithBrokenLegs && health.LeftLegHealth == 0 && health.RightLegHealth == 0)
-                        player.Player.stance.checkStance(EPlayerStance.PRONE, true);
+                    if (health.LeftLegHealth == 0 || health.RightLegHealth == 0)
+                    {
+                        if (!_config.HealthSystemSettings.CanWalkWithOneBrokenLeg)
+                            player.Player.stance.checkStance(EPlayerStance.PRONE, true);
+                        else if (!_config.HealthSystemSettings.CanWalkWithBrokenLegs && health.LeftLegHealth == 0 && health.RightLegHealth == 0)
+                            player.Player.stance.checkStance(EPlayerStance.PRONE, true);
+                    }
                 }
+            }
+            catch (Exception e)
+            {
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
         #endregion
-
-        // Other Events
-
-        private static async void Event_OnPlayerUseMedicine(Player instigatingPlayer, ItemConsumeableAsset consumeableAsset)
-        {
-            string voidname = "UseMedicine";
-            try
-            {
-                UnturnedPlayer player = UnturnedPlayer.FromPlayer(instigatingPlayer);
-
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                var c = _config.HealthSystemSettings;
-                if (comp.LastEquipedItem == 0) { return; }
-
-                if (_config.Medicines != null)
-                {
-                    Medicine med = _config.Medicines.FirstOrDefault(x => x.ItemID == comp.LastEquipedItem);
-                    if (med != null)
-                    {
-                        HealthData health = await _database.GetPlayerHealthAsync(player.Id);
-                        if (health.BodyHealth + med.HealsBodyHP <= c.BodyHealth)
-                            health.BodyHealth += med.HealsBodyHP;
-                        else
-                            health.BodyHealth = c.BodyHealth;
-
-                        if (health.HeadHealth + med.HealsHeadHP <= c.HeadHealth)
-                            health.HeadHealth += med.HealsHeadHP;
-                        else
-                            health.HeadHealth = c.HeadHealth;
-
-                        if (med.CuresPain)
-                            EffectManager.askEffectClearByID(c.PainEffectID, player.SteamPlayer().transportConnection);
-
-                        if (health.LeftLegHealth + med.HealsLeftLegHP <= c.LeftLegHealth)
-                        {
-                            health.LeftLegHealth += med.HealsLeftLegHP;
-                            TAdvancedHealth.Instance.InvokeAction(0.5f, () =>
-                            {
-                                player.Broken = false;
-                                player.Player.movement.sendPluginJumpMultiplier(1f);
-                            });
-                        }
-                        else
-                        {
-                            health.LeftLegHealth = c.LeftLegHealth;
-                            TAdvancedHealth.Instance.StartCoroutine(TAdvancedHealth.Instance.DelayedInvoke(0.5f, () =>
-                            {
-                                player.Broken = false;
-                                player.Player.movement.sendPluginJumpMultiplier(1f);
-                            }));
-                        }
-
-                        if (health.RightLegHealth + med.HealsRightLegHP <= c.RightLegHealth)
-                        {
-                            health.RightLegHealth += med.HealsRightLegHP;
-                            TAdvancedHealth.Instance.StartCoroutine(TAdvancedHealth.Instance.DelayedInvoke(0.5f, () =>
-                            {
-                                player.Broken = false;
-                                player.Player.movement.sendPluginJumpMultiplier(1f);
-                            }));
-                        }
-                        else
-                        {
-                            health.RightLegHealth = c.RightLegHealth;
-                            TAdvancedHealth.Instance.StartCoroutine(TAdvancedHealth.Instance.DelayedInvoke(0.5f, () =>
-                            {
-                                player.Broken = false;
-                                player.Player.movement.sendPluginJumpMultiplier(1f);
-                            }));
-                        }
-
-                        if (health.LeftArmHealth + med.HealsLeftArmHP <= c.LeftArmHealth)
-                            health.LeftArmHealth += med.HealsLeftArmHP;
-                        else
-                            health.LeftArmHealth = c.LeftArmHealth;
-
-                        if (health.RightArmHealth + med.HealsRightArmHP <= c.RightArmHealth)
-                            health.RightArmHealth += med.HealsRightArmHP;
-                        else
-                            health.RightArmHealth = c.RightArmHealth;
-
-                        _database.UpdateHealthAsync(player.Id, health, EDatabaseEvent.ALL);
-                    }
-                    comp.LastEquipedItem = 0;
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
-            }
-        }
-
-        private static void Event_OnPlayerVehicleEnterRequested(Player p, InteractableVehicle vehicle, ref bool shouldAllow)
-        {
-            string voidname = "VehicleEnter";
-            try
-            {
-                UnturnedPlayer player = UnturnedPlayer.FromPlayer(p);
-                var c = _config.HealthSystemSettings;
-                HealthData health = _database.GetPlayerHealth(player.Id);
-                if (vehicle.passengers[0].player == null)
-                {
-                    if (health.LeftLegHealth == 0 && health.RightLegHealth == 0 || player.Broken)
-                    {
-                        if (!c.CanDriveWithBrokenLegs)
-                            shouldAllow = false;
-                    }
-                    else if (health.LeftLegHealth == 0 || health.RightLegHealth == 0)
-                        if (!c.CanDriveWithOneBrokenLeg)
-                            shouldAllow = false;
-
-                    if (health.LeftArmHealth == 0 && health.RightArmHealth == 0 || player.Broken)
-                    {
-                        if (!c.CanDriveWithBrokenArms)
-                            shouldAllow = false;
-                    }
-                    else if (health.LeftArmHealth == 0 || health.RightArmHealth == 0)
-                        if (!c.CanDriveWithOneBrokenLeg)
-                            shouldAllow = false;
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
-            }
-        }
-
-        private static void Event_OnPlayerSwapSeatRequested(Player p, InteractableVehicle vehicle, ref bool shouldAllow, byte fromSeatIndex, ref byte toSeatIndex)
-        {
-            string voidname = "SwapSeat";
-            try
-            {
-                UnturnedPlayer player = UnturnedPlayer.FromPlayer(p);
-                var c = _config.HealthSystemSettings;
-                HealthData h = _database.GetPlayerHealth(player.Id);
-                if (h.LeftLegHealth == 0 && h.RightLegHealth == 0 || player.Broken)
-                {
-                    if (toSeatIndex == 0 && !c.CanDriveWithBrokenLegs)
-                        shouldAllow = false;
-                }
-                else if (h.LeftLegHealth == 0 || h.RightLegHealth == 0)
-                    if (toSeatIndex == 0 && !c.CanDriveWithOneBrokenLeg)
-                        shouldAllow = false;
-
-
-                if (h.LeftArmHealth == 0 && h.RightArmHealth == 0 || player.Broken)
-                {
-                    if (!c.CanDriveWithBrokenArms && toSeatIndex == 0)
-                        shouldAllow = false;
-                }
-                else if (h.LeftArmHealth == 0 || h.RightArmHealth == 0)
-                    if (!c.CanDriveWithOneBrokenLeg && toSeatIndex == 0)
-                        shouldAllow = false;
-            }
-            catch (Exception e)
-            {
-                Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
-            }
-        }
-
-        private static void Event_OnPlayerJoin(UnturnedPlayer player)
-        {
-            string voidname = "Join";
-            try
-            {
-                HealthData health = _database.GetPlayerHealth(player.Id);
-                if (health == null)
-                {
-                    var c = _config;
-                    var s = c.HealthSystemSettings;
-                    HUDStyle style = _config.HUDStyles.FirstOrDefault(x => x.Enabled);
-                    _database.AddHealthDataAsync(player.Id, new HealthData { PlayerId = player.Id, HUDEffectID = style.EffectID, BaseHealth = s.BaseHealth, BodyHealth = s.BodyHealth, HeadHealth = s.HeadHealth, LeftArmHealth = s.LeftArmHealth, LeftLegHealth = s.LeftLegHealth, RightArmHealth = s.RightArmHealth, RightLegHealth = s.RightLegHealth, IsInjured = false, IsHUDEnabled = true, DeathDate = DateTime.Now });
-                    health = _database.GetPlayerHealth(player.Id);
-                }
-                else
-                {
-                    var c = _config;
-                    var s = c.HealthSystemSettings;
-                    if (health.BaseHealth > s.BaseHealth)
-                        health.BaseHealth = s.BaseHealth;
-                    if (s.EnableTarkovLikeHealth)
-                    {
-                        if (health.HeadHealth > s.HeadHealth)
-                            health.HeadHealth = s.HeadHealth;
-                        if (health.BodyHealth > s.BodyHealth)
-                            health.BodyHealth = s.BodyHealth;
-                        if (health.RightArmHealth > s.RightArmHealth)
-                            health.RightArmHealth = s.RightArmHealth;
-                        if (health.LeftArmHealth > s.LeftArmHealth)
-                            health.LeftArmHealth = s.LeftArmHealth;
-                        if (health.RightLegHealth > s.RightLegHealth)
-                            health.RightLegHealth = s.RightLegHealth;
-                        if (health.LeftLegHealth > s.LeftLegHealth)
-                            health.LeftLegHealth = s.LeftLegHealth;
-                        _database.UpdateHealthAsync(player.Id, health, EDatabaseEvent.ALL);
-                    }
-                }
-
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                comp.EffectID = health.HUDEffectID;
-                comp.progressBarData.LastHealthHead = health.HeadHealth;
-                comp.progressBarData.LastHealthBody = health.BodyHealth;
-                comp.progressBarData.LastHealthLeftArm = health.LeftArmHealth;
-                comp.progressBarData.LastHealthLeftLeg = health.LeftLegHealth;
-                comp.progressBarData.LastHealthRightArm = health.RightArmHealth;
-                comp.progressBarData.LastHealthRightLeg = health.RightLegHealth;
-                comp.progressBarData.LastFood = player.Player.life.food;
-                comp.progressBarData.LastWater = player.Player.life.water;
-                comp.progressBarData.LastVirus = player.Player.life.virus;
-                comp.progressBarData.LastOxygen = player.Player.life.oxygen;
-                comp.progressBarData.LastStamina = player.Player.life.stamina;
-
-                Event_OnPlayerFoodUpdate(player, player.Player.life.food);
-                Event_OnPlayerWaterUpdate(player, player.Player.life.water);
-                Event_OnPlayerVirusUpdate(player, player.Player.life.virus);
-                Event_OnPlayerOxygenUpdate(player, player.Player.life.oxygen);
-                Event_OnPlayerStaminaUpdate(player, player.Player.life.stamina);
-                Event_OnPlayerBleedingUpdate(player, player.Bleeding);
-                Event_OnPlayerBrokenUpdate(player, player.Broken);
-                Event_OnPlayerSafezoneUpdated(player, player.Player.movement.isSafe);
-                Event_OnPlayerDeadzoneUpdated(player, player.Player.movement.isRadiated);
-                Event_OnPlayerTemperatureUpdate(player, player.Player.life.temperature);
-
-                if (TAdvancedHealth.Instance._hasFullMoon)
-                    comp.TryAddStateAsync(EPlayerStates.FULLMOON);
-
-                player.Player.equipment.onEquipRequested += Event_OnPlayerEquipRequested;
-                player.Player.equipment.onDequipRequested += Event_OnPlayerDequipRequested;
-                player.Player.life.onHurt += Event_OnPlayerLifeDamaged;
-                player.Player.life.onOxygenUpdated += (byte b) => Event_OnPlayerOxygenUpdate(player, b);
-                player.Player.life.onTemperatureUpdated += (EPlayerTemperature newTemperature) => Event_OnPlayerTemperatureUpdate(player, newTemperature);
-                player.Player.movement.onSafetyUpdated += (bool isSafe) => Event_OnPlayerSafezoneUpdated(player, isSafe);
-                player.Player.movement.onRadiationUpdated += (bool isRadio) => Event_OnPlayerDeadzoneUpdated(player, isRadio);
-                player.Player.life.onVirusUpdated += (byte virus) => Event_OnPlayerVirusUpdate(player, virus);
-                #region HideHealth HUD
-                if (health.IsHUDEnabled)
-                {
-                    EffectManager.sendUIEffect(comp.EffectID, (short)comp.EffectID, comp.TranspConnection, true);
-                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowFood, false);
-                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowHealth, false);
-                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowOxygen, false);
-                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStamina, false);
-                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowVirus, false);
-                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowWater, false);
-                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStatusIcons, false);
-                    HealthHelper.UpdateHealthAllUI(player);
-                }
-                #endregion
-            }
-            catch (Exception e)
-            {
-                Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
-            }
-        }
-
-        private static void Event_OnPlayerLeave(UnturnedPlayer player)
-        {
-            string voidname = "Leave";
-            try
-            {
-                player.Player.equipment.onEquipRequested -= Event_OnPlayerEquipRequested;
-                player.Player.equipment.onDequipRequested -= Event_OnPlayerDequipRequested;
-                player.Player.life.onHurt -= Event_OnPlayerLifeDamaged;
-
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                if (comp.DragState != EDragState.NONE)
-                    comp.UnDrag();
-            }
-            catch (Exception e)
-            {
-                Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
-            }
-        }
-
+        #region Item Events
+        /// <summary>
+        /// Event handler for when a player requests to equip an item.
+        /// </summary>
+        /// <param name="equipment">The player's equipment manager.</param>
+        /// <param name="jar">The item jar containing the item being equipped.</param>
+        /// <param name="asset">The asset of the item being equipped.</param>
+        /// <param name="shouldAllow">A reference boolean indicating whether the player should be allowed to equip the item.</param>
         private static void Event_OnPlayerEquipRequested(PlayerEquipment equipment, ItemJar jar, ItemAsset asset, ref bool shouldAllow)
         {
-            string voidname = "Equip";
+            string voidname = "OnPlayerEquipRequested";
             try
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(equipment.player);
@@ -740,56 +471,60 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     isMedicine = true;
                 }
 
-                var c = _config.HealthSystemSettings;
-                HealthData h = _database.GetPlayerHealth(player.Id);
-                if (h.RightArmHealth == 0 && h.LeftArmHealth == 0)
+                HealthData healthData = _database.GetPlayerHealth(player.Id);
+                if (healthData.RightArmHealth == 0 && healthData.LeftArmHealth == 0)
                 {
                     if (!isMedicine)
                     {
-                        if (!c.CanHoldOneHandItemsWithBrokenArms)
+                        if (!_config.HealthSystemSettings.CanHoldOneHandItemsWithBrokenArms)
                             if (_config.OneHandedItems.ItemID.Contains(jar.item.id) || _config.OneHandedItems.ItemTypes.Contains(asset.type))
                             {
                                 shouldAllow = false;
-                                if (player.Player.equipment.isEquipped)
+                                if (player.Player.equipment.itemID != 0)
                                     player.Player.equipment.dequip();
                             }
-                        if (!c.CanHoldTwoHandItemsWithBrokenArms)
+                        if (!_config.HealthSystemSettings.CanHoldTwoHandItemsWithBrokenArms)
                             if (_config.TwoHandedItems.ItemID.Contains(jar.item.id) || _config.TwoHandedItems.ItemTypes.Contains(asset.type))
                             {
                                 shouldAllow = false;
-                                if (player.Player.equipment.isEquipped)
+                                if (player.Player.equipment.itemID != 0)
                                     player.Player.equipment.dequip();
                             }
                     }
                 }
-                else if (h.RightArmHealth == 0 || h.LeftArmHealth == 0)
+                else if (healthData.RightArmHealth == 0 || healthData.LeftArmHealth == 0)
                     if (!isMedicine)
                     {
-                        if (!c.CanHoldOneHandItemsWithOneBrokenArm)
+                        if (!_config.HealthSystemSettings.CanHoldOneHandItemsWithOneBrokenArm)
                             if (_config.OneHandedItems.ItemID.Contains(jar.item.id) || _config.OneHandedItems.ItemTypes.Contains(asset.type))
                             {
                                 shouldAllow = false;
-                                if (player.Player.equipment.isEquipped)
+                                if (player.Player.equipment.itemID != 0)
                                     player.Player.equipment.dequip();
                             }
-                        if (!c.CanHoldTwoHandItemsWithOneBrokenArm)
+                        if (!_config.HealthSystemSettings.CanHoldTwoHandItemsWithOneBrokenArm)
                             if (_config.TwoHandedItems.ItemID.Contains(jar.item.id) || _config.TwoHandedItems.ItemTypes.Contains(asset.type))
                             {
                                 shouldAllow = false;
-                                if (player.Player.equipment.isEquipped)
+                                if (player.Player.equipment.itemID != 0)
                                     player.Player.equipment.dequip();
                             }
                     }
             }
             catch (Exception e)
             {
-                Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
 
+        /// <summary>
+        /// Event handler for when a player requests to dequip an item.
+        /// </summary>
+        /// <param name="equipment">The player's equipment manager.</param>
+        /// <param name="shouldAllow">A reference boolean indicating whether the player should be allowed to dequip the item.</param>
         private static void Event_OnPlayerDequipRequested(PlayerEquipment equipment, ref bool shouldAllow)
         {
-            string voidname = "Dequip";
+            string voidname = "OnPlayerDequipRequested";
             try
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(equipment.player);
@@ -798,23 +533,669 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
 
-        private static void Event_OnPlayerLifeDamaged(Player p, byte damage, Vector3 force, EDeathCause cause, ELimb limb, CSteamID killer)
+        /// <summary>
+        /// Event handler for when a player uses medicine.
+        /// </summary>
+        /// <param name="instigatingPlayer">The player who initiated the use of medicine.</param>
+        /// <param name="consumeableAsset">The consumable asset representing the medicine being used.</param>
+        private static async void Event_OnPlayerUseMedicine(Player instigatingPlayer, ItemConsumeableAsset consumeableAsset)
         {
-            string voidname = "PlayerLifeDamage";
+            string voidname = "OnPlayerUseMedicine";
+            try
+            {
+                UnturnedPlayer player = UnturnedPlayer.FromPlayer(instigatingPlayer);
+
+                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                if (comp.LastEquipedItem == 0) { return; }
+
+                if (_config.Medicines != null)
+                {
+                    Medicine med = _config.Medicines.FirstOrDefault(x => x.ItemID == comp.LastEquipedItem);
+                    if (med != null)
+                    {
+                        HealthData health = await _database.GetPlayerHealthAsync(player.Id);
+                        if (health.BodyHealth + med.HealsBodyHP <= _config.HealthSystemSettings.BodyHealth)
+                            health.BodyHealth += med.HealsBodyHP;
+                        else
+                            health.BodyHealth = _config.HealthSystemSettings.BodyHealth;
+
+                        if (health.HeadHealth + med.HealsHeadHP <= _config.HealthSystemSettings.HeadHealth)
+                            health.HeadHealth += med.HealsHeadHP;
+                        else
+                            health.HeadHealth = _config.HealthSystemSettings.HeadHealth;
+
+                        if (med.CuresPain)
+                            EffectManager.askEffectClearByID(_config.HealthSystemSettings.PainEffectID, player.SteamPlayer().transportConnection);
+
+                        if (health.LeftLegHealth + med.HealsLeftLegHP <= _config.HealthSystemSettings.LeftLegHealth)
+                        {
+                            health.LeftLegHealth += med.HealsLeftLegHP;
+                            TAdvancedHealth.Instance.InvokeAction(0.5f, () =>
+                            {
+                                player.Broken = false;
+                                player.Player.movement.sendPluginJumpMultiplier(1f);
+                            });
+                        }
+                        else
+                        {
+                            health.LeftLegHealth = _config.HealthSystemSettings.LeftLegHealth;
+                            TAdvancedHealth.Instance.InvokeAction(0.5f, () =>
+                            {
+                                player.Broken = false;
+                                player.Player.movement.sendPluginJumpMultiplier(1f);
+                            });
+                        }
+
+                        if (health.RightLegHealth + med.HealsRightLegHP <= _config.HealthSystemSettings.RightLegHealth)
+                        {
+                            health.RightLegHealth += med.HealsRightLegHP;
+                            TAdvancedHealth.Instance.InvokeAction(0.5f, () =>
+                            {
+                                player.Broken = false;
+                                player.Player.movement.sendPluginJumpMultiplier(1f);
+                            });
+                        }
+                        else
+                        {
+                            health.RightLegHealth = _config.HealthSystemSettings.RightLegHealth;
+                            TAdvancedHealth.Instance.InvokeAction(0.5f, () =>
+                            {
+                                player.Broken = false;
+                                player.Player.movement.sendPluginJumpMultiplier(1f);
+                            });
+                        }
+
+                        if (health.LeftArmHealth + med.HealsLeftArmHP <= _config.HealthSystemSettings.LeftArmHealth)
+                            health.LeftArmHealth += med.HealsLeftArmHP;
+                        else
+                            health.LeftArmHealth = _config.HealthSystemSettings.LeftArmHealth;
+
+                        if (health.RightArmHealth + med.HealsRightArmHP <= _config.HealthSystemSettings.RightArmHealth)
+                            health.RightArmHealth += med.HealsRightArmHP;
+                        else
+                            health.RightArmHealth = _config.HealthSystemSettings.RightArmHealth;
+
+                        await _database.UpdateHealthAsync(player.Id, health, EDatabaseEvent.ALL);
+                    }
+                    comp.LastEquipedItem = 0;
+                }
+            }
+            catch (Exception e)
+            {
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+            }
+        }
+        #endregion
+        #region Vehicle Events
+        /// <summary>
+        /// Event handler for when a player requests to enter a vehicle.
+        /// </summary>
+        /// <param name="p">The player who requested to enter the vehicle.</param>
+        /// <param name="vehicle">The vehicle that the player is trying to enter.</param>
+        /// <param name="shouldAllow">A reference boolean indicating whether the player should be allowed to enter the vehicle.</param>
+        private static void Event_OnPlayerVehicleEnterRequested(Player p, InteractableVehicle vehicle, ref bool shouldAllow)
+        {
+            string voidname = "OnPlayerVehicleEnterRequested";
             try
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(p);
-                AdvancedHealthComponent cp = player.GetComponent<AdvancedHealthComponent>();
-                var c = _config.HealthSystemSettings;
-                var ag = _config.AntiGroupFriendlyFireSettings;
+                HealthData health = _database.GetPlayerHealth(player.Id);
+                if (vehicle.passengers[0].player == null)
+                {
+                    if (health.LeftLegHealth == 0 && health.RightLegHealth == 0 || player.Broken)
+                    {
+                        if (!_config.HealthSystemSettings.CanDriveWithBrokenLegs)
+                            shouldAllow = false;
+                    }
+                    else if (health.LeftLegHealth == 0 || health.RightLegHealth == 0)
+                        if (!_config.HealthSystemSettings.CanDriveWithOneBrokenLeg)
+                            shouldAllow = false;
+
+                    if (health.LeftArmHealth == 0 && health.RightArmHealth == 0 || player.Broken)
+                    {
+                        if (!_config.HealthSystemSettings.CanDriveWithBrokenArms)
+                            shouldAllow = false;
+                    }
+                    else if (health.LeftArmHealth == 0 || health.RightArmHealth == 0)
+                        if (!_config.HealthSystemSettings.CanDriveWithOneBrokenLeg)
+                            shouldAllow = false;
+                }
+            }
+            catch (Exception e)
+            {
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+            }
+        }
+
+        /// <summary>
+        /// Event handler for when a player requests to swap seats in a vehicle.
+        /// </summary>
+        /// <param name="p">The player who requested to swap seats.</param>
+        /// <param name="vehicle">The vehicle in which the seat swap is requested.</param>
+        /// <param name="shouldAllow">A reference boolean indicating whether the player should be allowed to swap seats.</param>
+        /// <param name="fromSeatIndex">The index of the seat the player is swapping from.</param>
+        /// <param name="toSeatIndex">A reference to the index of the seat the player is swapping to.</param>
+        private static void Event_OnPlayerSwapSeatRequested(Player p, InteractableVehicle vehicle, ref bool shouldAllow, byte fromSeatIndex, ref byte toSeatIndex)
+        {
+            string voidname = "SwapSeat";
+            try
+            {
+                UnturnedPlayer player = UnturnedPlayer.FromPlayer(p);
+                HealthData healthData = _database.GetPlayerHealth(player.Id);
+                if (healthData.LeftLegHealth == 0 && healthData.RightLegHealth == 0 || player.Broken)
+                {
+                    if (toSeatIndex == 0 && !_config.HealthSystemSettings.CanDriveWithBrokenLegs)
+                        shouldAllow = false;
+                }
+                else if (healthData.LeftLegHealth == 0 || healthData.RightLegHealth == 0)
+                    if (toSeatIndex == 0 && !_config.HealthSystemSettings.CanDriveWithOneBrokenLeg)
+                        shouldAllow = false;
+
+                if (healthData.LeftArmHealth == 0 && healthData.RightArmHealth == 0 || player.Broken)
+                {
+                    if (!_config.HealthSystemSettings.CanDriveWithBrokenArms && toSeatIndex == 0)
+                        shouldAllow = false;
+                }
+                else if (healthData.LeftArmHealth == 0 || healthData.RightArmHealth == 0)
+                    if (!_config.HealthSystemSettings.CanDriveWithOneBrokenLeg && toSeatIndex == 0)
+                        shouldAllow = false;
+            }
+            catch (Exception e)
+            {
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+            }
+        }
+        #endregion
+        #region Player Events
+        #region General
+        /// <summary>
+        /// Event handler for when a player joins the server.
+        /// </summary>
+        /// <param name="player">The Unturned player who joined the server.</param>
+        private static async void Event_OnPlayerJoin(UnturnedPlayer player)
+        {
+            string voidname = "OnPlayerJoin";
+            try
+            {
+                #region Check Health Data
+                HealthData health = await _database.GetPlayerHealthAsync(player.Id);
+                if (health == null)
+                {
+                    HUDStyle style = _config.HUDStyles.FirstOrDefault(x => x.Enabled);
+                    await _database.AddHealthDataAsync(player.Id, new HealthData
+                    {
+                        PlayerId = player.Id,
+                        HUDEffectID = style.EffectID,
+                        BaseHealth = _config.HealthSystemSettings.BaseHealth,
+                        BodyHealth = _config.HealthSystemSettings.BodyHealth,
+                        HeadHealth = _config.HealthSystemSettings.HeadHealth,
+                        LeftArmHealth = _config.HealthSystemSettings.LeftArmHealth,
+                        LeftLegHealth = _config.HealthSystemSettings.LeftLegHealth,
+                        RightArmHealth = _config.HealthSystemSettings.RightArmHealth,
+                        RightLegHealth = _config.HealthSystemSettings.RightLegHealth,
+                        IsInjured = false,
+                        IsHUDEnabled = true,
+                        DeathDate = DateTime.Now
+                    });
+                    health = await _database.GetPlayerHealthAsync(player.Id);
+                }
+                else
+                {
+                    if (health.BaseHealth > _config.HealthSystemSettings.BaseHealth)
+                        health.BaseHealth = _config.HealthSystemSettings.BaseHealth;
+                    if (_config.HealthSystemSettings.EnableTarkovLikeHealth)
+                    {
+                        if (health.HeadHealth > _config.HealthSystemSettings.HeadHealth)
+                            health.HeadHealth = _config.HealthSystemSettings.HeadHealth;
+                        if (health.BodyHealth > _config.HealthSystemSettings.BodyHealth)
+                            health.BodyHealth = _config.HealthSystemSettings.BodyHealth;
+                        if (health.RightArmHealth > _config.HealthSystemSettings.RightArmHealth)
+                            health.RightArmHealth = _config.HealthSystemSettings.RightArmHealth;
+                        if (health.LeftArmHealth > _config.HealthSystemSettings.LeftArmHealth)
+                            health.LeftArmHealth = _config.HealthSystemSettings.LeftArmHealth;
+                        if (health.RightLegHealth > _config.HealthSystemSettings.RightLegHealth)
+                            health.RightLegHealth = _config.HealthSystemSettings.RightLegHealth;
+                        if (health.LeftLegHealth > _config.HealthSystemSettings.LeftLegHealth)
+                            health.LeftLegHealth = _config.HealthSystemSettings.LeftLegHealth;
+                        await _database.UpdateHealthAsync(player.Id, health, EDatabaseEvent.ALL);
+                    }
+                }
+                #endregion
+
+                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                comp.EffectID = health.HUDEffectID;
+                #region Set ProgressBarData
+                comp.progressBarData.LastHealthHead = health.HeadHealth;
+                comp.progressBarData.LastHealthBody = health.BodyHealth;
+                comp.progressBarData.LastHealthLeftArm = health.LeftArmHealth;
+                comp.progressBarData.LastHealthLeftLeg = health.LeftLegHealth;
+                comp.progressBarData.LastHealthRightArm = health.RightArmHealth;
+                comp.progressBarData.LastHealthRightLeg = health.RightLegHealth;
+                comp.progressBarData.LastFood = player.Player.life.food;
+                comp.progressBarData.LastWater = player.Player.life.water;
+                comp.progressBarData.LastVirus = player.Player.life.virus;
+                comp.progressBarData.LastOxygen = player.Player.life.oxygen;
+                comp.progressBarData.LastStamina = player.Player.life.stamina;
+                #endregion
+                #region Update States
+                Event_OnPlayerFoodUpdate(player, player.Player.life.food);
+                Event_OnPlayerWaterUpdate(player, player.Player.life.water);
+                Event_OnPlayerVirusUpdate(player, player.Player.life.virus);
+                Event_OnPlayerOxygenUpdate(player, player.Player.life.oxygen);
+                Event_OnPlayerStaminaUpdate(player, player.Player.life.stamina);
+                Event_OnPlayerBleedingUpdate(player, player.Bleeding);
+                Event_OnPlayerBrokenUpdate(player, player.Broken);
+                Event_OnPlayerSafezoneUpdated(player, player.Player.movement.isSafe);
+                Event_OnPlayerDeadzoneUpdated(player, player.Player.movement.isRadiated);
+                Event_OnPlayerTemperatureUpdate(player, player.Player.life.temperature);
+
+
+                if (LightingManager.isFullMoon)
+                    await comp.TryAddStateAsync(EPlayerState.FULLMOON);
+                #endregion
+                #region Attach Events
+                player.Player.equipment.onEquipRequested += Event_OnPlayerEquipRequested;
+                player.Player.equipment.onDequipRequested += Event_OnPlayerDequipRequested;
+                player.Player.life.onHurt += Event_OnPlayerLifeDamaged;
+                player.Player.life.onOxygenUpdated += (byte b) => Event_OnPlayerOxygenUpdate(player, b);
+                player.Player.life.onTemperatureUpdated += (EPlayerTemperature newTemperature) => Event_OnPlayerTemperatureUpdate(player, newTemperature);
+                player.Player.movement.onSafetyUpdated += (bool isSafe) => Event_OnPlayerSafezoneUpdated(player, isSafe);
+                player.Player.movement.onRadiationUpdated += (bool isRadio) => Event_OnPlayerDeadzoneUpdated(player, isRadio);
+                player.Player.life.onVirusUpdated += (byte virus) => Event_OnPlayerVirusUpdate(player, virus);
+                #endregion
+                #region HideHealth HUD
+                if (health.IsHUDEnabled)
+                {
+                    EffectManager.sendUIEffect(comp.EffectID, (short)comp.EffectID, comp.TranspConnection, true);
+                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowFood, false);
+                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowHealth, false);
+                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowOxygen, false);
+                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStamina, false);
+                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowVirus, false);
+                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowWater, false);
+                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStatusIcons, false);
+                    await EffectHelper.UpdateWholeHealthUIAsync(player);
+                }
+                #endregion
+            }
+            catch (Exception e)
+            {
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+            }
+        }
+
+        /// <summary>
+        /// Event handler for when a player leaves the server.
+        /// </summary>
+        /// <param name="player">The Unturned player who left the server.</param>
+        private static void Event_OnPlayerLeave(UnturnedPlayer player)
+        {
+            string voidname = "OnPlayerLeave";
+            try
+            {
+                #region Dettach Events
+                player.Player.equipment.onEquipRequested -= Event_OnPlayerEquipRequested;
+                player.Player.equipment.onDequipRequested -= Event_OnPlayerDequipRequested;
+                player.Player.life.onHurt -= Event_OnPlayerLifeDamaged;
+                player.Player.life.onOxygenUpdated -= (byte b) => Event_OnPlayerOxygenUpdate(player, b);
+                player.Player.life.onTemperatureUpdated -= (EPlayerTemperature newTemperature) => Event_OnPlayerTemperatureUpdate(player, newTemperature);
+                player.Player.movement.onSafetyUpdated -= (bool isSafe) => Event_OnPlayerSafezoneUpdated(player, isSafe);
+                player.Player.movement.onRadiationUpdated -= (bool isRadio) => Event_OnPlayerDeadzoneUpdated(player, isRadio);
+                player.Player.life.onVirusUpdated -= (byte virus) => Event_OnPlayerVirusUpdate(player, virus);
+                #endregion
+
+                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                if (comp.DragState != EDragState.NONE)
+                    comp.UnDrag();
+            }
+            catch (Exception e)
+            {
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+            }
+        }
+        #endregion
+        #region Life Events
+        /// <summary>
+        /// Handles incoming damage inflicted on a player.
+        /// </summary>
+        /// <param name="player">The player receiving the damage.</param>
+        /// <param name="health">The health data of the player.</param>
+        /// <param name="killer">The Steam ID of the entity responsible for the damage.</param>
+        /// <param name="totalDamage">The total amount of damage inflicted on the player.</param>
+        /// <param name="limb">The limb affected by the damage.</param>
+        /// <param name="cause">The cause of death or damage.</param>
+        /// <param name="ragdoll">The position of the ragdoll after the damage.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        private static async Task HandleIncomingDamageAsync(UnturnedPlayer player, HealthData health, CSteamID killer, float totalDamage, ELimb limb, EDeathCause cause, Vector3 ragdoll)
+        {
+            AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+            switch (limb)
+            {
+                // HEAD
+                case ELimb.SKULL:
+                    {
+
+                        if (HealthHelper.CanBleed(health.HeadHealth, totalDamage))
+                            player.Bleeding = true;
+
+                        if (health.HeadHealth - totalDamage > 0)
+                        {
+                            health.HeadHealth -= totalDamage;
+                            await _database.UpdateHealthAsync(player.Id, health.HeadHealth, EHealth.HEAD);
+                        }
+                        else
+                        {
+                            health.HeadHealth = 0;
+                            await _database.UpdateHealthAsync(player.Id, 0, EHealth.HEAD);
+                        }
+
+                        if (health.HeadHealth == 0)
+                        {
+                            if (_config.HealthSystemSettings.CanBeInjured && !health.IsInjured)
+                            {
+                                int chanc = MathHelper.Next(1, 100);
+                                if (_config.HealthSystemSettings.InjuredChance >= chanc)
+                                {
+                                    await HealthHelper.SetPlayerDownedAsync(player);
+                                    return;
+                                }
+                            }
+
+                            if (_config.HealthSystemSettings.DieWhenHeadHealthIsZero)
+                            {
+                                comp.AllowDamage = true;
+                                CSteamID id = CSteamID.Nil;
+                                if (EDeathCause.ZOMBIE != cause)
+                                {
+                                    if (killer != CSteamID.Nil)
+                                        id = killer;
+                                }
+                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
+                            }
+                        }
+                        break;
+                    }
+                // BODY
+                case ELimb.LEFT_BACK:
+                case ELimb.LEFT_FRONT:
+                case ELimb.RIGHT_BACK:
+                case ELimb.RIGHT_FRONT:
+                case ELimb.SPINE:
+                    {
+                        if (HealthHelper.CanBleed(health.BodyHealth, totalDamage))
+                            player.Bleeding = true;
+
+                        if (health.BodyHealth - totalDamage > 0)
+                        {
+                            health.BodyHealth -= totalDamage;
+                            await _database.UpdateHealthAsync(player.Id, health.BodyHealth, EHealth.BODY);
+                        }
+                        else
+                        {
+                            health.BodyHealth = 0;
+                            await _database.UpdateHealthAsync(player.Id, health.BodyHealth, EHealth.BODY);
+                        }
+
+                        if (health.BodyHealth == 0)
+                        {
+                            if (_config.HealthSystemSettings.CanBeInjured && !health.IsInjured)
+                            {
+                                int chanc = MathHelper.Next(1, 100);
+                                if (_config.HealthSystemSettings.InjuredChance >= chanc)
+                                {
+                                    await HealthHelper.SetPlayerDownedAsync(player);
+                                    return;
+                                }
+                            }
+
+                            if (_config.HealthSystemSettings.DieWhenBodyHealthIsZero)
+                            {
+                                comp.AllowDamage = true;
+                                CSteamID id = CSteamID.Nil;
+                                if (EDeathCause.ZOMBIE != cause)
+                                {
+                                    if (killer != CSteamID.Nil)
+                                        id = killer;
+                                }
+                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
+                            }
+                        }
+                        break;
+                    }
+                // LEFT ARM
+                case ELimb.LEFT_ARM:
+                case ELimb.LEFT_HAND:
+                    {
+                        if (HealthHelper.CanBleed(health.LeftArmHealth, totalDamage))
+                            player.Bleeding = true;
+
+                        if (health.LeftArmHealth - totalDamage > 0)
+                        {
+                            health.LeftArmHealth -= totalDamage;
+                            await _database.UpdateHealthAsync(player.Id, health.LeftArmHealth, EHealth.LEFT_ARM);
+                        }
+                        else
+                        {
+                            health.LeftArmHealth = 0;
+                            await _database.UpdateHealthAsync(player.Id, health.LeftArmHealth, EHealth.LEFT_ARM);
+                        }
+
+                        if (health.LeftArmHealth + health.RightArmHealth == 0)
+                        {
+                            if (_config.HealthSystemSettings.DieWhenArmsHealthIsZero)
+                            {
+                                comp.AllowDamage = true;
+                                CSteamID id = CSteamID.Nil;
+                                if (EDeathCause.ZOMBIE != cause)
+                                {
+                                    if (killer != CSteamID.Nil)
+                                        id = killer;
+                                }
+                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
+                            }
+                        }
+                        break;
+                    }
+                // RIGHT ARM
+                case ELimb.RIGHT_ARM:
+                case ELimb.RIGHT_HAND:
+                    {
+                        if (HealthHelper.CanBleed(health.RightArmHealth, totalDamage))
+                            player.Bleeding = true;
+
+                        if (health.RightArmHealth - totalDamage > 0)
+                        {
+                            health.RightArmHealth -= totalDamage;
+                            await _database.UpdateHealthAsync(player.Id, health.RightArmHealth, EHealth.RIGHT_ARM);
+                        }
+                        else
+                        {
+                            health.RightArmHealth = 0;
+                            await _database.UpdateHealthAsync(player.Id, health.RightArmHealth, EHealth.RIGHT_ARM);
+                        }
+
+                        if (health.RightArmHealth + health.RightArmHealth == 0)
+                        {
+                            if (_config.HealthSystemSettings.DieWhenArmsHealthIsZero)
+                            {
+                                comp.AllowDamage = true;
+                                CSteamID id = CSteamID.Nil;
+                                if (EDeathCause.ZOMBIE != cause)
+                                {
+                                    if (killer != CSteamID.Nil)
+                                        id = killer;
+                                }
+                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
+                            }
+                        }
+                        break;
+                    }
+                // LEFT LEG
+                case ELimb.LEFT_LEG:
+                case ELimb.LEFT_FOOT:
+                    {
+                        if (HealthHelper.CanBleed(health.LeftLegHealth, totalDamage))
+                            player.Bleeding = true;
+
+                        if (health.LeftLegHealth - totalDamage > 0)
+                        {
+                            health.LeftLegHealth -= totalDamage;
+                            await _database.UpdateHealthAsync(player.Id, health.LeftLegHealth, EHealth.LEFT_LEG);
+                        }
+                        else
+                        {
+                            health.LeftLegHealth = 0;
+                            await _database.UpdateHealthAsync(player.Id, health.LeftLegHealth, EHealth.LEFT_LEG);
+                        }
+
+                        if (health.LeftLegHealth + health.RightLegHealth == 0)
+                        {
+                            if (_config.HealthSystemSettings.DieWhenLegsHealthIsZero)
+                            {
+                                comp.AllowDamage = true;
+                                CSteamID id = CSteamID.Nil;
+                                if (EDeathCause.ZOMBIE != cause)
+                                {
+                                    if (killer != CSteamID.Nil)
+                                        id = killer;
+                                }
+                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
+                            }
+                        }
+                        break;
+                    }
+                // RIGHT LEG
+                case ELimb.RIGHT_LEG:
+                case ELimb.RIGHT_FOOT:
+                    {
+                        if (HealthHelper.CanBleed(health.RightLegHealth, totalDamage))
+                            player.Bleeding = true;
+
+                        if (health.RightLegHealth - totalDamage > 0)
+                        {
+                            health.RightLegHealth -= totalDamage;
+                            await _database.UpdateHealthAsync(player.Id, health.RightLegHealth, EHealth.RIGHT_LEG);
+                        }
+                        else
+                        {
+                            health.RightLegHealth = 0;
+                            await _database.UpdateHealthAsync(player.Id, health.RightLegHealth, EHealth.RIGHT_LEG);
+                        }
+
+                        if (health.RightLegHealth + health.RightLegHealth == 0)
+                        {
+                            if (_config.HealthSystemSettings.DieWhenLegsHealthIsZero)
+                            {
+                                comp.AllowDamage = true;
+                                CSteamID id = CSteamID.Nil;
+                                if (EDeathCause.ZOMBIE != cause)
+                                {
+                                    if (killer != CSteamID.Nil)
+                                        id = killer;
+                                }
+                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
+                            }
+                        }
+                        break;
+                    }
+                default:
+                    {
+                        switch (cause)
+                        {
+                            case EDeathCause.BONES:
+                                {
+                                    if (HealthHelper.CanBleed(health.LeftLegHealth, totalDamage) || HealthHelper.CanBleed(health.RightLegHealth, totalDamage))
+                                        player.Bleeding = true;
+
+                                    if (health.RightLegHealth - totalDamage > 0)
+                                    {
+                                        health.RightLegHealth -= totalDamage;
+                                        await _database.UpdateHealthAsync(player.Id, health.RightLegHealth, EHealth.RIGHT_LEG);
+                                    }
+                                    else
+                                    {
+                                        health.RightLegHealth = 0;
+                                        await _database.UpdateHealthAsync(player.Id, health.RightLegHealth, EHealth.RIGHT_LEG);
+                                    }
+
+                                    if (health.RightLegHealth + health.RightLegHealth == 0)
+                                    {
+                                        if (_config.HealthSystemSettings.DieWhenLegsHealthIsZero)
+                                        {
+                                            comp.AllowDamage = true;
+                                            CSteamID id = CSteamID.Nil;
+                                            if (EDeathCause.ZOMBIE != cause)
+                                            {
+                                                if (killer != CSteamID.Nil)
+                                                    id = killer;
+                                            }
+                                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
+                                        }
+                                    }
+
+                                    if (health.LeftLegHealth - totalDamage > 0)
+                                    {
+                                        health.LeftLegHealth -= totalDamage;
+                                        await _database.UpdateHealthAsync(player.Id, health.LeftArmHealth, EHealth.LEFT_LEG);
+                                    }
+                                    else
+                                    {
+                                        health.LeftLegHealth = 0;
+                                        await _database.UpdateHealthAsync(player.Id, health.LeftArmHealth, EHealth.LEFT_LEG);
+                                    }
+
+                                    if (health.LeftLegHealth + health.RightLegHealth == 0)
+                                    {
+                                        if (_config.HealthSystemSettings.DieWhenLegsHealthIsZero)
+                                        {
+                                            comp.AllowDamage = true;
+                                            CSteamID id = CSteamID.Nil;
+                                            if (EDeathCause.ZOMBIE != cause)
+                                            {
+                                                if (killer != CSteamID.Nil)
+                                                    id = killer;
+                                            }
+                                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
+                                        }
+                                    }
+                                    break;
+                                }
+                            case EDeathCause.INFECTION:
+                            case EDeathCause.BREATH:
+                                {
+
+                                    break;
+                                }
+                        }
+                        break;
+                    }
+            }
+        }
+
+        /// <summary>
+        /// Event handler for when a player's life is damaged.
+        /// </summary>
+        /// <param name="p">The player whose life is damaged.</param>
+        /// <param name="damage">The amount of damage inflicted on the player.</param>
+        /// <param name="force">The force applied to the player as a result of the damage.</param>
+        /// <param name="cause">The cause of death or damage.</param>
+        /// <param name="limb">The limb affected by the damage.</param>
+        /// <param name="killer">The Steam ID of the entity responsible for the damage.</param>
+        private static async void Event_OnPlayerLifeDamaged(Player p, byte damage, Vector3 force, EDeathCause cause, ELimb limb, CSteamID killer)
+        {
+            string voidname = "OnPlayerLifeDamaged";
+            try
+            {
+                UnturnedPlayer player = UnturnedPlayer.FromPlayer(p);
+                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 bool allow = true;
 
                 player.Player.life.askHeal(100, false, false);
-                HealthData health = _database.GetPlayerHealth(player.Id);
+                HealthData health = await _database.GetPlayerHealthAsync(player.Id);
                 float totaldamage = damage;
                 damage = 0;
 
@@ -829,17 +1210,17 @@ namespace Tavstal.TAdvancedHealth.Handlers
 
                 if (EDeathCause.BLEEDING == cause)
                 {
-                    if (health.IsInjured && !cp.AllowDamage)
+                    if (health.IsInjured && !comp.AllowDamage)
                     {
                         totaldamage = 0;
                         player.Bleeding = false;
                     }
                     else
                     {
-                        if (cp.hasHeavyBleeding)
-                            totaldamage = c.HeavyBleedingDamage;
+                        if (comp.hasHeavyBleeding)
+                            totaldamage = _config.HealthSystemSettings.HeavyBleedingDamage;
                         else
-                            totaldamage = c.BleedingDamage;
+                            totaldamage = _config.HealthSystemSettings.BleedingDamage;
                         player.Bleeding = true;
                     }
                 }
@@ -847,326 +1228,27 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 if (cause == EDeathCause.ANIMAL || cause == EDeathCause.ZOMBIE)
                     limb = ELimb.LEFT_FRONT;
 
-                cp.AllowDamage = false;
+                comp.AllowDamage = false;
 
                 if (!allow || player.Features.GodMode)
                     totaldamage = 0;
 
-                Vector3 ragdoll = player.Position.normalized;
-                if (limb == ELimb.SKULL)
-                {
-                    if (HealthHelper.CanBleed(health.HeadHealth, totaldamage))
-                        player.Bleeding = true;
-
-                    if (health.HeadHealth - totaldamage > 0)
-                    {
-                        health.HeadHealth -= totaldamage;
-                        _database.UpdateHeadHealth(player.Id, health.HeadHealth);
-                    }
-                    else
-                    {
-                        health.HeadHealth = 0;
-                        _database.UpdateHeadHealth(player.Id, 0);
-                    }
-
-                    if (health.HeadHealth == 0)
-                    {
-                        if (c.CanBeInjured && !health.IsInjured)
-                        {
-                            int chanc = MathHelper.Next(1, 100);
-                            if (c.InjuredChance >= chanc)
-                            {
-                                HealthHelper.SetPlayerDowned(player);
-                                return;
-                            }
-                        }
-
-                        if (c.DieWhenHeadHealthIsZero)
-                        {
-                            cp.AllowDamage = true;
-                            CSteamID id = CSteamID.Nil;
-                            if (EDeathCause.ZOMBIE != cause)
-                            {
-                                if (killer != CSteamID.Nil)
-                                    id = killer;
-                            }
-                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
-                        }
-                    }
-                }
-                else if (cause == EDeathCause.BONES)
-                {
-                    if (HealthHelper.CanBleed(health.LeftLegHealth, totaldamage) || HealthHelper.CanBleed(health.RightLegHealth, totaldamage))
-                        player.Bleeding = true;
-
-                    if (health.RightLegHealth - totaldamage > 0)
-                    {
-                        health.RightLegHealth -= totaldamage;
-                        _database.UpdateRightLegHealth(player.Id, health.RightLegHealth);
-                    }
-                    else
-                    {
-                        health.RightLegHealth = 0;
-                        _database.UpdateRightLegHealth(player.Id, health.RightLegHealth);
-                    }
-
-                    if (health.RightLegHealth + health.RightLegHealth == 0)
-                    {
-                        if (c.DieWhenLegsHealthIsZero)
-                        {
-                            cp.AllowDamage = true;
-                            CSteamID id = CSteamID.Nil;
-                            if (EDeathCause.ZOMBIE != cause)
-                            {
-                                if (killer != CSteamID.Nil)
-                                    id = killer;
-                            }
-                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
-                        }
-                    }
-
-                    if (health.LeftLegHealth - totaldamage > 0)
-                    {
-                        health.LeftLegHealth -= totaldamage;
-                        _database.UpdateLeftLegHealth(player.Id, health.LeftArmHealth);
-                    }
-                    else
-                    {
-                        health.LeftLegHealth = 0;
-                        _database.UpdateLeftLegHealth(player.Id, health.LeftArmHealth);
-                    }
-
-                    if (health.LeftLegHealth + health.RightLegHealth == 0)
-                    {
-                        if (c.DieWhenLegsHealthIsZero)
-                        {
-                            cp.AllowDamage = true;
-                            CSteamID id = CSteamID.Nil;
-                            if (EDeathCause.ZOMBIE != cause)
-                            {
-                                if (killer != CSteamID.Nil)
-                                    id = killer;
-                            }
-                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
-                        }
-                    }
-                }
-                else if (limb == ELimb.LEFT_BACK || limb == ELimb.LEFT_FRONT || limb == ELimb.RIGHT_BACK || limb == ELimb.RIGHT_FRONT || limb == ELimb.SPINE || cause == EDeathCause.INFECTION || cause == EDeathCause.BREATH)
-                {
-                    if (HealthHelper.CanBleed(health.BodyHealth, totaldamage))
-                        player.Bleeding = true;
-
-                    if (health.BodyHealth - totaldamage > 0)
-                    {
-                        health.BodyHealth -= totaldamage;
-                        _database.UpdateBodyHealth(player.Id, health.BodyHealth);
-                    }
-                    else
-                    {
-                        health.BodyHealth = 0;
-                        _database.UpdateBodyHealth(player.Id, health.BodyHealth);
-                    }
-
-                    if (health.BodyHealth == 0)
-                    {
-                        if (c.CanBeInjured && !health.IsInjured)
-                        {
-                            int chanc = MathHelper.Next(1, 100);
-                            if (c.InjuredChance >= chanc)
-                            {
-                                HealthHelper.SetPlayerDowned(player);
-                                return;
-                            }
-                        }
-
-                        if (c.DieWhenBodyHealthIsZero)
-                        {
-                            cp.AllowDamage = true;
-                            CSteamID id = CSteamID.Nil;
-                            if (EDeathCause.ZOMBIE != cause)
-                            {
-                                if (killer != CSteamID.Nil)
-                                    id = killer;
-                            }
-                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
-                        }
-                    }
-                }
-                else if (limb == ELimb.LEFT_ARM || limb == ELimb.LEFT_HAND)
-                {
-                    if (HealthHelper.CanBleed(health.LeftArmHealth, totaldamage))
-                        player.Bleeding = true;
-
-                    if (health.LeftArmHealth - totaldamage > 0)
-                    {
-                        health.LeftArmHealth -= totaldamage;
-                        _database.UpdateLeftArmHealth(player.Id, health.LeftArmHealth);
-                    }
-                    else
-                    {
-                        health.LeftArmHealth = 0;
-                        _database.UpdateLeftArmHealth(player.Id, health.LeftArmHealth);
-                    }
-
-                    if (health.LeftArmHealth + health.RightArmHealth == 0)
-                    {
-                        if (c.DieWhenArmsHealthIsZero)
-                        {
-                            cp.AllowDamage = true;
-                            CSteamID id = CSteamID.Nil;
-                            if (EDeathCause.ZOMBIE != cause)
-                            {
-                                if (killer != CSteamID.Nil)
-                                    id = killer;
-                            }
-                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
-                        }
-                    }
-                }
-                else if (limb == ELimb.RIGHT_ARM || limb == ELimb.RIGHT_HAND)
-                {
-                    if (HealthHelper.CanBleed(health.RightArmHealth, totaldamage))
-                        player.Bleeding = true;
-
-                    if (health.RightArmHealth - totaldamage > 0)
-                    {
-                        health.RightArmHealth -= totaldamage;
-                        _database.UpdateRightArmHealth(player.Id, health.RightArmHealth);
-                    }
-                    else
-                    {
-                        health.RightArmHealth = 0;
-                        _database.UpdateRightArmHealth(player.Id, health.RightArmHealth);
-                    }
-
-                    if (health.RightArmHealth + health.RightArmHealth == 0)
-                    {
-                        if (c.DieWhenArmsHealthIsZero)
-                        {
-                            cp.AllowDamage = true;
-                            CSteamID id = CSteamID.Nil;
-                            if (EDeathCause.ZOMBIE != cause)
-                            {
-                                if (killer != CSteamID.Nil)
-                                    id = killer;
-                            }
-                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
-                        }
-                    }
-                }
-                else if (limb == ELimb.LEFT_LEG || limb == ELimb.LEFT_FOOT)
-                {
-                    if (HealthHelper.CanBleed(health.LeftLegHealth, totaldamage))
-                        player.Bleeding = true;
-
-                    if (health.LeftLegHealth - totaldamage > 0)
-                    {
-                        health.LeftLegHealth -= totaldamage;
-                        _database.UpdateLeftLegHealth(player.Id, health.LeftLegHealth);
-                    }
-                    else
-                    {
-                        health.LeftLegHealth = 0;
-                        _database.UpdateLeftLegHealth(player.Id, health.LeftLegHealth);
-                    }
-
-                    if (health.LeftLegHealth + health.RightLegHealth == 0)
-                    {
-                        if (c.DieWhenLegsHealthIsZero)
-                        {
-                            cp.AllowDamage = true;
-                            CSteamID id = CSteamID.Nil;
-                            if (EDeathCause.ZOMBIE != cause)
-                            {
-                                if (killer != CSteamID.Nil)
-                                    id = killer;
-                            }
-                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
-                        }
-                    }
-                }
-                else if (limb == ELimb.RIGHT_LEG || limb == ELimb.RIGHT_FOOT)
-                {
-                    if (HealthHelper.CanBleed(health.RightLegHealth, totaldamage))
-                        player.Bleeding = true;
-
-                    if (health.RightLegHealth - totaldamage > 0)
-                    {
-                        health.RightLegHealth -= totaldamage;
-                        _database.UpdateRightLegHealth(player.Id, health.RightLegHealth);
-                    }
-                    else
-                    {
-                        health.RightLegHealth = 0;
-                        _database.UpdateRightLegHealth(player.Id, health.RightLegHealth);
-                    }
-
-                    if (health.RightLegHealth + health.RightLegHealth == 0)
-                    {
-                        if (c.DieWhenLegsHealthIsZero)
-                        {
-                            cp.AllowDamage = true;
-                            CSteamID id = CSteamID.Nil;
-                            if (EDeathCause.ZOMBIE != cause)
-                            {
-                                if (killer != CSteamID.Nil)
-                                    id = killer;
-                            }
-                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
-                        }
-                    }
-                }
-                else
-                {
-                    if (HealthHelper.CanBleed(health.BodyHealth, totaldamage))
-                        player.Bleeding = true;
-
-                    if (health.BodyHealth - totaldamage > 0)
-                    {
-                        health.BodyHealth -= totaldamage;
-                        _database.UpdateBodyHealth(player.Id, health.BodyHealth);
-                    }
-                    else
-                    {
-                        health.BodyHealth = 0;
-                        _database.UpdateBodyHealth(player.Id, health.BodyHealth);
-                    }
-
-                    if (health.BodyHealth == 0)
-                    {
-                        if (c.CanBeInjured && !health.IsInjured)
-                        {
-                            int chanc = MathHelper.Next(1, 100);
-                            if (c.InjuredChance >= chanc)
-                            {
-                                HealthHelper.SetPlayerDowned(player);
-                                return;
-                            }
-                        }
-
-                        if (c.DieWhenBodyHealthIsZero)
-                        {
-                            cp.AllowDamage = true;
-                            CSteamID id = CSteamID.Nil;
-                            if (EDeathCause.ZOMBIE != cause)
-                            {
-                                if (killer != CSteamID.Nil)
-                                    id = killer;
-                            }
-                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
-                        }
-                    }
-                }
+                await HandleIncomingDamageAsync(player, health, killer, totaldamage, limb, cause, player.Position.normalized);
             }
             catch (Exception e)
             {
-                Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
 
+        /// <summary>
+        /// Event handler for when a player is damaged.
+        /// </summary>
+        /// <param name="parameters">The parameters related to the damage inflicted on the player.</param>
+        /// <param name="shouldAllow">A reference boolean indicating whether the damage should be allowed.</param>
         private static void Event_OnPlayerDamaged(ref DamagePlayerParameters parameters, ref bool shouldAllow)
         {
-            string voidname = "PlayerDamaged";
+            string voidname = "OnPlayerDamaged";
             try
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(parameters.player);
@@ -1199,14 +1281,14 @@ namespace Tavstal.TAdvancedHealth.Handlers
 
                                 int chance = MathHelper.Next(1, 100);
                                 if (chance != 0 && chance <= defibrillator.ReviveChance)
-                                    cp.ReviveAsync();
+                                    comp.ReviveAsync();
                                 killerComp.LastDefibliratorUses.Add(defibrillator.ItemID, DateTime.Now.AddSeconds(defibrillator.RechargeTimeSecs));
                                 return;
                             }
                         }
                     }
                 }*/
-                
+
                 if (ag.EnableAntiGroupFriendlyFire)
                 {
                     UnturnedPlayer victim = UnturnedPlayer.FromPlayer(parameters.player);
@@ -1222,8 +1304,8 @@ namespace Tavstal.TAdvancedHealth.Handlers
                                 List<Permission> victimPerms = victim.GetPermissions();
                                 List<Permission> attackerPerms = attacker.GetPermissions();
 
-                                List<RocketPermissionsGroup> mutualGroups = PlayerHelper.GetMutualGroups(victim, attacker);
-                                List<string> ffGroups = ag.groups;
+                                List<RocketPermissionsGroup> mutualGroups = UPlayerHelper.GetMutualGroups(victim, attacker);
+                                List<string> ffGroups = ag.Groups;
 
                                 for (int i = 0; i < mutualGroups.Count; i++)
                                 {
@@ -1237,7 +1319,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                                         }
                                         else
                                         {
-                                            UnturnedHelper.SendChatMessage(attacker.SteamPlayer(), ag.Message);
+                                            UChatHelper.SendPlainChatMessage(attacker.SteamPlayer(), ag.Message);
                                         }
                                         allow = false;
                                         break;
@@ -1248,11 +1330,10 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     }
                 }
 
-                
                 player.Player.life.askHeal(100, false, false);
                 HealthData health = _database.GetPlayerHealth(player.Id);
                 float totaldamage = 0;
-                
+
                 EDeathCause cause = parameters.cause;
                 ELimb limb = parameters.limb;
                 CSteamID killer = parameters.killer;
@@ -1303,363 +1384,27 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 if (!allow || player.Features.GodMode)
                     totaldamage = 0;
 
-                Vector3 ragdoll = player.Position.normalized;
-                if (limb == ELimb.SKULL)
-                {
-                    if (HealthHelper.CanBleed(health.HeadHealth, totaldamage))
-                        player.Bleeding = true;
-
-                    if (health.HeadHealth - totaldamage > 0)
-                    {
-                        health.HeadHealth -= totaldamage;
-                        _database.UpdateHeadHealth(player.Id, health.HeadHealth);
-                    }
-                    else
-                    {
-                        health.HeadHealth = 0;
-                        _database.UpdateHeadHealth(player.Id, health.HeadHealth);
-                    }
-
-                    if (health.HeadHealth == 0)
-                    {
-                        if (c.CanBeInjured && !health.IsInjured)
-                        {
-                            int chanc = MathHelper.Next(1, 100);
-                            if (c.InjuredChance >= chanc)
-                            {
-                                HealthHelper.SetPlayerDowned(player);
-                                return;
-                            }
-                        }
-
-                        if (c.DieWhenHeadHealthIsZero)
-                        {
-                            cp.AllowDamage = true;
-                            CSteamID id = CSteamID.Nil;
-                            if (EDeathCause.ZOMBIE != cause)
-                            {
-                                if (killer != CSteamID.Nil)
-                                    id = killer;
-                            }
-                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
-                        }
-                    }
-                }
-                else if (cause == EDeathCause.BONES)
-                {
-                    if (HealthHelper.CanBleed(health.LeftLegHealth, totaldamage) || HealthHelper.CanBleed(health.RightLegHealth, totaldamage))
-                        player.Bleeding = true;
-
-                    if (health.RightLegHealth - totaldamage > 0)
-                    {
-                        health.RightLegHealth -= totaldamage;
-                        _database.UpdateRightLegHealth(player.Id, health.RightLegHealth);
-                    }
-                    else
-                    {
-                        health.RightLegHealth = 0;
-                        _database.UpdateRightLegHealth(player.Id, health.RightLegHealth);
-                    }
-
-                    if (health.RightLegHealth + health.RightLegHealth == 0)
-                    {
-                        if (c.DieWhenLegsHealthIsZero)
-                        {
-                            cp.AllowDamage = true;
-                            CSteamID id = CSteamID.Nil;
-                            if (EDeathCause.ZOMBIE != cause)
-                            {
-                                if (killer != CSteamID.Nil)
-                                    id = killer;
-                            }
-                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
-                        }
-                    }
-
-                    if (health.LeftLegHealth - totaldamage > 0)
-                    {
-                        health.LeftLegHealth -= totaldamage;
-                        _database.UpdateLeftLegHealth(player.Id, health.LeftLegHealth);
-                    }
-                    else
-                    {
-                        health.LeftLegHealth = 0;
-                        _database.UpdateLeftLegHealth(player.Id, health.LeftLegHealth);
-                    }
-
-                    if (health.LeftLegHealth + health.RightLegHealth == 0)
-                    {
-                        if (c.DieWhenLegsHealthIsZero)
-                        {
-                            cp.AllowDamage = true;
-                            CSteamID id = CSteamID.Nil;
-                            if (EDeathCause.ZOMBIE != cause)
-                            {
-                                if (killer != CSteamID.Nil)
-                                    id = killer;
-                            }
-                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
-                        }
-                    }
-                }
-                else if (limb == ELimb.LEFT_BACK || limb == ELimb.LEFT_FRONT || limb == ELimb.RIGHT_BACK || limb == ELimb.RIGHT_FRONT || limb == ELimb.SPINE || cause == EDeathCause.INFECTION || cause == EDeathCause.BREATH)
-                {
-                    if (HealthHelper.CanBleed(health.BodyHealth, totaldamage))
-                        player.Bleeding = true;
-
-                    if (health.BodyHealth - totaldamage > 0)
-                    {
-                        health.BodyHealth -= totaldamage;
-                        _database.UpdateBodyHealth(player.Id, health.BodyHealth);
-                    }
-                    else
-                    {
-                        health.BodyHealth = 0;
-                        _database.UpdateBodyHealth(player.Id, health.BodyHealth);
-                    }
-
-                    if (health.BodyHealth == 0)
-                    {
-                        if (c.CanBeInjured && !health.IsInjured)
-                        {
-                            int chanc = MathHelper.Next(1, 100);
-                            if (c.InjuredChance >= chanc)
-                            {
-                                HealthHelper.SetPlayerDowned(player);
-                                return;
-                            }
-                        }
-
-                        if (c.DieWhenBodyHealthIsZero)
-                        {
-                            cp.AllowDamage = true;
-                            CSteamID id = CSteamID.Nil;
-                            if (EDeathCause.ZOMBIE != cause)
-                            {
-                                if (killer != CSteamID.Nil)
-                                    id = killer;
-                            }
-                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
-                        }
-                    }
-                }
-                else if (limb == ELimb.LEFT_ARM || limb == ELimb.LEFT_HAND)
-                {
-                    if (HealthHelper.CanBleed(health.LeftArmHealth, totaldamage))
-                        player.Bleeding = true;
-
-                    if (health.LeftArmHealth - totaldamage > 0)
-                    {
-                        health.LeftArmHealth -= totaldamage;
-                        _database.UpdateLeftArmHealth(player.Id, health.LeftArmHealth);
-                    }
-                    else
-                    {
-                        health.LeftArmHealth = 0;
-                        _database.UpdateLeftArmHealth(player.Id, health.LeftArmHealth);
-                    }
-
-                    if (health.LeftArmHealth + health.RightArmHealth == 0)
-                    {
-                        if (c.DieWhenArmsHealthIsZero)
-                        {
-                            cp.AllowDamage = true;
-                            CSteamID id = CSteamID.Nil;
-                            if (EDeathCause.ZOMBIE != cause)
-                            {
-                                if (killer != CSteamID.Nil)
-                                    id = killer;
-                            }
-                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
-                        }
-                    }
-                }
-                else if (limb == ELimb.RIGHT_ARM || limb == ELimb.RIGHT_HAND)
-                {
-                    if (HealthHelper.CanBleed(health.RightArmHealth, totaldamage))
-                        player.Bleeding = true;
-
-                    if (health.RightArmHealth - totaldamage > 0)
-                    {
-                        health.RightArmHealth -= totaldamage;
-                        _database.UpdateRightArmHealth(player.Id, health.RightArmHealth);
-                    }
-                    else
-                    {
-                        health.RightArmHealth = 0;
-                        _database.UpdateRightArmHealth(player.Id, health.RightArmHealth);
-                    }
-
-                    if (health.RightArmHealth + health.RightArmHealth == 0)
-                    {
-                        if (c.DieWhenArmsHealthIsZero)
-                        {
-                            cp.AllowDamage = true;
-                            CSteamID id = CSteamID.Nil;
-                            if (EDeathCause.ZOMBIE != cause)
-                            {
-                                if (killer != CSteamID.Nil)
-                                    id = killer;
-                            }
-                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
-                        }
-                    }
-                }
-                else if (limb == ELimb.LEFT_LEG || limb == ELimb.LEFT_FOOT)
-                {
-                    if (HealthHelper.CanBleed(health.LeftLegHealth, totaldamage))
-                        player.Bleeding = true;
-
-                    if (health.LeftLegHealth - totaldamage > 0)
-                    {
-                        health.LeftLegHealth -= totaldamage;
-                        _database.UpdateLeftLegHealth(player.Id, health.LeftLegHealth);
-                    }
-                    else
-                    {
-                        health.LeftLegHealth = 0;
-                        _database.UpdateLeftLegHealth(player.Id, health.LeftLegHealth);
-                    }
-
-                    if (health.LeftLegHealth + health.RightLegHealth == 0)
-                    {
-                        if (c.DieWhenLegsHealthIsZero)
-                        {
-                            cp.AllowDamage = true;
-                            CSteamID id = CSteamID.Nil;
-                            if (EDeathCause.ZOMBIE != cause)
-                            {
-                                if (killer != CSteamID.Nil)
-                                    id = killer;
-                            }
-                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
-                        }
-                    }
-                }
-                else if (limb == ELimb.RIGHT_LEG || limb == ELimb.RIGHT_FOOT)
-                {
-                    if (HealthHelper.CanBleed(health.RightLegHealth, totaldamage))
-                        player.Bleeding = true;
-
-                    if (health.RightLegHealth - totaldamage > 0)
-                    {
-                        health.RightLegHealth -= totaldamage;
-                        _database.UpdateRightLegHealth(player.Id, health.RightLegHealth);
-                    }
-                    else
-                    {
-                        health.RightLegHealth = 0;
-                        _database.UpdateRightLegHealth(player.Id, health.RightLegHealth);
-                    }
-
-                    if (health.RightLegHealth + health.RightLegHealth == 0)
-                    {
-                        if (c.DieWhenLegsHealthIsZero)
-                        {
-                            cp.AllowDamage = true;
-                            CSteamID id = CSteamID.Nil;
-                            if (EDeathCause.ZOMBIE != cause)
-                            {
-                                if (killer != CSteamID.Nil)
-                                    id = killer;
-                            }
-                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
-                        }
-                    }
-                }
-                else
-                {
-                    if (HealthHelper.CanBleed(health.BodyHealth, totaldamage))
-                        player.Bleeding = true;
-
-                    if (health.BodyHealth - totaldamage > 0)
-                    {
-                        health.BodyHealth -= totaldamage;
-                        _database.UpdateBodyHealth(player.Id, health.BodyHealth);
-                    }
-                    else
-                    {
-                        health.BodyHealth = 0;
-                        _database.UpdateBodyHealth(player.Id, health.BodyHealth);
-                    }
-
-                    if (health.BodyHealth == 0)
-                    {
-                        if (c.CanBeInjured && !health.IsInjured)
-                        {
-                            int chanc = MathHelper.Next(1, 100);
-                            if (c.InjuredChance >= chanc)
-                            {
-                                HealthHelper.SetPlayerDowned(player);
-                                return;
-                            }
-                        }
-
-                        if (c.DieWhenBodyHealthIsZero)
-                        {
-                            cp.AllowDamage = true;
-                            CSteamID id = CSteamID.Nil;
-                            if (EDeathCause.ZOMBIE != cause)
-                            {
-                                if (killer != CSteamID.Nil)
-                                    id = killer;
-                            }
-                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
-                        }
-                    }
-                }
+                Task.Run(async () => await HandleIncomingDamageAsync(player, health, killer, totaldamage, limb, cause, player.Position.normalized));
             }
             catch (Exception e)
             {
-                Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
 
-        private static void Event_OnPlayerGestureUpdated(UnturnedPlayer player, UnturnedPlayerEvents.PlayerGesture gesture)
+        /// <summary>
+        /// Event handler for when a player is revived.
+        /// </summary>
+        /// <param name="player">The Unturned player who was revived.</param>
+        /// <param name="position">The position where the player was revived.</param>
+        /// <param name="angle">The angle at which the player was revived.</param>
+        private static async void Event_OnPlayerRevived(UnturnedPlayer player, Vector3 position, byte angle)
         {
-            string voidname = "Gesture";
-            try
-            {
-                if (gesture == UnturnedPlayerEvents.PlayerGesture.SurrenderStart)
-                {
-                    PlayerLook look = player.Player.look;
-
-                    Player victimPlayer = null;
-                    if (Physics.Raycast(new Ray(look.aim.position, look.aim.forward), out RaycastHit hit, 2f, RayMasks.PLAYER))
-                    {
-                        Player victimPlayer2 = hit.transform.GetComponent<Player>();
-                        if (victimPlayer2 != null && Vector3.Distance(victimPlayer2.transform.position, player.Position) <= 5f)
-                            victimPlayer = victimPlayer2;
-                    }
-
-                    if (victimPlayer != null)
-                    {
-                        UnturnedPlayer targetPlayer = UnturnedPlayer.FromPlayer(victimPlayer);
-                        AdvancedHealthComponent playerComp = player.GetComponent<AdvancedHealthComponent>();
-                        playerComp.DragAsync(targetPlayer);
-                    }
-                }
-                else if (gesture == UnturnedPlayerEvents.PlayerGesture.SurrenderStop)
-                {
-                    AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-
-                    if (comp.DragState == EDragState.DRAGGER)
-                        comp.UnDrag();
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
-            }
-        }
-
-        private static void Event_OnPlayerRevived(UnturnedPlayer player, Vector3 position, byte angle)
-        {
-            string voidname = "OnRevivedPlayer";
+            string voidname = "OnPlayerRevived";
             try
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                comp.ReviveAsync();
+                await comp.ReviveAsync();
                 if (comp.DragState != EDragState.NONE)
                     comp.UnDrag();
 
@@ -1667,15 +1412,15 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 EffectManager.sendUIEffectVisibility((short)comp.EffectID, comp.TranspConnection, true, "RevivePanel", false);
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
 
-                TAdvancedHealth.Instance.StartCoroutine(TAdvancedHealth.Instance.DelayedInvoke(0.1f, () =>
+                TAdvancedHealth.Instance.InvokeAction(0.1f, () =>
                 {
                     if (_config.HospitalSettings.EnableRespawnInHospital)
                     {
-                        if (_config.HospitalSettings.hospitals != null)
+                        if (_config.HospitalSettings.Hospitals != null)
                             if (_config.HospitalSettings.RandomSpawn)
                             {
-                                int i = MathHelper.Next(0, _config.HospitalSettings.hospitals.Count - 1);
-                                Hospital h = _config.HospitalSettings.hospitals.ElementAt(i);
+                                int i = MathHelper.Next(0, _config.HospitalSettings.Hospitals.Count - 1);
+                                Hospital h = _config.HospitalSettings.Hospitals.ElementAt(i);
                                 if (h.Position != null)
                                 {
                                     i = MathHelper.Next(0, h.Position.Count - 1);
@@ -1685,7 +1430,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                             }
                             else
                             {
-                                Hospital hospital = _config.HospitalSettings.hospitals.FirstOrDefault(x => player.HasPermission(x.SpawnPermission.ToLower()));
+                                Hospital hospital = _config.HospitalSettings.Hospitals.FirstOrDefault(x => player.HasPermission(x.SpawnPermission.ToLower()));
                                 if (hospital != null)
                                     if (hospital.Position != null)
                                     {
@@ -1706,22 +1451,29 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     Event_OnPlayerSafezoneUpdated(player, player.Player.movement.isSafe);
                     Event_OnPlayerDeadzoneUpdated(player, player.Player.movement.isRadiated);
                     Event_OnPlayerTemperatureUpdate(player, player.Player.life.temperature);
-                }));
+                });
             }
             catch (Exception e)
             {
-                Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
 
-        private static void Event_OnPlayerDeath(UnturnedPlayer player, EDeathCause cause, ELimb limb, CSteamID murderer)
+        /// <summary>
+        /// Event handler for when a player dies.
+        /// </summary>
+        /// <param name="player">The Unturned player who died.</param>
+        /// <param name="cause">The cause of death.</param>
+        /// <param name="limb">The limb affected by the fatal injury.</param>
+        /// <param name="murderer">The Steam ID of the entity responsible for the death.</param>
+        private static async void Event_OnPlayerDeath(UnturnedPlayer player, EDeathCause cause, ELimb limb, CSteamID murderer)
         {
-            string voidname = "OnDeath";
+            string voidname = "OnPlayerDeath";
             try
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
-                HealthHelper.UpdateHealthUI(player);
+                await EffectHelper.UpdateWholeHealthUIAsync(player);
                 if (comp.DragState != EDragState.NONE)
                     comp.UnDrag();
 
@@ -1730,11 +1482,62 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
+        #endregion
+        #region Character Events
+        /// <summary>
+        /// Event handler for updates to a player's gesture.
+        /// </summary>
+        /// <param name="player">The Unturned player whose gesture is being updated.</param>
+        /// <param name="gesture">The gesture being performed by the player.</param>
+        private static async void Event_OnPlayerGestureUpdated(UnturnedPlayer player, UnturnedPlayerEvents.PlayerGesture gesture)
+        {
+            string voidname = "OnPlayerGestureUpdated";
+            try
+            {
+                if (gesture == UnturnedPlayerEvents.PlayerGesture.SurrenderStart)
+                {
+                    PlayerLook look = player.Player.look;
 
-        private static void Event_OnButtonClickded(Player Player, string buttonName)
+                    Player victimPlayer = null;
+                    if (Physics.Raycast(new Ray(look.aim.position, look.aim.forward), out RaycastHit hit, 2f, RayMasks.PLAYER))
+                    {
+                        Player victimPlayer2 = hit.transform.GetComponent<Player>();
+                        if (victimPlayer2 != null && Vector3.Distance(victimPlayer2.transform.position, player.Position) <= 5f)
+                            victimPlayer = victimPlayer2;
+                    }
+
+                    if (victimPlayer != null)
+                    {
+                        UnturnedPlayer targetPlayer = UnturnedPlayer.FromPlayer(victimPlayer);
+                        AdvancedHealthComponent playerComp = player.GetComponent<AdvancedHealthComponent>();
+                        await playerComp.DragAsync(targetPlayer);
+                    }
+                }
+                else if (gesture == UnturnedPlayerEvents.PlayerGesture.SurrenderStop)
+                {
+                    AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+
+                    if (comp.DragState == EDragState.DRAGGER)
+                        comp.UnDrag();
+                }
+            }
+            catch (Exception e)
+            {
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+            }
+        }
+        #endregion
+        #endregion
+        #region UI
+        /// <summary>
+        /// Event handler for when a player clicks a button.
+        /// </summary>
+        /// <param name="Player">The player who clicked the button.</param>
+        /// <param name="buttonName">The name of the button that was clicked.</param>
+        private static async void Event_OnButtonClickded(Player Player, string buttonName)
         {
             string voidname = "OnButtonClicked";
             try
@@ -1743,7 +1546,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 if (buttonName == "bt_suicide" || buttonName == "bt_suicide2")
                 {
-                    HealthData health = _database.GetPlayerHealth(player.Id);
+                    HealthData health = await _database.GetPlayerHealthAsync(player.Id);
                     if (health.IsInjured)
                     {
                         comp.AllowDamage = true;
@@ -1762,9 +1565,11 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
             }
         }
+
+        #endregion
     }
 
 }

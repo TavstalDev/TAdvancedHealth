@@ -28,5 +28,35 @@ namespace Tavstal.TAdvancedHealth.Models.Config
         public List<string> VisibleLeftLeg = new List<string>();
         public List<string> VisibleRightArm = new List<string>();
         public List<string> VisibleRightLeg = new List<string>();
+
+        public ProgressBarDatas() { }
+
+        public ProgressBarDatas(float lastFood, float lastWater, float lastStamina, float lastVirus, float lastOxygen, float lastSimpleHealth, float lastHealthHead, float lastHealthBody, float lastHealthLeftArm, float lastHealthLeftLeg, float lastHealthRightArm, float lastHealthRightLeg, List<string> visibleSimpleHealth, List<string> visibleFood, List<string> visibleWater, List<string> visibleVirus, List<string> visibleStamina, List<string> visibleOxygen, List<string> visibleHead, List<string> visibleBody, List<string> visibleLeftArm, List<string> visibleLeftLeg, List<string> visibleRightArm, List<string> visibleRightLeg)
+        {
+            LastFood = lastFood;
+            LastWater = lastWater;
+            LastStamina = lastStamina;
+            LastVirus = lastVirus;
+            LastOxygen = lastOxygen;
+            LastSimpleHealth = lastSimpleHealth;
+            LastHealthHead = lastHealthHead;
+            LastHealthBody = lastHealthBody;
+            LastHealthLeftArm = lastHealthLeftArm;
+            LastHealthLeftLeg = lastHealthLeftLeg;
+            LastHealthRightArm = lastHealthRightArm;
+            LastHealthRightLeg = lastHealthRightLeg;
+            VisibleSimpleHealth = visibleSimpleHealth;
+            VisibleFood = visibleFood;
+            VisibleWater = visibleWater;
+            VisibleVirus = visibleVirus;
+            VisibleStamina = visibleStamina;
+            VisibleOxygen = visibleOxygen;
+            VisibleHead = visibleHead;
+            VisibleBody = visibleBody;
+            VisibleLeftArm = visibleLeftArm;
+            VisibleLeftLeg = visibleLeftLeg;
+            VisibleRightArm = visibleRightArm;
+            VisibleRightLeg = visibleRightLeg;
+        }
     }
 }

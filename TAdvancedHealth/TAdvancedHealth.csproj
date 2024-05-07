@@ -44,9 +44,8 @@
     <Compile Include="Commands\CommandSetHealthHud.cs" />
     <Compile Include="Commands\CommandToggleHealthHUD.cs" />
     <Compile Include="Models\Database\DatabaseData.cs" />
-    <Compile Include="Models\Config\OneHandedItem.cs" />
+    <Compile Include="Models\Config\RestrictedItems.cs" />
     <Compile Include="Models\Config\ProgressbarDatas.cs" />
-    <Compile Include="Models\Config\TwoHandedItem.cs" />
     <Compile Include="Models\Enumerators\EHealth.cs" />
     <Compile Include="Models\Config\HealthSystemSettings.cs" />
     <Compile Include="Models\Config\DefibrillatorSettings.cs" />

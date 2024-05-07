@@ -1,6 +1,6 @@
 ﻿namespace Tavstal.TAdvancedHealth.Models.Enums
 {
-    public enum EPlayerStates
+    public enum EPlayerState
     {
         BLEEDING,
         BROKENBONE,

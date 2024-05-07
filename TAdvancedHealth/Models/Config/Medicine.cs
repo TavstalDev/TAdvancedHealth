@@ -12,5 +12,17 @@
         public bool CuresPain { get; set; }
 
         public Medicine() { }
+
+        public Medicine(ushort itemID, float healsHeadHP, float healsBodyHP, float healsRightArmHP, float healsLeftArmHP, float healsRightLegHP, float healsLeftLegHP, bool curesPain)
+        {
+            ItemID = itemID;
+            HealsHeadHP = healsHeadHP;
+            HealsBodyHP = healsBodyHP;
+            HealsRightArmHP = healsRightArmHP;
+            HealsLeftArmHP = healsLeftArmHP;
+            HealsRightLegHP = healsRightLegHP;
+            HealsLeftLegHP = healsLeftLegHP;
+            CuresPain = curesPain;
+        }
     }
 }

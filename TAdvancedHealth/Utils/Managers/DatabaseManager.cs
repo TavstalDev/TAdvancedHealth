@@ -305,17 +305,37 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
         /// <returns>A task representing the asynchronous operation. The task result contains the health data of the player.</returns>
         public async Task<HealthData> GetPlayerHealthAsync(string id)
         {
-            HealthData h = null;
+            HealthData healthData = null;
             try
             {
-                h = await CreateConnection().GetTableRowAsync<HealthData>($"PlayerId={id}", null);
+                healthData = await CreateConnection().GetTableRowAsync<HealthData>($"PlayerId={id}", null);
             }
             catch (Exception ex)
             {
                 TAdvancedHealth.Logger.LogException("Error in getHealthAsync:");
                 TAdvancedHealth.Logger.LogError(ex);
             }
-            return h;
+            return healthData;
+        }
+
+        /// <summary>
+        /// Asynchronously retrieves the health data of a player from the database.
+        /// </summary>
+        /// <param name="id">The ID of the player.</param>
+        /// <returns>A task representing the asynchronous operation. The task result contains the health data of the player.</returns>
+        public HealthData GetPlayerHealth(string id)
+        {
+            HealthData healthData = null;
+            try
+            {
+                healthData = CreateConnection().GetTableRowAsync<HealthData>($"PlayerId={id}", null).Result;
+            }
+            catch (Exception ex)
+            {
+                TAdvancedHealth.Logger.LogException("Error in getHealthAsync:");
+                TAdvancedHealth.Logger.LogError(ex);
+            }
+            return healthData;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Tavstal.TAdvancedHealth
             UnturnedPlayer player = (UnturnedPlayer)caller;
             if (args.Length == 1)
             {
-                Hospital hospital = TAdvancedHealth.Instance.Config.HospitalSettings.hospitals.FirstOrDefault(x => x.Name.ToLower() == args[0].ToLower());
+                Hospital hospital = TAdvancedHealth.Instance.Config.HospitalSettings.Hospitals.FirstOrDefault(x => x.Name.ToLower() == args[0].ToLower());
                 if (hospital != null)
                 {
                     hospital.Position.Add(new TLibrary.Compatibility.SerializableVector3(player.Position));
