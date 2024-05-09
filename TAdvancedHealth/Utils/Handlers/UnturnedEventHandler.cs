@@ -110,8 +110,8 @@ namespace Tavstal.TAdvancedHealth.Handlers
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
-                await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Food, player.Player.life.food, (int)comp.progressBarData.LastFood);
-                comp.progressBarData.LastFood = value;
+                await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Food, player.Player.life.food, (int)comp.ProgressBarData.LastFood);
+                comp.ProgressBarData.LastFood = value;
 
                 if (value <= 0)
                    await comp.TryAddStateAsync(EPlayerState.NOFOOD);
@@ -135,8 +135,8 @@ namespace Tavstal.TAdvancedHealth.Handlers
             try
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Stamina, player.Player.life.stamina, (int)comp.progressBarData.LastStamina);
-                comp.progressBarData.LastStamina = value;
+                await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Stamina, player.Player.life.stamina, (int)comp.ProgressBarData.LastStamina);
+                comp.ProgressBarData.LastStamina = value;
             }
             catch (Exception e)
             {
@@ -156,8 +156,8 @@ namespace Tavstal.TAdvancedHealth.Handlers
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
-                await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Water, player.Player.life.water, (int)comp.progressBarData.LastWater);
-                comp.progressBarData.LastWater = value;
+                await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Water, player.Player.life.water, (int)comp.ProgressBarData.LastWater);
+                comp.ProgressBarData.LastWater = value;
 
                 if (value <= 0)
                    await comp.TryAddStateAsync(EPlayerState.NOWATER);
@@ -182,8 +182,8 @@ namespace Tavstal.TAdvancedHealth.Handlers
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
-                await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Radiation, player.Player.life.virus, (int)comp.progressBarData.LastVirus);
-                comp.progressBarData.LastVirus = value;
+                await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Radiation, player.Player.life.virus, (int)comp.ProgressBarData.LastVirus);
+                comp.ProgressBarData.LastVirus = value;
 
                 if (value <= 0)
                    await comp.TryAddStateAsync(EPlayerState.NOVIRUS);
@@ -207,8 +207,8 @@ namespace Tavstal.TAdvancedHealth.Handlers
             try
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Oxygen, player.Player.life.oxygen, (int)comp.progressBarData.LastOxygen);
-                comp.progressBarData.LastOxygen = value;
+                await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Oxygen, player.Player.life.oxygen, (int)comp.ProgressBarData.LastOxygen);
+                comp.ProgressBarData.LastOxygen = value;
 
                 if (value <= 0)
                    await comp.TryAddStateAsync(EPlayerState.NOOXYGEN);
@@ -241,13 +241,13 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     }
 
                     if (MathHelper.Next(1, 100) <= _config.HealthSystemSettings.HeavyBleedingChance)
-                        comp.hasHeavyBleeding = true;
+                        comp.HasHeavyBleeding = true;
 
                     await comp.TryAddStateAsync(EPlayerState.BLEEDING);
                 }
                 else
                 {
-                    comp.hasHeavyBleeding = false;
+                    comp.HasHeavyBleeding = false;
                     await comp.TryRemoveStateAsync(EPlayerState.BLEEDING);
                 }
 
@@ -769,17 +769,17 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 comp.EffectID = health.HUDEffectID;
                 #region Set ProgressBarData
-                comp.progressBarData.LastHealthHead = health.HeadHealth;
-                comp.progressBarData.LastHealthBody = health.BodyHealth;
-                comp.progressBarData.LastHealthLeftArm = health.LeftArmHealth;
-                comp.progressBarData.LastHealthLeftLeg = health.LeftLegHealth;
-                comp.progressBarData.LastHealthRightArm = health.RightArmHealth;
-                comp.progressBarData.LastHealthRightLeg = health.RightLegHealth;
-                comp.progressBarData.LastFood = player.Player.life.food;
-                comp.progressBarData.LastWater = player.Player.life.water;
-                comp.progressBarData.LastVirus = player.Player.life.virus;
-                comp.progressBarData.LastOxygen = player.Player.life.oxygen;
-                comp.progressBarData.LastStamina = player.Player.life.stamina;
+                comp.ProgressBarData.LastHealthHead = health.HeadHealth;
+                comp.ProgressBarData.LastHealthBody = health.BodyHealth;
+                comp.ProgressBarData.LastHealthLeftArm = health.LeftArmHealth;
+                comp.ProgressBarData.LastHealthLeftLeg = health.LeftLegHealth;
+                comp.ProgressBarData.LastHealthRightArm = health.RightArmHealth;
+                comp.ProgressBarData.LastHealthRightLeg = health.RightLegHealth;
+                comp.ProgressBarData.LastFood = player.Player.life.food;
+                comp.ProgressBarData.LastWater = player.Player.life.water;
+                comp.ProgressBarData.LastVirus = player.Player.life.virus;
+                comp.ProgressBarData.LastOxygen = player.Player.life.oxygen;
+                comp.ProgressBarData.LastStamina = player.Player.life.stamina;
                 #endregion
                 #region Update States
                 Event_OnPlayerFoodUpdate(player, player.Player.life.food);
@@ -1217,7 +1217,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     }
                     else
                     {
-                        if (comp.hasHeavyBleeding)
+                        if (comp.HasHeavyBleeding)
                             totaldamage = _config.HealthSystemSettings.HeavyBleedingDamage;
                         else
                             totaldamage = _config.HealthSystemSettings.BleedingDamage;
@@ -1356,7 +1356,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     }
                     else
                     {
-                        if (cp.hasHeavyBleeding)
+                        if (cp.HasHeavyBleeding)
                             parameters.damage = c.HeavyBleedingDamage;
                         else
                             parameters.damage = c.BleedingDamage;

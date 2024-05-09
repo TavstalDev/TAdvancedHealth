@@ -22,10 +22,10 @@ namespace Tavstal.TAdvancedHealth
     {
         public new static TAdvancedHealth Instance { get; private set; }
         public static DatabaseManager Database { get; private set; }
-        private HarmonyLib.Harmony HarmonyPatcher { get; set; }
         public static bool IsConnectionAuthFailed { get; set; }
-        private bool _hasFullMoon = false;
-        public HealthSystemSettings CHSCSettings => Config.HealthSystemSettings;
+        private HarmonyLib.Harmony HarmonyPatcher { get; set; }
+        private bool _hasFullMoon { get; set; }
+        private DateTime _nextUpdate {  get; set; }
 
         /// <summary>
         /// Called when the plugin is loaded.
@@ -89,11 +89,14 @@ namespace Tavstal.TAdvancedHealth
         /// <summary>
         /// Called every frame, if the MonoBehaviour is enabled.
         /// </summary>
-        internal async void Update()
+        private void Update()
         {
             string voidname = "UpdateHealthAsync()";
             try
             {
+                if (_nextUpdate > DateTime.Now)
+                    return;
+
                 // Update Moon State
                 if (_hasFullMoon != LightingManager.isFullMoon)
                 {
@@ -101,81 +104,7 @@ namespace Tavstal.TAdvancedHealth
                     UnturnedEventHandler.Event_OnMoonUpdated(LightingManager.isFullMoon);
                 }
 
-                // Should be rechecked
-                foreach (SteamPlayer steamPlayer in Provider.clients)
-                {
-                    UnturnedPlayer player = UnturnedPlayer.FromSteamPlayer(steamPlayer);
-                    var transCon = steamPlayer.transportConnection;
-                    AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-
-                    HealthData healthData = await Database.GetPlayerHealthAsync(player.Id);
-                    #region Injured
-                    if (healthData.IsInjured)
-                    {
-                        player.Bleeding = false;
-
-                        int secs = (int)(healthData.DeathDate - DateTime.Now).TotalSeconds;
-                        EffectManager.sendUIEffectText((short)comp.EffectID, transCon, true, "tb_message", Localize("ui_bleeding", secs.ToString()));
-                        if (healthData.DeathDate < DateTime.Now)
-                            await comp.BleedOutAsync();
-                    }
-                    #endregion
-
-                    #region Regeneration
-                    // Head
-                    if (comp.NextHeadHealDate <= DateTime.Now)
-                    {
-                        if (healthData.HeadHealth + 1 <= CHSCSettings.HeadHealth && player.Player.life.food >= CHSCSettings.HealthRegenMinFood && player.Player.life.water >= CHSCSettings.HealthRegenMinWater && player.Player.life.virus >= CHSCSettings.HealthRegenMinVirus)
-                            await Database.UpdateHealthAsync(player.Id, healthData.HeadHealth + 1, EHealth.HEAD);
-                        comp.NextHeadHealDate = DateTime.Now.AddSeconds(CHSCSettings.HeadRegenTicks);
-                    }
-
-                    // Body
-                    if (comp.NextBodyHealDate <= DateTime.Now)
-                    {
-                        if (healthData.BodyHealth + 1 <= CHSCSettings.BodyHealth && player.Player.life.food >= CHSCSettings.HealthRegenMinFood && player.Player.life.water >= CHSCSettings.HealthRegenMinWater && player.Player.life.virus >= CHSCSettings.HealthRegenMinVirus)
-                            await Database.UpdateHealthAsync(player.Id, healthData.BodyHealth + 1, EHealth.BODY);
-                        comp.NextBodyHealDate = DateTime.Now.AddSeconds(CHSCSettings.BodyRegenTicks);
-                    }
-
-                    // Arm
-                    if (comp.NextArmHealDate <= DateTime.Now)
-                    {
-                        if (player.Player.life.food >= CHSCSettings.HealthRegenMinFood && player.Player.life.water >= CHSCSettings.HealthRegenMinWater && player.Player.life.virus >= CHSCSettings.HealthRegenMinVirus)
-                        {
-                            if (healthData.LeftArmHealth + 1 <= CHSCSettings.LeftArmHealth)
-                                await Database.UpdateHealthAsync(player.Id, healthData.LeftArmHealth + 1, EHealth.LEFT_ARM);
-                            if (healthData.RightArmHealth + 1 <= CHSCSettings.RightArmHealth)
-                                await Database.UpdateHealthAsync(player.Id, healthData.RightArmHealth + 1, EHealth.RIGHT_ARM);
-                        }
-                        comp.NextArmHealDate = DateTime.Now.AddSeconds(CHSCSettings.ArmRegenTicks);
-                    }
-
-                    // Leg
-                    if (comp.NextLegHealDate <= DateTime.Now)
-                    {
-                        if (player.Player.life.food >= CHSCSettings.HealthRegenMinFood && player.Player.life.water >= CHSCSettings.HealthRegenMinWater && player.Player.life.virus >= CHSCSettings.HealthRegenMinVirus)
-                        {
-                            if (healthData.LeftLegHealth + 1 <= CHSCSettings.LeftLegHealth)
-                                await Database.UpdateHealthAsync(player.Id, healthData.LeftLegHealth + 1, EHealth.LEFT_LEG);
-                            if (healthData.RightLegHealth + 1 <= CHSCSettings.RightLegHealth)
-                                await Database.UpdateHealthAsync(player.Id, healthData.RightLegHealth + 1, EHealth.RIGHT_LEG);
-                        }
-                        comp.NextLegHealDate = DateTime.Now.AddSeconds(CHSCSettings.LegRegenTicks);
-                    }
-                    #endregion
-
-                    #region Dragging
-                    if (comp.DragState == EDragState.DRAGGER && comp.DragPartnerId != CSteamID.Nil)
-                    {
-                        UnturnedPlayer partner = UnturnedPlayer.FromCSteamID(comp.DragPartnerId);
-
-                        if (partner != null)
-                            if (Vector3.Distance(partner.Position, player.Position) > 3)
-                                partner.Player.teleportToPlayer(player.Player);
-                    }
-                    #endregion
-                }
+                _nextUpdate = DateTime.Now.AddSeconds(5);
             }
             catch (Exception e)
             {

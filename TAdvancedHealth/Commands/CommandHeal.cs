@@ -18,7 +18,7 @@ namespace Tavstal.TAdvancedHealth
         public void Execute(IRocketPlayer caller, string[] args)
         {
             UnturnedPlayer callerPlayer = (UnturnedPlayer)caller;
-            var chsettings = TAdvancedHealth.Instance.CHSCSettings;
+            var chsettings = TAdvancedHealth.Instance.Config.HealthSystemSettings;
             var main = TAdvancedHealth.Instance;
             if (args.Length == 0)
             {

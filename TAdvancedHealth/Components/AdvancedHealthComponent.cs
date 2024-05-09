@@ -5,27 +5,30 @@ using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Models.Enums;
 using Tavstal.TAdvancedHealth.Utils.Helpers;
+using UnityEngine;
 
 namespace Tavstal.TAdvancedHealth.Components
 {
     public class AdvancedHealthComponent : UnturnedPlayerComponent
     {
         public ITransportConnection TranspConnection => Player.SteamPlayer().transportConnection;
-        public bool hasHeavyBleeding = false;
-        public ProgressBarDatas progressBarData = new ProgressBarDatas();
+        public bool HasHeavyBleeding = false;
+        public ProgressBarDatas ProgressBarData = new ProgressBarDatas();
         public EDragState DragState = EDragState.NONE;
         public CSteamID DragPartnerId = CSteamID.Nil;
+        public HealthData HealthData {  get; set; }
 
         public Dictionary<ushort, DateTime> LastDefibliratorUses { get; set; } = new Dictionary<ushort, DateTime>();
-        public DateTime NextHeadHealDate { get; set; }
-        public DateTime NextBodyHealDate { get; set; }
-        public DateTime NextArmHealDate { get; set; }
-        public DateTime NextLegHealDate { get; set; }
+        private DateTime _nextHeadHealDate { get; set; }
+        private DateTime _nextBodyHealDate { get; set; }
+        private DateTime _nextArmHealDate { get; set; }
+        private DateTime _nextLegHealDate { get; set; }
 
 
         public bool AllowDamage = false;
@@ -191,13 +194,13 @@ namespace Tavstal.TAdvancedHealth.Components
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task ReviveAsync(bool recievedFromPartner = false)
         {
-            var chsettings = TAdvancedHealth.Instance.CHSCSettings;
+            var chsettings = TAdvancedHealth.Instance.Config.HealthSystemSettings;
 
             if (this.Player.Player.movement.pluginSpeedMultiplier != chsettings.DefaultWalkSpeed)
                 this.Player.Player.movement.sendPluginSpeedMultiplier(chsettings.DefaultWalkSpeed);
             this.Player.Player.movement.sendPluginJumpMultiplier(1f);
             AllowDamage = false;
-            hasHeavyBleeding = false;
+            HasHeavyBleeding = false;
             
             HealthData health = await TAdvancedHealth.Database.GetPlayerHealthAsync(this.Player.Id);
             await TAdvancedHealth.Database.UpdateHealthAsync(this.Player.Id, new HealthData 
@@ -235,13 +238,138 @@ namespace Tavstal.TAdvancedHealth.Components
         {
             AllowDamage = true;
             this.Player.Player.life.askDamage(100, this.Player.Position.normalized, EDeathCause.BLEEDING, ELimb.SKULL, CSteamID.Nil, out EPlayerKill outKill);
-            var chsettings = TAdvancedHealth.Instance.CHSCSettings;
+            var chsettings = TAdvancedHealth.Instance.Config.HealthSystemSettings;
             if (this.Player.Player.movement.pluginSpeedMultiplier != chsettings.DefaultWalkSpeed)
                 this.Player.Player.movement.sendPluginSpeedMultiplier(chsettings.DefaultWalkSpeed);
             this.Player.Player.movement.sendPluginJumpMultiplier(1f);
             await TAdvancedHealth.Database.UpdateInjuredAsync(this.Player.Id, false, DateTime.Now);
             EffectManager.sendUIEffectVisibility((short)EffectID, TranspConnection, true, "RevivePanel", false);
             this.Player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
+        }
+    
+        private async void Update()
+        {
+            // TODO: Replace this with cache
+            HealthData = await TAdvancedHealth.Database.GetPlayerHealthAsync(this.Player.Id);
+
+            #region Injured
+            if (HealthData.IsInjured)
+            {
+                Player.Bleeding = false;
+
+                int secs = (int)(HealthData.DeathDate - DateTime.Now).TotalSeconds;
+                EffectManager.sendUIEffectText((short)EffectID, TranspConnection, true, "tb_message", TAdvancedHealth.Instance.Localize("ui_bleeding", secs.ToString()));
+                if (HealthData.DeathDate < DateTime.Now)
+                {
+                    await BleedOutAsync();
+                    return;
+                }
+            }
+            #endregion
+
+            #region Dragging
+            if (DragState == EDragState.DRAGGER && DragPartnerId != CSteamID.Nil)
+            {
+                UnturnedPlayer partner = UnturnedPlayer.FromCSteamID(DragPartnerId);
+
+                if (partner != null)
+                    if (Vector3.Distance(partner.Position, Player.Position) > 3)
+                        partner.Player.teleportToPlayer(Player.Player);
+            }
+            #endregion
+
+            #region Regeneration
+            bool shouldUpdateHealth = false;
+            bool canRegenerate = Player.Player.life.food >= TAdvancedHealth.Instance.Config.HealthSystemSettings.HealthRegenMinFood && Player.Player.life.water >= TAdvancedHealth.Instance.Config.HealthSystemSettings.HealthRegenMinWater && Player.Player.life.virus >= TAdvancedHealth.Instance.Config.HealthSystemSettings.HealthRegenMinVirus;
+            EDatabaseEvent databaseEvent = EDatabaseEvent.NONE;
+
+            // Head
+            if (_nextHeadHealDate <= DateTime.Now)
+            {
+                if (HealthData.HeadHealth + 1 <= TAdvancedHealth.Instance.Config.HealthSystemSettings.HeadHealth && canRegenerate)
+                {
+                    HealthData.HeadHealth += 1;
+                    shouldUpdateHealth = true;
+                    if (databaseEvent == EDatabaseEvent.NONE)
+                        databaseEvent = EDatabaseEvent.HEAD;
+                    else
+                        databaseEvent |= EDatabaseEvent.HEAD;
+                }
+                _nextHeadHealDate = DateTime.Now.AddSeconds(TAdvancedHealth.Instance.Config.HealthSystemSettings.HeadRegenTicks);
+            }
+
+            // Body
+            if (_nextBodyHealDate <= DateTime.Now)
+            {
+                if (HealthData.BodyHealth + 1 <= TAdvancedHealth.Instance.Config.HealthSystemSettings.BodyHealth && canRegenerate)
+                {
+                    HealthData.BodyHealth += 1;
+                    shouldUpdateHealth = true;
+                    if (databaseEvent == EDatabaseEvent.NONE)
+                        databaseEvent = EDatabaseEvent.BODY;
+                    else
+                        databaseEvent |= EDatabaseEvent.BODY;
+                }
+                _nextBodyHealDate = DateTime.Now.AddSeconds(TAdvancedHealth.Instance.Config.HealthSystemSettings.BodyRegenTicks);
+            }
+
+            // Arm
+            if (_nextArmHealDate <= DateTime.Now)
+            {
+                if (canRegenerate)
+                {
+                    if (HealthData.LeftArmHealth + 1 <= TAdvancedHealth.Instance.Config.HealthSystemSettings.LeftArmHealth)
+                    {
+                        HealthData.LeftArmHealth += 1;
+                        shouldUpdateHealth = true;
+                        if (databaseEvent == EDatabaseEvent.NONE)
+                            databaseEvent = EDatabaseEvent.LEFT_ARM;
+                        else
+                            databaseEvent |= EDatabaseEvent.LEFT_ARM;
+                    }
+                    if (HealthData.RightArmHealth + 1 <= TAdvancedHealth.Instance.Config.HealthSystemSettings.RightArmHealth)
+                    {
+                        HealthData.RightArmHealth += 1;
+                        shouldUpdateHealth = true;
+                        if (databaseEvent == EDatabaseEvent.NONE)
+                            databaseEvent = EDatabaseEvent.RIGHT_ARM;
+                        else
+                            databaseEvent |= EDatabaseEvent.RIGHT_ARM;
+                    }
+                }
+                _nextArmHealDate = DateTime.Now.AddSeconds(TAdvancedHealth.Instance.Config.HealthSystemSettings.ArmRegenTicks);
+            }
+
+            // Leg
+            if (_nextLegHealDate <= DateTime.Now)
+            {
+                if (canRegenerate)
+                {
+                    if (HealthData.LeftLegHealth + 1 <= TAdvancedHealth.Instance.Config.HealthSystemSettings.LeftLegHealth)
+                    {
+                        HealthData.LeftLegHealth += 1;
+                        shouldUpdateHealth = true;
+                        if (databaseEvent == EDatabaseEvent.NONE)
+                            databaseEvent = EDatabaseEvent.LEFT_LEG;
+                        else
+                            databaseEvent |= EDatabaseEvent.LEFT_LEG;
+                    }
+                    if (HealthData.RightLegHealth + 1 <= TAdvancedHealth.Instance.Config.HealthSystemSettings.RightLegHealth)
+                    {
+                        HealthData.RightLegHealth += 1;
+                        shouldUpdateHealth = true;
+                        if (databaseEvent == EDatabaseEvent.NONE)
+                            databaseEvent = EDatabaseEvent.RIGHT_LEG;
+                        else
+                            databaseEvent |= EDatabaseEvent.RIGHT_LEG;
+                    }
+                }
+                _nextLegHealDate = DateTime.Now.AddSeconds(TAdvancedHealth.Instance.Config.HealthSystemSettings.LegRegenTicks);
+            }
+
+            if (shouldUpdateHealth)
+                await TAdvancedHealth.Database.UpdateHealthAsync(Player.Id, HealthData, databaseEvent);
+            #endregion
         }
     }
 }
