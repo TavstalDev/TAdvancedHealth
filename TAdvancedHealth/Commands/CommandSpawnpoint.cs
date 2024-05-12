@@ -27,10 +27,11 @@ namespace Tavstal.TAdvancedHealth
                 {
                     hospital.Position.Add(new TLibrary.Compatibility.SerializableVector3(player.Position));
                     TAdvancedHealth.Instance.Config.SaveConfig();
+                    TAdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "success_command_hospital_added");
                 }
                 else
                 {
-                    TAdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "Hospital_isnot_exists");
+                    TAdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "error_hospital_not_found");
                     return;
                 }
             }

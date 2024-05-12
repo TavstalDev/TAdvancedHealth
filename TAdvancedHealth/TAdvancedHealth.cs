@@ -141,6 +141,8 @@ namespace Tavstal.TAdvancedHealth
                { "error_defiblirator_revive_fail", "&6Failed to revive {0}." },
                { "error_defiblirator_no_player", "&6You need to be closer to a player." },
                { "error_defiblirator_not_injured", "&6This player is not injured." },
+               { "success_command_hospital_added", "&aThe hospital bed has been successfully added." },
+               { "error_hospital_not_found", "&cHospital was not found."  },
                { "ui_revive_progress", "You will revive <color=green>{0}</color> in <color=yellow>{1}</color> seconds" },
                { "ui_bleeding", "You will bleed in <color=red>{0}</color> seconds" },
                { "ui_revive_start_other", "<color=green>{0}</color> has began to revive you" },

@@ -1,6 +1,7 @@
 ﻿using Rocket.API;
 using System.Collections.Generic;
 using System.Reflection;
+using Tavstal.TLibrary.Helpers.Unturned;
 
 namespace Tavstal.TAdvancedHealth
 {
@@ -15,10 +16,10 @@ namespace Tavstal.TAdvancedHealth
 
         public void Execute(IRocketPlayer caller, string[] command)
         {
-            TAdvancedHealth.Logger.Log("#########################################");
-            TAdvancedHealth.Logger.Log(string.Format("# Build Version: {0}", TAdvancedHealth.Version));
-            TAdvancedHealth.Logger.Log(string.Format("# Build Date: {0}", TAdvancedHealth.BuildDate));
-            TAdvancedHealth.Logger.Log("#########################################");
+            TAdvancedHealth.Instance.SendPlainCommandReply(caller, "#########################################");
+            TAdvancedHealth.Instance.SendPlainCommandReply(caller, string.Format("# Build Version: {0}", TAdvancedHealth.Version));
+            TAdvancedHealth.Instance.SendPlainCommandReply(caller, string.Format("# Build Date: {0}", TAdvancedHealth.BuildDate));
+            TAdvancedHealth.Instance.SendPlainCommandReply(caller, "#########################################");
         }
     }
 }

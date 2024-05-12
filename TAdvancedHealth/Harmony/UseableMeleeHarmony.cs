@@ -65,7 +65,6 @@ namespace Tavstal.TAdvancedHealth.Harmony
                 else
                 {
                     TAdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "error_defiblirator_revive_fail", targetPlayer.CharacterName);
-                    //Helper.SendChatMessage(targetPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "error_defiblirator_revive_fail_other"));
                 }
                 userComp.LastDefibliratorUses.Add(useableMelee.equippedMeleeAsset.id, DateTime.Now.AddSeconds(defibrillator.RechargeTimeSecs));
             }

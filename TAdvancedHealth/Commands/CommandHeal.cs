@@ -15,7 +15,7 @@ namespace Tavstal.TAdvancedHealth
         public List<string> Aliases => new List<string> { "heal" };
         public List<string> Permissions => new List<string> { "TAdvancedHealth.command.heal" };
 
-        public void Execute(IRocketPlayer caller, string[] args)
+        public async void Execute(IRocketPlayer caller, string[] args)
         {
             UnturnedPlayer callerPlayer = (UnturnedPlayer)caller;
             var chsettings = TAdvancedHealth.Instance.Config.HealthSystemSettings;
@@ -23,7 +23,7 @@ namespace Tavstal.TAdvancedHealth
             if (args.Length == 0)
             {
                 AdvancedHealthComponent comp = callerPlayer.GetComponent<AdvancedHealthComponent>();
-                comp.ReviveAsync();
+                await comp.ReviveAsync();
 
                 TAdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_cure_success", callerPlayer.CharacterName);
             }
@@ -37,7 +37,7 @@ namespace Tavstal.TAdvancedHealth
                 }
 
                 AdvancedHealthComponent targetComp = targetPlayer.GetComponent<AdvancedHealthComponent>();
-                targetComp.ReviveAsync();
+                await targetComp.ReviveAsync();
 
                 TAdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_cure_success", targetPlayer.CharacterName);
             }
