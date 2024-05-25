@@ -17,7 +17,7 @@ namespace Tavstal.TAdvancedHealth.Commands
         public string Help => "Sets/Lists the hud style.";
         public string Syntax => "list <page> | [name]";
         public List<string> Aliases => new List<string> { "sethhud", "shealthhud", "sethealthh" };
-        public List<string> Permissions => new List<string> { "TAdvancedHealth.command.sethealthhud" };
+        public List<string> Permissions => new List<string> { "tadvancedhealth.commands.sethealthhud" };
 
         public async void Execute(IRocketPlayer caller, string[] args)
         {

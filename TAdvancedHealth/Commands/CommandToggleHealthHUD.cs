@@ -14,7 +14,7 @@ namespace Tavstal.TAdvancedHealth.Commands
         public string Help => "Toggles the custom hud.";
         public string Syntax => "/togglehealthhud";
         public List<string> Aliases => new List<string> { "thealthhud", "togglehhud", "togglehh" };
-        public List<string> Permissions => new List<string> { "TAdvancedHealth.command.togglehud" };
+        public List<string> Permissions => new List<string> { "tadvancedhealth.commands.togglehud" };
 
         public async void Execute(IRocketPlayer caller, string[] args)
         {

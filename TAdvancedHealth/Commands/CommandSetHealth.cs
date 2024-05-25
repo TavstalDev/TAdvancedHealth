@@ -14,7 +14,7 @@ namespace Tavstal.TAdvancedHealth
         public string Help => "Changes your health or somebody else's.";
         public string Syntax => "/sethealth <player> [bodypart] [newHealth]";
         public List<string> Aliases => new List<string>();
-        public List<string> Permissions => new List<string> { "TAdvancedHealth.command.sethealth" };
+        public List<string> Permissions => new List<string> { "tadvancedhealth.commands.sethealth" };
 
 
         public async void Execute(IRocketPlayer caller, string[] args)

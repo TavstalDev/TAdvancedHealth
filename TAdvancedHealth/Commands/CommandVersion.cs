@@ -12,7 +12,7 @@ namespace Tavstal.TAdvancedHealth
         public string Help => "Gets the version of the plugin";
         public string Syntax => "";
         public List<string> Aliases => new List<string>();
-        public List<string> Permissions => new List<string> { "TAdvancedHealth.version" };
+        public List<string> Permissions => new List<string> { "tadvancedhealth.commands.version" };
 
         public void Execute(IRocketPlayer caller, string[] command)
         {

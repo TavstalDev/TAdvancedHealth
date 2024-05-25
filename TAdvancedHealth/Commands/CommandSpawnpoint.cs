@@ -15,7 +15,7 @@ namespace Tavstal.TAdvancedHealth
         public string Help => "";
         public string Syntax => "/sethospitalbed <hospitalname>";
         public List<string> Aliases => new List<string>();
-        public List<string> Permissions => new List<string> { "TAdvancedHealth.command.sethospitalbed" };
+        public List<string> Permissions => new List<string> { "tadvancedhealth.commands.sethospitalbed" };
 
         public void Execute(IRocketPlayer caller, string[] args)
         {
