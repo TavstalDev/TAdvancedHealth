@@ -12,7 +12,7 @@ namespace Tavstal.TAdvancedHealth
     {
         public AllowedCaller AllowedCaller => AllowedCaller.Player;
         public string Name => "sethospitalbed";
-        public string Help => "";
+        public string Help => "Sets a respawn point";
         public string Syntax => "/sethospitalbed <hospitalname>";
         public List<string> Aliases => new List<string>();
         public List<string> Permissions => new List<string> { "tadvancedhealth.commands.sethospitalbed" };

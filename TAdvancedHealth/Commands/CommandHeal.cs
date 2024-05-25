@@ -13,7 +13,7 @@ namespace Tavstal.TAdvancedHealth
         public string Help => "Heals yourself or somebody else.";
         public string Syntax => "/cure <player>";
         public List<string> Aliases => new List<string> { "heal" };
-        public List<string> Permissions => new List<string> { "tadvancedhealth.commands.heal" };
+        public List<string> Permissions => new List<string> { "tadvancedhealth.commands.heal", "tadvancedhealth.commands.cure" };
 
         public async void Execute(IRocketPlayer caller, string[] args)
         {
