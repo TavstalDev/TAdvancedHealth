@@ -57,6 +57,3 @@ A custom tarkov like health system with database support.
 <br>
 <b>Permission(s):</b> tadvancedhealth.commands.togglehud
 </details>
-
-<b>Permission(s):</b>  tshop.commands.migratezaupdb
-</details>
