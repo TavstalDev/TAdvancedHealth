@@ -26,7 +26,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
             {
                 using (var connection = CreateConnection())
                 {
-                    if (!await connection.OpenSafe())
+                    if (!await connection.OpenSafeAsync())
                         TAdvancedHealth.IsConnectionAuthFailed = true;
                     if (connection.State != System.Data.ConnectionState.Open)
                         throw new Exception("# Failed to connect to the database. Please check the plugin's config file.");
