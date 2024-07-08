@@ -1,6 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+<Project Sdk="Microsoft.NET.Sdk" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -9,71 +8,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Tavstal.TAdvancedHealth</RootNamespace>
     <AssemblyName>TAdvancedHealth</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <TargetFramework>net48</TargetFramework>
     <FileAlignment>512</FileAlignment>
-    <Deterministic>true</Deterministic>
-    <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
-    <Version>1.0.0</Version>
-    <AssemblyVersion>1.0.*</AssemblyVersion>
     <Deterministic>false</Deterministic>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-  <ItemGroup>
-    <Compile Include="Commands\CommandVersion.cs" />
-    <Compile Include="Commands\CommandSetHealth.cs" />
-    <Compile Include="Commands\CommandSpawnpoint.cs" />
-    <Compile Include="Commands\CommandSetHealthHud.cs" />
-    <Compile Include="Commands\CommandToggleHealthHUD.cs" />
-    <Compile Include="Models\Database\DatabaseData.cs" />
-    <Compile Include="Models\Config\RestrictedItems.cs" />
-    <Compile Include="Models\Config\ProgressbarDatas.cs" />
-    <Compile Include="Models\Enumerators\EHealth.cs" />
-    <Compile Include="Models\Config\HealthSystemSettings.cs" />
-    <Compile Include="Models\Config\DefibrillatorSettings.cs" />
-    <Compile Include="Models\Config\Defibrillator.cs" />
-    <Compile Include="Models\Database\HealthData.cs" />
-    <Compile Include="Models\Config\Medicine.cs" />
-    <Compile Include="Models\Config\HospitalSettings.cs" />
-    <Compile Include="Models\Config\Hospital.cs" />
-    <Compile Include="Models\Config\AntiGroupFriendlyFireSettings.cs" />
-    <Compile Include="Models\Config\StatusIcon.cs" />
-    <Compile Include="Models\Enumerators\EDatabaseEvent.cs" />
-    <Compile Include="Models\Enumerators\EDragState.cs" />
-    <Compile Include="Models\Enumerators\EProgressBar.cs" />
-    <Compile Include="Models\Enumerators\EPlayerState.cs" />
-    <Compile Include="Models\Config\HUDStyle.cs" />
-    <Compile Include="Harmony\UseableMeleeHarmony.cs" />
-    <Compile Include="Utils\Handlers\HealthSystemEventHandler.cs" />
-    <Compile Include="Utils\Handlers\UnturnedEventHandler.cs" />
-    <Compile Include="Utils\Helpers\HealthHelper.cs" />
-    <Compile Include="Utils\Managers\EventManager.cs" />
-    <Compile Include="TAdvancedHealthConfig.cs" />
-    <Compile Include="Commands\CommandHeal.cs" />
-    <Compile Include="Utils\Helpers\EffectHelper.cs" />
-    <Compile Include="Components\AdvancedHealthComponent.cs" />
-    <Compile Include="TAdvancedHealth.cs" />
-    <Compile Include="Utils\Managers\DatabaseManager.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
   <ItemGroup>
     <Reference Include="0Harmony">
       <HintPath>..\Libraries\0Harmony.dll</HintPath>
@@ -124,7 +63,7 @@
       <HintPath>..\Libraries\SDG.NetTransport.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="System" />
+    <!--<Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Net.Http" />
@@ -132,7 +71,7 @@
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
-    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Xml.Linq" />-->
     <Reference Include="TLibrary">
       <HintPath>..\Libraries\TLibrary.dll</HintPath>
       <Private>False</Private>
@@ -154,5 +93,62 @@
       <Private>False</Private>
     </Reference>
   </ItemGroup>
+  <!-- Visual Studio
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="Commands\CommandVersion.cs" />
+    <Compile Include="Commands\CommandSetHealth.cs" />
+    <Compile Include="Commands\CommandSpawnpoint.cs" />
+    <Compile Include="Commands\CommandSetHealthHud.cs" />
+    <Compile Include="Commands\CommandToggleHealthHUD.cs" />
+    <Compile Include="Models\Database\DatabaseData.cs" />
+    <Compile Include="Models\Config\RestrictedItems.cs" />
+    <Compile Include="Models\Config\ProgressbarDatas.cs" />
+    <Compile Include="Models\Enumerators\EHealth.cs" />
+    <Compile Include="Models\Config\HealthSystemSettings.cs" />
+    <Compile Include="Models\Config\DefibrillatorSettings.cs" />
+    <Compile Include="Models\Config\Defibrillator.cs" />
+    <Compile Include="Models\Database\HealthData.cs" />
+    <Compile Include="Models\Config\Medicine.cs" />
+    <Compile Include="Models\Config\HospitalSettings.cs" />
+    <Compile Include="Models\Config\Hospital.cs" />
+    <Compile Include="Models\Config\AntiGroupFriendlyFireSettings.cs" />
+    <Compile Include="Models\Config\StatusIcon.cs" />
+    <Compile Include="Models\Enumerators\EDatabaseEvent.cs" />
+    <Compile Include="Models\Enumerators\EDragState.cs" />
+    <Compile Include="Models\Enumerators\EProgressBar.cs" />
+    <Compile Include="Models\Enumerators\EPlayerState.cs" />
+    <Compile Include="Models\Config\HUDStyle.cs" />
+    <Compile Include="Harmony\UseableMeleeHarmony.cs" />
+    <Compile Include="Utils\Handlers\HealthSystemEventHandler.cs" />
+    <Compile Include="Utils\Handlers\UnturnedEventHandler.cs" />
+    <Compile Include="Utils\Helpers\HealthHelper.cs" />
+    <Compile Include="Utils\Managers\EventManager.cs" />
+    <Compile Include="TAdvancedHealthConfig.cs" />
+    <Compile Include="Commands\CommandHeal.cs" />
+    <Compile Include="Utils\Helpers\EffectHelper.cs" />
+    <Compile Include="Components\AdvancedHealthComponent.cs" />
+    <Compile Include="TAdvancedHealth.cs" />
+    <Compile Include="Utils\Managers\DatabaseManager.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  -->
 </Project>
