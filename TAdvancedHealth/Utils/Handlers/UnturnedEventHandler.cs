@@ -12,14 +12,14 @@ using System.Threading.Tasks;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Database;
-using Tavstal.TAdvancedHealth.Models.Enums;
+using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TAdvancedHealth.Utils.Helpers;
 using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Helpers.General;
 using Tavstal.TLibrary.Helpers.Unturned;
 using UnityEngine;
 
-namespace Tavstal.TAdvancedHealth.Handlers
+namespace Tavstal.TAdvancedHealth.Utils.Handlers
 {
     public static class UnturnedEventHandler
     {
@@ -90,11 +90,11 @@ namespace Tavstal.TAdvancedHealth.Handlers
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 HealthData health = await _database.GetPlayerHealthAsync(player.Id);
-                await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_Simple, (int)((System.Math.Round(health.BaseHealth, 2) / _config.HealthSystemSettings.BaseHealth) * 100), 0);
+                await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_Simple, (int)((Math.Round(health.BaseHealth, 2) / _config.HealthSystemSettings.BaseHealth) * 100), 0);
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 
@@ -120,7 +120,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 
@@ -140,7 +140,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 
@@ -166,7 +166,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 
@@ -192,7 +192,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 
@@ -217,7 +217,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 
@@ -234,7 +234,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 if (state)
                 {
-                    if (!_config.HealthSystemSettings.CanStartBleeding && state)
+                    if (!_config.HealthSystemSettings.CanStartBleeding)
                     {
                         player.Bleeding = false;
                         return;
@@ -254,7 +254,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 
@@ -304,7 +304,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 
@@ -331,7 +331,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 
@@ -354,7 +354,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-               TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+               TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 
@@ -377,7 +377,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 
@@ -415,7 +415,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 
@@ -445,7 +445,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
         #endregion
@@ -513,7 +513,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 
@@ -533,7 +533,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 
@@ -619,14 +619,14 @@ namespace Tavstal.TAdvancedHealth.Handlers
                         else
                             health.RightArmHealth = _config.HealthSystemSettings.RightArmHealth;
 
-                        await _database.UpdateHealthAsync(player.Id, health, EDatabaseEvent.ALL);
+                        await _database.UpdateHealthAsync(player.Id, health);
                     }
                     comp.LastEquipedItem = 0;
                 }
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
         #endregion
@@ -667,7 +667,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 
@@ -706,7 +706,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
         #endregion
@@ -761,7 +761,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                             health.RightLegHealth = _config.HealthSystemSettings.RightLegHealth;
                         if (health.LeftLegHealth > _config.HealthSystemSettings.LeftLegHealth)
                             health.LeftLegHealth = _config.HealthSystemSettings.LeftLegHealth;
-                        await _database.UpdateHealthAsync(player.Id, health, EDatabaseEvent.ALL);
+                        await _database.UpdateHealthAsync(player.Id, health);
                     }
                 }
                 #endregion
@@ -801,11 +801,11 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 player.Player.equipment.onEquipRequested += Event_OnPlayerEquipRequested;
                 player.Player.equipment.onDequipRequested += Event_OnPlayerDequipRequested;
                 player.Player.life.onHurt += Event_OnPlayerLifeDamaged;
-                player.Player.life.onOxygenUpdated += (byte b) => Event_OnPlayerOxygenUpdate(player, b);
-                player.Player.life.onTemperatureUpdated += (EPlayerTemperature newTemperature) => Event_OnPlayerTemperatureUpdate(player, newTemperature);
-                player.Player.movement.onSafetyUpdated += (bool isSafe) => Event_OnPlayerSafezoneUpdated(player, isSafe);
-                player.Player.movement.onRadiationUpdated += (bool isRadio) => Event_OnPlayerDeadzoneUpdated(player, isRadio);
-                player.Player.life.onVirusUpdated += (byte virus) => Event_OnPlayerVirusUpdate(player, virus);
+                player.Player.life.onOxygenUpdated += b => Event_OnPlayerOxygenUpdate(player, b);
+                player.Player.life.onTemperatureUpdated += newTemperature => Event_OnPlayerTemperatureUpdate(player, newTemperature);
+                player.Player.movement.onSafetyUpdated += isSafe => Event_OnPlayerSafezoneUpdated(player, isSafe);
+                player.Player.movement.onRadiationUpdated += isRadio => Event_OnPlayerDeadzoneUpdated(player, isRadio);
+                player.Player.life.onVirusUpdated += virus => Event_OnPlayerVirusUpdate(player, virus);
                 #endregion
                 #region HideHealth HUD
                 if (health.IsHUDEnabled)
@@ -824,7 +824,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 
@@ -841,11 +841,11 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 player.Player.equipment.onEquipRequested -= Event_OnPlayerEquipRequested;
                 player.Player.equipment.onDequipRequested -= Event_OnPlayerDequipRequested;
                 player.Player.life.onHurt -= Event_OnPlayerLifeDamaged;
-                player.Player.life.onOxygenUpdated -= (byte b) => Event_OnPlayerOxygenUpdate(player, b);
-                player.Player.life.onTemperatureUpdated -= (EPlayerTemperature newTemperature) => Event_OnPlayerTemperatureUpdate(player, newTemperature);
-                player.Player.movement.onSafetyUpdated -= (bool isSafe) => Event_OnPlayerSafezoneUpdated(player, isSafe);
-                player.Player.movement.onRadiationUpdated -= (bool isRadio) => Event_OnPlayerDeadzoneUpdated(player, isRadio);
-                player.Player.life.onVirusUpdated -= (byte virus) => Event_OnPlayerVirusUpdate(player, virus);
+                player.Player.life.onOxygenUpdated -= b => Event_OnPlayerOxygenUpdate(player, b);
+                player.Player.life.onTemperatureUpdated -= newTemperature => Event_OnPlayerTemperatureUpdate(player, newTemperature);
+                player.Player.movement.onSafetyUpdated -= isSafe => Event_OnPlayerSafezoneUpdated(player, isSafe);
+                player.Player.movement.onRadiationUpdated -= isRadio => Event_OnPlayerDeadzoneUpdated(player, isRadio);
+                player.Player.life.onVirusUpdated -= virus => Event_OnPlayerVirusUpdate(player, virus);
                 #endregion
 
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
@@ -854,7 +854,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
         #endregion
@@ -914,7 +914,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                                     if (killer != CSteamID.Nil)
                                         id = killer;
                                 }
-                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
+                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
                             }
                         }
                         break;
@@ -961,7 +961,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                                     if (killer != CSteamID.Nil)
                                         id = killer;
                                 }
-                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
+                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
                             }
                         }
                         break;
@@ -995,7 +995,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                                     if (killer != CSteamID.Nil)
                                         id = killer;
                                 }
-                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
+                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
                             }
                         }
                         break;
@@ -1029,7 +1029,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                                     if (killer != CSteamID.Nil)
                                         id = killer;
                                 }
-                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
+                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
                             }
                         }
                         break;
@@ -1063,7 +1063,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                                     if (killer != CSteamID.Nil)
                                         id = killer;
                                 }
-                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
+                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
                             }
                         }
                         break;
@@ -1097,7 +1097,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                                     if (killer != CSteamID.Nil)
                                         id = killer;
                                 }
-                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
+                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
                             }
                         }
                         break;
@@ -1128,12 +1128,9 @@ namespace Tavstal.TAdvancedHealth.Handlers
                                         {
                                             comp.AllowDamage = true;
                                             CSteamID id = CSteamID.Nil;
-                                            if (EDeathCause.ZOMBIE != cause)
-                                            {
-                                                if (killer != CSteamID.Nil)
-                                                    id = killer;
-                                            }
-                                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
+                                            if (killer != CSteamID.Nil)
+                                                id = killer;
+                                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
                                         }
                                     }
 
@@ -1154,12 +1151,9 @@ namespace Tavstal.TAdvancedHealth.Handlers
                                         {
                                             comp.AllowDamage = true;
                                             CSteamID id = CSteamID.Nil;
-                                            if (EDeathCause.ZOMBIE != cause)
-                                            {
-                                                if (killer != CSteamID.Nil)
-                                                    id = killer;
-                                            }
-                                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill outKill);
+                                            if (killer != CSteamID.Nil)
+                                                id = killer;
+                                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill _);
                                         }
                                     }
                                     break;
@@ -1197,7 +1191,6 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 player.Player.life.askHeal(100, false, false);
                 HealthData health = await _database.GetPlayerHealthAsync(player.Id);
                 float totaldamage = damage;
-                damage = 0;
 
                 if (cause == EDeathCause.PUNCH)
                     totaldamage = 1.0f;
@@ -1237,7 +1230,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 
@@ -1301,8 +1294,8 @@ namespace Tavstal.TAdvancedHealth.Handlers
                             EDeathCause cause2 = parameters.cause;
                             if (cause2 == EDeathCause.CHARGE || cause2 == EDeathCause.GRENADE || cause2 == EDeathCause.GUN || cause2 == EDeathCause.LANDMINE || cause2 == EDeathCause.MELEE || cause2 == EDeathCause.MISSILE || cause2 == EDeathCause.PUNCH || cause2 == EDeathCause.ROADKILL || cause2 == EDeathCause.SENTRY)
                             {
-                                List<Permission> victimPerms = victim.GetPermissions();
-                                List<Permission> attackerPerms = attacker.GetPermissions();
+                                //List<Permission> victimPerms = victim.GetPermissions();
+                                //List<Permission> attackerPerms = attacker.GetPermissions();
 
                                 List<RocketPermissionsGroup> mutualGroups = UPlayerHelper.GetMutualGroups(victim, attacker);
                                 List<string> ffGroups = ag.Groups;
@@ -1332,7 +1325,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
 
                 player.Player.life.askHeal(100, false, false);
                 HealthData health = _database.GetPlayerHealth(player.Id);
-                float totaldamage = 0;
+                float totaldamage;
 
                 EDeathCause cause = parameters.cause;
                 ELimb limb = parameters.limb;
@@ -1376,7 +1369,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     if (parameters.applyGlobalArmorMultiplier)
                         parameters.times *= Provider.modeConfigData.Players.Armor_Multiplier;
                     int b = Mathf.FloorToInt(parameters.damage * parameters.times);
-                    totaldamage = Mathf.Min((int)byte.MaxValue, b);
+                    totaldamage = Mathf.Min(byte.MaxValue, b);
                 }
                 else
                     totaldamage = parameters.times * parameters.damage;
@@ -1388,7 +1381,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 
@@ -1455,7 +1448,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 
@@ -1482,7 +1475,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
         #endregion
@@ -1526,7 +1519,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
         #endregion
@@ -1550,7 +1543,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                     if (health.IsInjured)
                     {
                         comp.AllowDamage = true;
-                        player.Player.life.askDamage(100, player.Position.normalized, EDeathCause.BLEEDING, ELimb.SKULL, CSteamID.Nil, out EPlayerKill outKill);
+                        player.Player.life.askDamage(100, player.Position.normalized, EDeathCause.BLEEDING, ELimb.SKULL, CSteamID.Nil, out _);
 
                         if (player.Player.movement.pluginSpeedMultiplier == 0)
                             player.Player.movement.sendPluginSpeedMultiplier(1);
@@ -1565,7 +1558,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.LogError(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.LogError($"Error in {voidname}: {e}");
             }
         }
 

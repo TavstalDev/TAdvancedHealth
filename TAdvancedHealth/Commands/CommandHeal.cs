@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TLibrary.Helpers.Unturned;
 
-namespace Tavstal.TAdvancedHealth
+namespace Tavstal.TAdvancedHealth.Commands
 {
     public class CommandCure : IRocketCommand
     {
@@ -18,8 +18,6 @@ namespace Tavstal.TAdvancedHealth
         public async void Execute(IRocketPlayer caller, string[] args)
         {
             UnturnedPlayer callerPlayer = (UnturnedPlayer)caller;
-            var chsettings = TAdvancedHealth.Instance.Config.HealthSystemSettings;
-            var main = TAdvancedHealth.Instance;
             if (args.Length == 0)
             {
                 AdvancedHealthComponent comp = callerPlayer.GetComponent<AdvancedHealthComponent>();

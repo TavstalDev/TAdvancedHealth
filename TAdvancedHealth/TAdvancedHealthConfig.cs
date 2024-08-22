@@ -3,8 +3,8 @@ using SDG.Unturned;
 using System.Collections.Generic;
 using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Database;
-using Tavstal.TAdvancedHealth.Models.Enums;
-using Tavstal.TLibrary.Compatibility;
+using Tavstal.TAdvancedHealth.Models.Enumerators;
+using Tavstal.TLibrary.Models.Plugin;
 
 namespace Tavstal.TAdvancedHealth
 {
@@ -31,7 +31,7 @@ namespace Tavstal.TAdvancedHealth
         [JsonProperty(Order = 12)]
         public RestrictedItems TwoHandedItems { get; set; }
 
-        public override void LoadDefaults()
+        public new void LoadDefaults()
         {
             Database = new DatabaseData()
             {

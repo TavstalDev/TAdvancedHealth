@@ -1,4 +1,4 @@
-﻿namespace Tavstal.TAdvancedHealth.Models.Enums
+﻿namespace Tavstal.TAdvancedHealth.Models.Enumerators
 {
     public enum EDragState
     {

@@ -5,8 +5,9 @@ using System.Linq;
 using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Helpers.Unturned;
+using Tavstal.TLibrary.Models;
 
-namespace Tavstal.TAdvancedHealth
+namespace Tavstal.TAdvancedHealth.Commands
 {
     public class CommandSetHospitalBed : IRocketCommand
     {
@@ -25,20 +26,20 @@ namespace Tavstal.TAdvancedHealth
                 Hospital hospital = TAdvancedHealth.Instance.Config.HospitalSettings.Hospitals.FirstOrDefault(x => x.Name.ToLower() == args[0].ToLower());
                 if (hospital != null)
                 {
-                    hospital.Position.Add(new TLibrary.Compatibility.SerializableVector3(player.Position));
+                    hospital.Position.Add(new SerializableVector3(player.Position));
                     TAdvancedHealth.Instance.Config.SaveConfig();
                     TAdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "success_command_hospital_added");
                 }
                 else
                 {
                     TAdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "error_hospital_not_found");
-                    return;
+                    //return;
                 }
             }
             else
             {
                 UChatHelper.SendPlainChatMessage(player.SteamPlayer(), Syntax);
-                return;
+                //return;
             }
         }
     }

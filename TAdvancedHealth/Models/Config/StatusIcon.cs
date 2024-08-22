@@ -1,4 +1,4 @@
-﻿using Tavstal.TAdvancedHealth.Models.Enums;
+﻿using Tavstal.TAdvancedHealth.Models.Enumerators;
 
 namespace Tavstal.TAdvancedHealth.Models.Config
 {

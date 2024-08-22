@@ -2,10 +2,10 @@
 using SDG.Unturned;
 using System;
 using System.Collections.Generic;
-using Tavstal.TAdvancedHealth.Handlers;
+using Tavstal.TAdvancedHealth.Utils.Handlers;
 using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Utils.Managers;
-using Tavstal.TLibrary.Compatibility;
+using Tavstal.TLibrary.Models.Plugin;
 
 namespace Tavstal.TAdvancedHealth
 {
@@ -49,8 +49,8 @@ namespace Tavstal.TAdvancedHealth
             Logger.Log("# Discord: Tavstal#6189");
             Logger.Log("# Website: https://redstoneplugins.com");
             Logger.Log("#########################################");
-            Logger.Log(string.Format("# Build Version: {0}", Version));
-            Logger.Log(string.Format("# Build Date: {0}", BuildDate));
+            Logger.Log($"# Build Version: {Version}");
+            Logger.Log($"# Build Date: {BuildDate}");
             Logger.Log("#########################################");
             Logger.Log("# TAdvancedHealth has been loaded.");
         }
@@ -103,7 +103,7 @@ namespace Tavstal.TAdvancedHealth
             }
             catch (Exception e)
             {
-                Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                Logger.Log($"Error in {voidname}: {e}");
             }
         }
 

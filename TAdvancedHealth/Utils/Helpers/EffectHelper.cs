@@ -3,10 +3,11 @@ using SDG.Unturned;
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Threading.Tasks;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Database;
-using Tavstal.TAdvancedHealth.Models.Enums;
+using Tavstal.TAdvancedHealth.Models.Enumerators;
 
 namespace Tavstal.TAdvancedHealth.Utils.Helpers
 {
@@ -266,30 +267,30 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
                 //Base
-                EffectManager.sendUIEffectText((short)comp.EffectID, transCon, true, "tb_Health", System.Math.Round(health.BaseHealth, 2).ToString());
-                await SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_Simple, (int)((System.Math.Round(health.BaseHealth, 2) / _config.HealthSystemSettings.BaseHealth) * 100), (int)((comp.ProgressBarData.LastSimpleHealth / _config.HealthSystemSettings.BaseHealth) * 100));
+                EffectManager.sendUIEffectText((short)comp.EffectID, transCon, true, "tb_Health", Math.Round(health.BaseHealth, 2).ToString(CultureInfo.CurrentCulture));
+                await SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_Simple, (int)((Math.Round(health.BaseHealth, 2) / _config.HealthSystemSettings.BaseHealth) * 100), (int)((comp.ProgressBarData.LastSimpleHealth / _config.HealthSystemSettings.BaseHealth) * 100));
                 //Head
-                EffectManager.sendUIEffectText((short)comp.EffectID, transCon, true, "tb_Head", System.Math.Round(health.HeadHealth, 2).ToString());
-                await SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_Head, (int)((System.Math.Round(health.HeadHealth, 2) / _config.HealthSystemSettings.HeadHealth) * 100), (int)((comp.ProgressBarData.LastHealthHead / _config.HealthSystemSettings.HeadHealth) * 100));
+                EffectManager.sendUIEffectText((short)comp.EffectID, transCon, true, "tb_Head", Math.Round(health.HeadHealth, 2).ToString(CultureInfo.CurrentCulture));
+                await SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_Head, (int)((Math.Round(health.HeadHealth, 2) / _config.HealthSystemSettings.HeadHealth) * 100), (int)((comp.ProgressBarData.LastHealthHead / _config.HealthSystemSettings.HeadHealth) * 100));
                 //Bpdy
-                EffectManager.sendUIEffectText((short)comp.EffectID, transCon, true, "tb_Body", System.Math.Round(health.BodyHealth, 2).ToString());
-                await SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_Body, (int)((System.Math.Round(health.BodyHealth, 2) / _config.HealthSystemSettings.BodyHealth) * 100), (int)((comp.ProgressBarData.LastHealthBody / _config.HealthSystemSettings.BodyHealth) * 100));
+                EffectManager.sendUIEffectText((short)comp.EffectID, transCon, true, "tb_Body", Math.Round(health.BodyHealth, 2).ToString(CultureInfo.CurrentCulture));
+                await SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_Body, (int)((Math.Round(health.BodyHealth, 2) / _config.HealthSystemSettings.BodyHealth) * 100), (int)((comp.ProgressBarData.LastHealthBody / _config.HealthSystemSettings.BodyHealth) * 100));
                 //LeftArm
-                EffectManager.sendUIEffectText((short)comp.EffectID, transCon, true, "tb_LeftArm", System.Math.Round(health.LeftArmHealth, 2).ToString());
-                await SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_LeftArm, (int)((System.Math.Round(health.LeftArmHealth, 2) / _config.HealthSystemSettings.LeftArmHealth) * 100), (int)((comp.ProgressBarData.LastHealthLeftArm / _config.HealthSystemSettings.LeftArmHealth) * 100));
+                EffectManager.sendUIEffectText((short)comp.EffectID, transCon, true, "tb_LeftArm", Math.Round(health.LeftArmHealth, 2).ToString(CultureInfo.CurrentCulture));
+                await SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_LeftArm, (int)((Math.Round(health.LeftArmHealth, 2) / _config.HealthSystemSettings.LeftArmHealth) * 100), (int)((comp.ProgressBarData.LastHealthLeftArm / _config.HealthSystemSettings.LeftArmHealth) * 100));
                 //LeftLeg
-                EffectManager.sendUIEffectText((short)comp.EffectID, transCon, true, "tb_LeftLeg", System.Math.Round(health.LeftLegHealth, 2).ToString());
-                await SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_LeftLeg, (int)((System.Math.Round(health.LeftLegHealth, 2) / _config.HealthSystemSettings.LeftLegHealth) * 100), (int)((comp.ProgressBarData.LastHealthLeftLeg / _config.HealthSystemSettings.LeftLegHealth) * 100));
+                EffectManager.sendUIEffectText((short)comp.EffectID, transCon, true, "tb_LeftLeg", Math.Round(health.LeftLegHealth, 2).ToString(CultureInfo.CurrentCulture));
+                await SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_LeftLeg, (int)((Math.Round(health.LeftLegHealth, 2) / _config.HealthSystemSettings.LeftLegHealth) * 100), (int)((comp.ProgressBarData.LastHealthLeftLeg / _config.HealthSystemSettings.LeftLegHealth) * 100));
                 //RightArm
-                EffectManager.sendUIEffectText((short)comp.EffectID, transCon, true, "tb_RightArm", System.Math.Round(health.RightArmHealth, 2).ToString());
-                await SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_RightArm, (int)((System.Math.Round(health.RightArmHealth, 2) / _config.HealthSystemSettings.RightArmHealth) * 100), (int)((comp.ProgressBarData.LastHealthRightArm / _config.HealthSystemSettings.RightArmHealth) * 100));
+                EffectManager.sendUIEffectText((short)comp.EffectID, transCon, true, "tb_RightArm", Math.Round(health.RightArmHealth, 2).ToString(CultureInfo.CurrentCulture));
+                await SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_RightArm, (int)((Math.Round(health.RightArmHealth, 2) / _config.HealthSystemSettings.RightArmHealth) * 100), (int)((comp.ProgressBarData.LastHealthRightArm / _config.HealthSystemSettings.RightArmHealth) * 100));
                 //RightLeg
-                EffectManager.sendUIEffectText((short)comp.EffectID, transCon, true, "tb_RightLeg", System.Math.Round(health.RightLegHealth, 2).ToString());
-                await SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_RightLeg, (int)((System.Math.Round(health.RightLegHealth, 2) / _config.HealthSystemSettings.RightLegHealth) * 100), (int)((comp.ProgressBarData.LastHealthRightLeg / _config.HealthSystemSettings.RightLegHealth) * 100));
+                EffectManager.sendUIEffectText((short)comp.EffectID, transCon, true, "tb_RightLeg", Math.Round(health.RightLegHealth, 2).ToString(CultureInfo.CurrentCulture));
+                await SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_RightLeg, (int)((Math.Round(health.RightLegHealth, 2) / _config.HealthSystemSettings.RightLegHealth) * 100), (int)((comp.ProgressBarData.LastHealthRightLeg / _config.HealthSystemSettings.RightLegHealth) * 100));
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.Log($"Error in {voidname}: {e}");
             }
         }
 
@@ -323,7 +324,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.Log($"Error in {voidname}: {e}");
             }
         }
     }

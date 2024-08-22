@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Tavstal.TLibrary.Helpers.Unturned;
 
-namespace Tavstal.TAdvancedHealth
+namespace Tavstal.TAdvancedHealth.Commands
 {
     public class CommandVersion : IRocketCommand
     {
@@ -17,8 +17,8 @@ namespace Tavstal.TAdvancedHealth
         public void Execute(IRocketPlayer caller, string[] command)
         {
             TAdvancedHealth.Instance.SendPlainCommandReply(caller, "#########################################");
-            TAdvancedHealth.Instance.SendPlainCommandReply(caller, string.Format("# Build Version: {0}", TAdvancedHealth.Version));
-            TAdvancedHealth.Instance.SendPlainCommandReply(caller, string.Format("# Build Date: {0}", TAdvancedHealth.BuildDate));
+            TAdvancedHealth.Instance.SendPlainCommandReply(caller, $"# Build Version: {TAdvancedHealth.Version}");
+            TAdvancedHealth.Instance.SendPlainCommandReply(caller, $"# Build Date: {TAdvancedHealth.BuildDate}");
             TAdvancedHealth.Instance.SendPlainCommandReply(caller, "#########################################");
         }
     }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Database;
-using Tavstal.TAdvancedHealth.Models.Enums;
+using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TLibrary.Helpers.Unturned;
 using UnityEngine;
 
@@ -53,7 +53,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                     healthData.RightArmHealth = _config.HealthSystemSettings.RightArmHealth;
                     healthData.LeftLegHealth = _config.HealthSystemSettings.LeftLegHealth;
                     healthData.RightLegHealth = _config.HealthSystemSettings.RightLegHealth;
-                    await TAdvancedHealth.Database.UpdateHealthAsync(player.Id, healthData, EDatabaseEvent.ALL);
+                    await TAdvancedHealth.Database.UpdateHealthAsync(player.Id, healthData);
 
 
                     player.Player.stance.checkStance(EPlayerStance.PRONE, true);
@@ -76,7 +76,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.Log(string.Format("Error in {0}: {1}", voidname, e));
+                TAdvancedHealth.Logger.Log($"Error in {voidname}: {e}");
             }
         }
 

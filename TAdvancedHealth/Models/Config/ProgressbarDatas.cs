@@ -4,18 +4,18 @@ namespace Tavstal.TAdvancedHealth.Models.Config
 {
     public class ProgressBarDatas
     {
-        public float LastFood = 0;
-        public float LastWater = 0;
-        public float LastStamina = 0;
-        public float LastVirus = 0;
-        public float LastOxygen = 0;
-        public float LastSimpleHealth = 0;
-        public float LastHealthHead = 0;
-        public float LastHealthBody = 0;
-        public float LastHealthLeftArm = 0;
-        public float LastHealthLeftLeg = 0;
-        public float LastHealthRightArm = 0;
-        public float LastHealthRightLeg = 0;
+        public float LastFood;
+        public float LastWater;
+        public float LastStamina;
+        public float LastVirus;
+        public float LastOxygen;
+        public float LastSimpleHealth;
+        public float LastHealthHead;
+        public float LastHealthBody;
+        public float LastHealthLeftArm;
+        public float LastHealthLeftLeg;
+        public float LastHealthRightArm;
+        public float LastHealthRightLeg;
         public List<string> VisibleSimpleHealth = new List<string>();
         public List<string> VisibleFood = new List<string>();
         public List<string> VisibleWater = new List<string>();

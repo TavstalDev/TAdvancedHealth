@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using Tavstal.TLibrary.Compatibility;
+using Tavstal.TLibrary.Models;
 
 namespace Tavstal.TAdvancedHealth.Models.Config
 {

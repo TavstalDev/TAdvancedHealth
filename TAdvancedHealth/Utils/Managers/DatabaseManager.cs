@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Tavstal.TAdvancedHealth.Models.Database;
-using Tavstal.TAdvancedHealth.Models.Enums;
-using Tavstal.TLibrary.Compatibility;
-using Tavstal.TLibrary.Compatibility.Database;
+using Tavstal.TAdvancedHealth.Models.Enumerators;
+using Tavstal.TLibrary.Models.Plugin;
+using Tavstal.TLibrary.Models.Database;
 using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Helpers.General;
 using Tavstal.TLibrary.Managers;

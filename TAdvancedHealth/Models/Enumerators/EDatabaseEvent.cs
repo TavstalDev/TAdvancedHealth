@@ -1,5 +1,8 @@
-﻿namespace Tavstal.TAdvancedHealth.Models.Enums
+﻿using System;
+
+namespace Tavstal.TAdvancedHealth.Models.Enumerators
 {
+    [Flags]
     public enum EDatabaseEvent
     {
        NONE,
