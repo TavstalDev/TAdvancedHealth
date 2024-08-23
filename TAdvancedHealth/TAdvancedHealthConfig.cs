@@ -31,7 +31,7 @@ namespace Tavstal.TAdvancedHealth
         [JsonProperty(Order = 12)]
         public RestrictedItems TwoHandedItems { get; set; }
 
-        public new void LoadDefaults()
+        public override void LoadDefaults()
         {
             Database = new DatabaseData()
             {
