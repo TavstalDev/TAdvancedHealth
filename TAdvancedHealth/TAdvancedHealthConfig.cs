@@ -33,6 +33,9 @@ namespace Tavstal.TAdvancedHealth
 
         public override void LoadDefaults()
         {
+            DebugMode = false;
+            Locale = "en";
+            DownloadLocalePacks = true;
             Database = new DatabaseData()
             {
                 DatabaseTable_PlayerData = "tadh_players"
