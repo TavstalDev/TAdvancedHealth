@@ -20,7 +20,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
         /// <summary>
         /// Asynchronously checks the schema of the database.
         /// </summary>
-        protected override async void CheckSchema()
+        public override async Task CheckSchemaAsync()
         {
             try
             {
