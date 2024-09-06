@@ -12,7 +12,6 @@ namespace Tavstal.TAdvancedHealth
     /// <summary>
     /// Represents a plugin for advanced health management.
     /// </summary>
-    /// <typeparam name="TAdvancedHealthConfig">The type of configuration used by the plugin.</typeparam>
     public class TAdvancedHealth : PluginBase<TAdvancedHealthConfig>
     {
         public new static TAdvancedHealth Instance { get; private set; }
