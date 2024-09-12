@@ -37,7 +37,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
                         await connection.CreateTableAsync<HealthData>(_pluginConfig.Database.DatabaseTable_PlayerData);
 
                     if (connection.State != System.Data.ConnectionState.Closed)
-                        connection.Close();
+                        await connection.CloseAsync();
                 }
             }
             catch (Exception ex)

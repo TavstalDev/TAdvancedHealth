@@ -1044,13 +1044,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                         if (health.LeftLegHealth - totalDamage > 0)
                         {
                             health.LeftLegHealth -= totalDamage;
-                            await _database.UpdateHealthAsync(player.Id, health.LeftLegHealth, EHealth.LEFT_LEG);
                         }
                         else
                         {
                             health.LeftLegHealth = 0;
-                            await _database.UpdateHealthAsync(player.Id, health.LeftLegHealth, EHealth.LEFT_LEG);
                         }
+
+                        await _database.UpdateHealthAsync(player.Id, health.LeftLegHealth, EHealth.LEFT_LEG);
 
                         if (health.LeftLegHealth + health.RightLegHealth == 0)
                         {
@@ -1186,7 +1186,6 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(p);
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                bool allow = true;
 
                 player.Player.life.askHeal(100, false, false);
                 HealthData health = await _database.GetPlayerHealthAsync(player.Id);
@@ -1223,7 +1222,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
 
                 comp.AllowDamage = false;
 
-                if (!allow || player.Features.GodMode)
+                if (player.Features.GodMode)
                     totaldamage = 0;
 
                 await HandleIncomingDamageAsync(player, health, killer, totaldamage, limb, cause, player.Position.normalized);
