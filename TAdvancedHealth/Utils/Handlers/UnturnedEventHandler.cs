@@ -23,7 +23,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
 {
     public static class UnturnedEventHandler
     {
-        private static DatabaseManager _database => TAdvancedHealth.Database;
+        private static DatabaseManager _database => TAdvancedHealth.DatabaseManager;
         private static TAdvancedHealthConfig _config => TAdvancedHealth.Instance.Config;
 
         /// <summary>

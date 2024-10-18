@@ -29,7 +29,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
             try
             {
                 UnturnedPlayer player = UnturnedPlayer.FromCSteamID(steamID);
-                HealthData health = await TAdvancedHealth.Database.GetPlayerHealthAsync(player.Id);
+                HealthData health = await TAdvancedHealth.DatabaseManager.GetPlayerHealthAsync(player.Id);
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 var transCon = player.SteamPlayer().transportConnection;
                 string childName = null;
@@ -262,7 +262,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
             string voidname = "UpdateHealthUI";
             try
             {
-                HealthData health = await TAdvancedHealth.Database.GetPlayerHealthAsync(player.Id);
+                HealthData health = await TAdvancedHealth.DatabaseManager.GetPlayerHealthAsync(player.Id);
                 var transCon = player.SteamPlayer().transportConnection;
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
@@ -304,7 +304,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
             string voidname = "UpdateHealthUI";
             try
             {
-                HealthData health = await TAdvancedHealth.Database.GetPlayerHealthAsync(player.Id);
+                HealthData health = await TAdvancedHealth.DatabaseManager.GetPlayerHealthAsync(player.Id);
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
                 await UpdateHealthUIAsync(player);

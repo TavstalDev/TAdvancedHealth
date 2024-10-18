@@ -17,7 +17,7 @@ namespace Tavstal.TAdvancedHealth.Harmony
     public static class UseableMeleeHarmony
     {
         private static TAdvancedHealthConfig _config => TAdvancedHealth.Instance.Config;
-        private static DatabaseManager _database => TAdvancedHealth.Database;
+        private static DatabaseManager _database => TAdvancedHealth.DatabaseManager;
 
         [HarmonyPostfix]
         public static async void Postfix(object __instance)

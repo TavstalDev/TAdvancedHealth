@@ -14,8 +14,8 @@ namespace Tavstal.TAdvancedHealth
     /// </summary>
     public class TAdvancedHealth : PluginBase<TAdvancedHealthConfig>
     {
-        public new static TAdvancedHealth Instance { get; private set; }
-        public static DatabaseManager Database { get; private set; }
+        public static TAdvancedHealth Instance { get; private set; }
+        public static DatabaseManager DatabaseManager { get; private set; }
         public static bool IsConnectionAuthFailed { get; set; }
         private HarmonyLib.Harmony HarmonyPatcher { get; set; }
         private bool _hasFullMoon { get; set; }
@@ -27,7 +27,7 @@ namespace Tavstal.TAdvancedHealth
         public override void OnLoad()
         {
             Instance = this;
-            Database = new DatabaseManager(Config);
+            DatabaseManager = new DatabaseManager(Config);
 
             UnturnedEventHandler.Attach();
             HealthSystemEventHandler.Attach();
@@ -67,7 +67,7 @@ namespace Tavstal.TAdvancedHealth
             foreach (SteamPlayer steamPlayer in Provider.clients)
             {
                 UnturnedPlayer p = UnturnedPlayer.FromSteamPlayer(steamPlayer);
-                HealthData health = await Database.GetPlayerHealthAsync(p.Id);
+                HealthData health = await DatabaseManager.GetPlayerHealthAsync(p.Id);
                 EffectManager.askEffectClearByID(health.HUDEffectID, steamPlayer.transportConnection);
 
                 p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowFood, true);

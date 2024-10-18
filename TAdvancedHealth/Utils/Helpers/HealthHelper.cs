@@ -28,7 +28,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 var transCon = player.SteamPlayer().transportConnection;
-                HealthData healthData = await TAdvancedHealth.Database.GetPlayerHealthAsync(player.Id);
+                HealthData healthData = await TAdvancedHealth.DatabaseManager.GetPlayerHealthAsync(player.Id);
                 if (!healthData.IsInjured)
                 {
                     if (player.Dead) { return; }
@@ -53,7 +53,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                     healthData.RightArmHealth = _config.HealthSystemSettings.RightArmHealth;
                     healthData.LeftLegHealth = _config.HealthSystemSettings.LeftLegHealth;
                     healthData.RightLegHealth = _config.HealthSystemSettings.RightLegHealth;
-                    await TAdvancedHealth.Database.UpdateHealthAsync(player.Id, healthData);
+                    await TAdvancedHealth.DatabaseManager.UpdateHealthAsync(player.Id, healthData);
 
 
                     player.Player.stance.checkStance(EPlayerStance.PRONE, true);

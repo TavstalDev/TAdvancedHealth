@@ -19,7 +19,7 @@ namespace Tavstal.TAdvancedHealth.Commands
         public async void Execute(IRocketPlayer caller, string[] args)
         {
             UnturnedPlayer player = (UnturnedPlayer)caller;
-            HealthData health = await TAdvancedHealth.Database.GetPlayerHealthAsync(player.Id);
+            HealthData health = await TAdvancedHealth.DatabaseManager.GetPlayerHealthAsync(player.Id);
 
             if (!health.IsHUDEnabled)
             {
@@ -48,7 +48,7 @@ namespace Tavstal.TAdvancedHealth.Commands
 
             }
 
-            await TAdvancedHealth.Database.UpdateHUDEnabledAsync(player.Id, health.IsHUDEnabled);
+            await TAdvancedHealth.DatabaseManager.UpdateHUDEnabledAsync(player.Id, health.IsHUDEnabled);
         }
     }
 }

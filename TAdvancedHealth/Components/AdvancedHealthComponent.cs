@@ -121,7 +121,7 @@ namespace Tavstal.TAdvancedHealth.Components
         /// <returns>A task representing the asynchronous operation.</returns>
         private async Task RefreshStateUIAsync()
         {
-            HealthData health =  await TAdvancedHealth.Database.GetPlayerHealthAsync(Player.Id);
+            HealthData health =  await TAdvancedHealth.DatabaseManager.GetPlayerHealthAsync(Player.Id);
             short effectID = (short)health.HUDEffectID;
 
             for (int i = 0; i < 12; i++)
@@ -154,7 +154,7 @@ namespace Tavstal.TAdvancedHealth.Components
         public async Task DragAsync(UnturnedPlayer target)
         {
             AdvancedHealthComponent targetComp = target.GetComponent<AdvancedHealthComponent>();
-            HealthData healthData = await TAdvancedHealth.Database.GetPlayerHealthAsync(target.Id);
+            HealthData healthData = await TAdvancedHealth.DatabaseManager.GetPlayerHealthAsync(target.Id);
 
             if (healthData.IsInjured || targetComp.DragState != EDragState.NONE || !healthData.IsInjured || DragState != EDragState.NONE)
                 return;
@@ -201,8 +201,8 @@ namespace Tavstal.TAdvancedHealth.Components
             AllowDamage = false;
             HasHeavyBleeding = false;
             
-            HealthData health = await TAdvancedHealth.Database.GetPlayerHealthAsync(Player.Id);
-            await TAdvancedHealth.Database.UpdateHealthAsync(Player.Id, new HealthData 
+            HealthData health = await TAdvancedHealth.DatabaseManager.GetPlayerHealthAsync(Player.Id);
+            await TAdvancedHealth.DatabaseManager.UpdateHealthAsync(Player.Id, new HealthData 
             {
                 BaseHealth = chsettings.BaseHealth,
                 BodyHealth = chsettings.BodyHealth,
@@ -241,7 +241,7 @@ namespace Tavstal.TAdvancedHealth.Components
             if (!Mathf.Approximately(Player.Player.movement.pluginSpeedMultiplier, chsettings.DefaultWalkSpeed))
                 Player.Player.movement.sendPluginSpeedMultiplier(chsettings.DefaultWalkSpeed);
             Player.Player.movement.sendPluginJumpMultiplier(1f);
-            await TAdvancedHealth.Database.UpdateInjuredAsync(Player.Id, false, DateTime.Now);
+            await TAdvancedHealth.DatabaseManager.UpdateInjuredAsync(Player.Id, false, DateTime.Now);
             EffectManager.sendUIEffectVisibility((short)EffectID, TranspConnection, true, "RevivePanel", false);
             Player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
         }
@@ -249,7 +249,7 @@ namespace Tavstal.TAdvancedHealth.Components
         private async void Update()
         {
             // TODO: Replace this with cache
-            HealthData = await TAdvancedHealth.Database.GetPlayerHealthAsync(Player.Id);
+            HealthData = await TAdvancedHealth.DatabaseManager.GetPlayerHealthAsync(Player.Id);
 
             #region Injured
             if (HealthData.IsInjured)
@@ -364,7 +364,7 @@ namespace Tavstal.TAdvancedHealth.Components
             }
 
             if (shouldUpdateHealth)
-                await TAdvancedHealth.Database.UpdateHealthAsync(Player.Id, HealthData, databaseEvent);
+                await TAdvancedHealth.DatabaseManager.UpdateHealthAsync(Player.Id, HealthData, databaseEvent);
             #endregion
         }
     }

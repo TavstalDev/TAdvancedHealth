@@ -23,7 +23,7 @@ namespace Tavstal.TAdvancedHealth.Commands
         {
             UnturnedPlayer player = (UnturnedPlayer)caller;
             AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-            HealthData health = await TAdvancedHealth.Database.GetPlayerHealthAsync(player.Id);
+            HealthData health = await TAdvancedHealth.DatabaseManager.GetPlayerHealthAsync(player.Id);
 
             if (args.Length == 0)
             {
@@ -41,7 +41,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                 }
                 ushort oldId = health.HUDEffectID;
                 comp.EffectID = style.EffectID;
-                await TAdvancedHealth.Database.UpdateHUDEffectIdAsync(player.Id, style.EffectID);
+                await TAdvancedHealth.DatabaseManager.UpdateHUDEffectIdAsync(player.Id, style.EffectID);
                 
                 if (health.IsHUDEnabled)
                 {
