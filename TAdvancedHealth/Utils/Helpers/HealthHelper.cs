@@ -14,7 +14,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
 {
     public static class HealthHelper
     {
-        private static TAdvancedHealthConfig _config => TAdvancedHealth.Instance.Config;
+        private static AdvancedHealthConfig _config => AdvancedHealth.Instance.Config;
 
         /// <summary>
         /// Asynchronously sets the specified player as downed in the game.
@@ -28,7 +28,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 var transCon = player.SteamPlayer().transportConnection;
-                HealthData healthData = await TAdvancedHealth.DatabaseManager.GetPlayerHealthAsync(player.Id);
+                HealthData healthData = await AdvancedHealth.DatabaseManager.GetPlayerHealthAsync(player.Id);
                 if (!healthData.IsInjured)
                 {
                     if (player.Dead) { return; }
@@ -53,15 +53,15 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                     healthData.RightArmHealth = _config.HealthSystemSettings.RightArmHealth;
                     healthData.LeftLegHealth = _config.HealthSystemSettings.LeftLegHealth;
                     healthData.RightLegHealth = _config.HealthSystemSettings.RightLegHealth;
-                    await TAdvancedHealth.DatabaseManager.UpdateHealthAsync(player.Id, healthData);
+                    await AdvancedHealth.DatabaseManager.UpdateHealthAsync(player.Id, healthData);
 
 
                     player.Player.stance.checkStance(EPlayerStance.PRONE, true);
                     player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, true);
 
-                    EffectManager.sendUIEffectVisibility((short)comp.EffectID, transCon, true, "bt_suicide", true);
-                    EffectManager.sendUIEffectText((short)comp.EffectID, transCon, true, "tb_message", TAdvancedHealth.Instance.Localize("ui_bleeding", (int)(healthData.DeathDate - DateTime.Now).TotalSeconds));
-                    EffectManager.sendUIEffectVisibility((short)comp.EffectID, transCon, true, "RevivePanel", true);
+                    EffectManager.sendUIEffectVisibility((short)comp.effectId, transCon, true, "bt_suicide", true);
+                    EffectManager.sendUIEffectText((short)comp.effectId, transCon, true, "tb_message", AdvancedHealth.Instance.Localize("ui_bleeding", (int)(healthData.DeathDate - DateTime.Now).TotalSeconds));
+                    EffectManager.sendUIEffectVisibility((short)comp.effectId, transCon, true, "RevivePanel", true);
                     foreach (SteamPlayer sp in Provider.clients)
                     {
                         UnturnedPlayer tmpPlayer = UnturnedPlayer.FromSteamPlayer(sp);
@@ -69,14 +69,14 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                         {
                             var teleportLocation = new Vector3(player.Position.x, player.Position.y, player.Position.z);
                             tmpPlayer.Player.quests.sendSetMarker(true, teleportLocation);
-                            TAdvancedHealth.Instance.SendChatMessage(sp, "player_injured", player.CharacterName);
+                            AdvancedHealth.Instance.SendChatMessage(sp, "player_injured", player.CharacterName);
                         }
                     }
                 }
             }
             catch (Exception e)
             {
-                TAdvancedHealth.Logger.Log($"Error in {voidname}: {e}");
+                AdvancedHealth.Logger.Log($"Error in {voidname}: {e}");
             }
         }
 

@@ -7,12 +7,12 @@ namespace Tavstal.TAdvancedHealth.Models.Config
         public ushort PainEffectID { get; set; }
         public bool EnableTarkovLikeHealth { get; set; }
         public float BaseHealth { get; set; }
-        private float _headHealth { get; set; }
-        private float _bodyHealth { get; set; }
-        private float _rightArmHealth { get; set; }
-        private float _rightLegHealth { get; set; }
-        private float _leftArmHealth { get; set; }
-        private float _leftLegHealth { get; set; }
+        private float _headHealth;
+        private float _bodyHealth;
+        private float _rightArmHealth;
+        private float _rightLegHealth;
+        private float _leftArmHealth;
+        private float _leftLegHealth;
         public float HeadHealth
         {
             get

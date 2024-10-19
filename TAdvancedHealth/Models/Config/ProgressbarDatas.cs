@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+// ReSharper disable FieldCanBeMadeReadOnly.Global
 
 namespace Tavstal.TAdvancedHealth.Models.Config
 {

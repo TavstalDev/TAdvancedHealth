@@ -51,18 +51,18 @@ namespace Tavstal.TAdvancedHealth.Models.Database
 
         public void EnsureValueCap()
         {
-            if (TAdvancedHealth.Instance.Config.HealthSystemSettings.EnableTarkovLikeHealth)
+            if (AdvancedHealth.Instance.Config.HealthSystemSettings.EnableTarkovLikeHealth)
             {
-                HeadHealth = MathHelper.Clamp(HeadHealth, 0, TAdvancedHealth.Instance.Config.HealthSystemSettings.HeadHealth);
-                BodyHealth = MathHelper.Clamp(BodyHealth, 0, TAdvancedHealth.Instance.Config.HealthSystemSettings.BodyHealth);
-                RightArmHealth = MathHelper.Clamp(RightArmHealth, 0, TAdvancedHealth.Instance.Config.HealthSystemSettings.RightArmHealth);
-                LeftArmHealth = MathHelper.Clamp(LeftArmHealth, 0, TAdvancedHealth.Instance.Config.HealthSystemSettings.LeftArmHealth);
-                RightLegHealth = MathHelper.Clamp(RightLegHealth, 0, TAdvancedHealth.Instance.Config.HealthSystemSettings.RightLegHealth);
-                LeftLegHealth = MathHelper.Clamp(LeftLegHealth, 0, TAdvancedHealth.Instance.Config.HealthSystemSettings.LeftLegHealth);
+                HeadHealth = MathHelper.Clamp(HeadHealth, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.HeadHealth);
+                BodyHealth = MathHelper.Clamp(BodyHealth, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.BodyHealth);
+                RightArmHealth = MathHelper.Clamp(RightArmHealth, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.RightArmHealth);
+                LeftArmHealth = MathHelper.Clamp(LeftArmHealth, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.LeftArmHealth);
+                RightLegHealth = MathHelper.Clamp(RightLegHealth, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.RightLegHealth);
+                LeftLegHealth = MathHelper.Clamp(LeftLegHealth, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.LeftLegHealth);
             }
             else
             {
-                BaseHealth = MathHelper.Clamp(BaseHealth, 0, TAdvancedHealth.Instance.Config.HealthSystemSettings.BaseHealth);
+                BaseHealth = MathHelper.Clamp(BaseHealth, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.BaseHealth);
             }
         }
     }

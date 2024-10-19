@@ -8,7 +8,7 @@ using Tavstal.TLibrary.Models.Plugin;
 
 namespace Tavstal.TAdvancedHealth
 {
-    public class TAdvancedHealthConfig : ConfigurationBase
+    public class AdvancedHealthConfig : ConfigurationBase
     {
         [JsonProperty(Order = 3)]
         public DatabaseData Database { get; set; }
@@ -38,7 +38,7 @@ namespace Tavstal.TAdvancedHealth
             DownloadLocalePacks = true;
             Database = new DatabaseData()
             {
-                DatabaseTable_PlayerData = "tadh_players"
+                PlayerDataTable = "tahs_players"
             };
             MessageIcon = "https://raw.githubusercontent.com/TavstalDev/Icons/master/Plugins/icon_plugins_TAdvancedHealth.png";
             DefibrillatorSettings = new DefibrillatorSettings

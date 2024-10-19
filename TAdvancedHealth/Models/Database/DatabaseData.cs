@@ -8,7 +8,7 @@ namespace Tavstal.TAdvancedHealth.Models.Database
     public class DatabaseData : DatabaseSettingsBase
     {
         [JsonProperty(Order = 7)]
-        public string DatabaseTable_PlayerData { get; set; }
+        public string PlayerDataTable { get; set; }
 
         public DatabaseData() { }
 

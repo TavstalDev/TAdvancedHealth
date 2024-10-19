@@ -23,24 +23,24 @@ namespace Tavstal.TAdvancedHealth.Commands
                 AdvancedHealthComponent comp = callerPlayer.GetComponent<AdvancedHealthComponent>();
                 await comp.ReviveAsync();
 
-                TAdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_cure_success", callerPlayer.CharacterName);
+                AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_cure_success", callerPlayer.CharacterName);
             }
             else if (args.Length == 1)
             {
                 UnturnedPlayer targetPlayer = UnturnedPlayer.FromName(args[0]);
                 if (targetPlayer == null)
                 {
-                    TAdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "error_playet_not_found");
+                    AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "error_playet_not_found");
                     return;
                 }
 
                 AdvancedHealthComponent targetComp = targetPlayer.GetComponent<AdvancedHealthComponent>();
                 await targetComp.ReviveAsync();
 
-                TAdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_cure_success", targetPlayer.CharacterName);
+                AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_cure_success", targetPlayer.CharacterName);
             }
             else
-                TAdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), $"<color=yellow>{Syntax}</color>");
+                AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), $"<color=yellow>{Syntax}</color>");
         }
     }
 }

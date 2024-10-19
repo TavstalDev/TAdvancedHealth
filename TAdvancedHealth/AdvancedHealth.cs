@@ -12,9 +12,9 @@ namespace Tavstal.TAdvancedHealth
     /// <summary>
     /// Represents a plugin for advanced health management.
     /// </summary>
-    public class TAdvancedHealth : PluginBase<TAdvancedHealthConfig>
+    public class AdvancedHealth : PluginBase<AdvancedHealthConfig>
     {
-        public static TAdvancedHealth Instance { get; private set; }
+        public static AdvancedHealth Instance { get; private set; }
         public static DatabaseManager DatabaseManager { get; private set; }
         public static bool IsConnectionAuthFailed { get; set; }
         private HarmonyLib.Harmony HarmonyPatcher { get; set; }

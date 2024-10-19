@@ -13,9 +13,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
 {
     public class DatabaseManager : DatabaseManagerBase
     {
-        private static TAdvancedHealthConfig _pluginConfig => TAdvancedHealth.Instance.Config;
+        private static AdvancedHealthConfig _pluginConfig => AdvancedHealth.Instance.Config;
 
-        public DatabaseManager(IConfigurationBase configuration) : base(TAdvancedHealth.Instance, configuration) { }
+        public DatabaseManager(IConfigurationBase configuration) : base(AdvancedHealth.Instance, configuration) { }
 
         /// <summary>
         /// Asynchronously checks the schema of the database.
@@ -27,14 +27,14 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
                 using (var connection = CreateConnection())
                 {
                     if (!await connection.OpenSafeAsync())
-                        TAdvancedHealth.IsConnectionAuthFailed = true;
+                        AdvancedHealth.IsConnectionAuthFailed = true;
                     if (connection.State != System.Data.ConnectionState.Open)
                         throw new Exception("# Failed to connect to the database. Please check the plugin's config file.");
 
-                    if (await connection.DoesTableExistAsync<HealthData>(_pluginConfig.Database.DatabaseTable_PlayerData))
-                        await connection.CheckTableAsync<HealthData>(_pluginConfig.Database.DatabaseTable_PlayerData);
+                    if (await connection.DoesTableExistAsync<HealthData>(_pluginConfig.Database.PlayerDataTable))
+                        await connection.CheckTableAsync<HealthData>(_pluginConfig.Database.PlayerDataTable);
                     else
-                        await connection.CreateTableAsync<HealthData>(_pluginConfig.Database.DatabaseTable_PlayerData);
+                        await connection.CreateTableAsync<HealthData>(_pluginConfig.Database.PlayerDataTable);
 
                     if (connection.State != System.Data.ConnectionState.Closed)
                         await connection.CloseAsync();
@@ -42,8 +42,8 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
             }
             catch (Exception ex)
             {
-                TAdvancedHealth.Logger.LogException("Error in checkSchema:");
-                TAdvancedHealth.Logger.LogError(ex);
+                AdvancedHealth.Logger.LogException("Error in checkSchema:");
+                AdvancedHealth.Logger.LogError(ex);
             }
         }
 
@@ -57,7 +57,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
         {
             try
             {
-                await CreateConnection().AddTableRowAsync(tableName: _pluginConfig.Database.DatabaseTable_PlayerData, healthData);
+                await CreateConnection().AddTableRowAsync(tableName: _pluginConfig.Database.PlayerDataTable, healthData);
 
                 EventManager.FCallBaseHealthUpdated(id, healthData.BaseHealth);
                 EventManager.FCallBodyHealthUpdated(id, healthData.BodyHealth);
@@ -70,8 +70,8 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
             }
             catch (Exception ex)
             {
-                TAdvancedHealth.Logger.LogException("Error in addHealthAsync:");
-                TAdvancedHealth.Logger.LogError(ex);
+                AdvancedHealth.Logger.LogException("Error in addHealthAsync:");
+                AdvancedHealth.Logger.LogError(ex);
             }
         }
 
@@ -87,7 +87,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
             try
             {
                 healthData.EnsureValueCap();
-                await CreateConnection().UpdateTableRowAsync(tableName: _pluginConfig.Database.DatabaseTable_PlayerData, healthData, $"PlayerId={id}", null);
+                await CreateConnection().UpdateTableRowAsync(tableName: _pluginConfig.Database.PlayerDataTable, healthData, $"PlayerId={id}", null);
 
                 switch (eventtype)
                 {
@@ -152,8 +152,8 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
             }
             catch (Exception ex)
             {
-                TAdvancedHealth.Logger.LogException("Error in updateHealthAsync:");
-                TAdvancedHealth.Logger.LogError(ex);
+                AdvancedHealth.Logger.LogException("Error in updateHealthAsync:");
+                AdvancedHealth.Logger.LogError(ex);
             }
         }
 
@@ -167,12 +167,12 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
         {
             try
             {
-                await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.DatabaseTable_PlayerData, $"PlayerId='{id}'", SqlParameter.Get<HealthData>(x => x.HUDEffectID, effectid));
+                await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.PlayerDataTable, $"PlayerId='{id}'", SqlParameter.Get<HealthData>(x => x.HUDEffectID, effectid));
             }
             catch (Exception ex)
             {
-                TAdvancedHealth.Logger.LogException("Error in updateEffectIdAsync:");
-                TAdvancedHealth.Logger.LogError(ex);
+                AdvancedHealth.Logger.LogException("Error in updateEffectIdAsync:");
+                AdvancedHealth.Logger.LogError(ex);
             }
         }
 
@@ -186,12 +186,12 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
         {
             try
             {
-                await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.DatabaseTable_PlayerData, $"PlayerId='{id}'", SqlParameter.Get<HealthData>(x => x.IsHUDEnabled, isEnabled));
+                await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.PlayerDataTable, $"PlayerId='{id}'", SqlParameter.Get<HealthData>(x => x.IsHUDEnabled, isEnabled));
             }
             catch (Exception ex)
             {
-                TAdvancedHealth.Logger.LogException("Error in updateEffectStateAsync:");
-                TAdvancedHealth.Logger.LogError(ex);
+                AdvancedHealth.Logger.LogException("Error in updateEffectStateAsync:");
+                AdvancedHealth.Logger.LogError(ex);
             }
         }
 
@@ -206,7 +206,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
         {
             try
             {
-                await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.DatabaseTable_PlayerData, $"PlayerId='{id}'", new List<SqlParameter>
+                await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.PlayerDataTable, $"PlayerId='{id}'", new List<SqlParameter>
                 {
                     SqlParameter.Get<HealthData>(x => x.IsInjured, isInjured),
                     SqlParameter.Get<HealthData>(x => x.DeathDate, bleedDate)
@@ -214,8 +214,8 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
             }
             catch (Exception ex)
             {
-                TAdvancedHealth.Logger.LogException("Error in updateInjuredAsync:");
-                TAdvancedHealth.Logger.LogError(ex);
+                AdvancedHealth.Logger.LogException("Error in updateInjuredAsync:");
+                AdvancedHealth.Logger.LogError(ex);
             }
         }
 
@@ -237,7 +237,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
                         {
                             newHealth = MathHelper.Clamp(newHealth, 0, _pluginConfig.HealthSystemSettings.BaseHealth);
 
-                            await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.DatabaseTable_PlayerData, $"PlayerId='{id}'", SqlParameter.Get<HealthData>(x => x.BaseHealth, newHealth));
+                            await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.PlayerDataTable, $"PlayerId='{id}'", SqlParameter.Get<HealthData>(x => x.BaseHealth, newHealth));
                             EventManager.FCallBaseHealthUpdated(id, newHealth);
                             break;
                         }
@@ -245,7 +245,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
                         {
                             newHealth = MathHelper.Clamp(newHealth, 0, _pluginConfig.HealthSystemSettings.HeadHealth);
 
-                            await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.DatabaseTable_PlayerData, $"PlayerId='{id}'", SqlParameter.Get<HealthData>(x => x.HeadHealth, newHealth));
+                            await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.PlayerDataTable, $"PlayerId='{id}'", SqlParameter.Get<HealthData>(x => x.HeadHealth, newHealth));
                             EventManager.FCallHeadHealthUpdated(id, newHealth);
                             break;
                         }
@@ -253,7 +253,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
                         {
                             newHealth = MathHelper.Clamp(newHealth, 0, _pluginConfig.HealthSystemSettings.BodyHealth);
 
-                            await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.DatabaseTable_PlayerData, $"PlayerId='{id}'", SqlParameter.Get<HealthData>(x => x.BodyHealth, newHealth));
+                            await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.PlayerDataTable, $"PlayerId='{id}'", SqlParameter.Get<HealthData>(x => x.BodyHealth, newHealth));
                             EventManager.FCallBodyHealthUpdated(id, newHealth);
                             break;
                         }
@@ -261,7 +261,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
                         {
                             newHealth = MathHelper.Clamp(newHealth, 0, _pluginConfig.HealthSystemSettings.LeftArmHealth);
 
-                            await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.DatabaseTable_PlayerData, $"PlayerId='{id}'", SqlParameter.Get<HealthData>(x => x.LeftArmHealth, newHealth));
+                            await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.PlayerDataTable, $"PlayerId='{id}'", SqlParameter.Get<HealthData>(x => x.LeftArmHealth, newHealth));
                             EventManager.FCallLeftArmHealthUpdated(id, newHealth);
                             break;
                         }
@@ -269,7 +269,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
                         {
                             newHealth = MathHelper.Clamp(newHealth, 0, _pluginConfig.HealthSystemSettings.RightArmHealth);
 
-                            await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.DatabaseTable_PlayerData, $"PlayerId='{id}'", SqlParameter.Get<HealthData>(x => x.RightArmHealth, newHealth));
+                            await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.PlayerDataTable, $"PlayerId='{id}'", SqlParameter.Get<HealthData>(x => x.RightArmHealth, newHealth));
                             EventManager.FCallRightArmHealthUpdated(id, newHealth);
                             break;
                         }
@@ -277,7 +277,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
                         {
                             newHealth = MathHelper.Clamp(newHealth, 0, _pluginConfig.HealthSystemSettings.LeftLegHealth);
 
-                            await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.DatabaseTable_PlayerData, $"PlayerId='{id}'", SqlParameter.Get<HealthData>(x => x.LeftLegHealth, newHealth));
+                            await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.PlayerDataTable, $"PlayerId='{id}'", SqlParameter.Get<HealthData>(x => x.LeftLegHealth, newHealth));
                             EventManager.FCallLeftLegHealthUpdated(id, newHealth);
                             break;
                         }
@@ -285,7 +285,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
                         {
                             newHealth = MathHelper.Clamp(newHealth, 0, _pluginConfig.HealthSystemSettings.RightLegHealth);
 
-                            await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.DatabaseTable_PlayerData, $"PlayerId='{id}'", SqlParameter.Get<HealthData>(x => x.RightLegHealth, newHealth));
+                            await CreateConnection().UpdateTableRowAsync<HealthData>(tableName: _pluginConfig.Database.PlayerDataTable, $"PlayerId='{id}'", SqlParameter.Get<HealthData>(x => x.RightLegHealth, newHealth));
                             EventManager.FCallRightLegHealthUpdated(id, newHealth);
                             break;
                         }
@@ -293,8 +293,8 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
             }
             catch (Exception ex)
             {
-                TAdvancedHealth.Logger.LogException("Error in updateBaseHealthAsync:");
-                TAdvancedHealth.Logger.LogError(ex);
+                AdvancedHealth.Logger.LogException("Error in updateBaseHealthAsync:");
+                AdvancedHealth.Logger.LogError(ex);
             }
         }
 
@@ -312,8 +312,8 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
             }
             catch (Exception ex)
             {
-                TAdvancedHealth.Logger.LogException("Error in getHealthAsync:");
-                TAdvancedHealth.Logger.LogError(ex);
+                AdvancedHealth.Logger.LogException("Error in getHealthAsync:");
+                AdvancedHealth.Logger.LogError(ex);
             }
             return healthData;
         }
@@ -332,8 +332,8 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
             }
             catch (Exception ex)
             {
-                TAdvancedHealth.Logger.LogException("Error in getHealthAsync:");
-                TAdvancedHealth.Logger.LogError(ex);
+                AdvancedHealth.Logger.LogException("Error in getHealthAsync:");
+                AdvancedHealth.Logger.LogError(ex);
             }
             return healthData;
         }

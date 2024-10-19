@@ -15,7 +15,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
     /// </summary>
     public static class HealthSystemEventHandler
     {
-        private static TAdvancedHealthConfig Config => TAdvancedHealth.Instance.Config;
+        private static AdvancedHealthConfig Config => AdvancedHealth.Instance.Config;
 
         /// <summary>
         /// Attaches event listeners to the health system to enable event handling.
@@ -67,9 +67,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
         {
             UnturnedPlayer player = UnturnedPlayer.FromCSteamID((CSteamID)Convert.ToUInt64(id));
             AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-            await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_LeftLeg, 
+            await EffectHelper.SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.Health_LeftLeg, 
                 (int)(newHealth / Config.HealthSystemSettings.LeftLegHealth * 100), (int)comp.ProgressBarData.LastHealthLeftLeg);
-            EffectManager.sendUIEffectText((short)comp.EffectID, comp.TranspConnection, true, "tb_LeftLeg", Math.Round(newHealth, 0).ToString(CultureInfo.CurrentCulture));
+            EffectManager.sendUIEffectText((short)comp.effectId, comp.TranspConnection, true, "tb_LeftLeg", Math.Round(newHealth, 0).ToString(CultureInfo.CurrentCulture));
         }
 
         /// <summary>
@@ -81,9 +81,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
         {
             UnturnedPlayer player = UnturnedPlayer.FromCSteamID((CSteamID)Convert.ToUInt64(id));
             AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-            await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_LeftArm,
+            await EffectHelper.SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.Health_LeftArm,
                 (int)(newHealth / Config.HealthSystemSettings.LeftArmHealth * 100), (int)comp.ProgressBarData.LastHealthLeftArm);
-            EffectManager.sendUIEffectText((short)comp.EffectID, comp.TranspConnection, true, "tb_LeftArm", Math.Round(newHealth, 0).ToString(CultureInfo.CurrentCulture));
+            EffectManager.sendUIEffectText((short)comp.effectId, comp.TranspConnection, true, "tb_LeftArm", Math.Round(newHealth, 0).ToString(CultureInfo.CurrentCulture));
         }
 
         /// <summary>
@@ -95,9 +95,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
         {
             UnturnedPlayer player = UnturnedPlayer.FromCSteamID((CSteamID)Convert.ToUInt64(id));
             AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-            await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_RightLeg,
+            await EffectHelper.SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.Health_RightLeg,
                 (int)(newHealth / Config.HealthSystemSettings.RightLegHealth * 100), (int)comp.ProgressBarData.LastHealthRightLeg);
-            EffectManager.sendUIEffectText((short)comp.EffectID, comp.TranspConnection, true, "tb_RightLeg", Math.Round(newHealth, 0).ToString(CultureInfo.CurrentCulture));
+            EffectManager.sendUIEffectText((short)comp.effectId, comp.TranspConnection, true, "tb_RightLeg", Math.Round(newHealth, 0).ToString(CultureInfo.CurrentCulture));
         }
 
         /// <summary>
@@ -109,9 +109,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
         {
             UnturnedPlayer player = UnturnedPlayer.FromCSteamID((CSteamID)Convert.ToUInt64(id));
             AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-            await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_RightArm,
+            await EffectHelper.SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.Health_RightArm,
                 (int)(newHealth / Config.HealthSystemSettings.RightArmHealth * 100), (int)comp.ProgressBarData.LastHealthRightArm);
-            EffectManager.sendUIEffectText((short)comp.EffectID, comp.TranspConnection, true, "tb_RightArm", Math.Round(newHealth, 0).ToString(CultureInfo.CurrentCulture));
+            EffectManager.sendUIEffectText((short)comp.effectId, comp.TranspConnection, true, "tb_RightArm", Math.Round(newHealth, 0).ToString(CultureInfo.CurrentCulture));
         }
 
         /// <summary>
@@ -123,9 +123,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
         {
             UnturnedPlayer player = UnturnedPlayer.FromCSteamID((CSteamID)Convert.ToUInt64(id));
             AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-            await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_Body,
+            await EffectHelper.SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.Health_Body,
                 (int)(newHealth / Config.HealthSystemSettings.BodyHealth * 100), (int)comp.ProgressBarData.LastHealthBody);
-            EffectManager.sendUIEffectText((short)comp.EffectID, comp.TranspConnection, true, "tb_Body", Math.Round(newHealth, 0).ToString(CultureInfo.CurrentCulture));
+            EffectManager.sendUIEffectText((short)comp.effectId, comp.TranspConnection, true, "tb_Body", Math.Round(newHealth, 0).ToString(CultureInfo.CurrentCulture));
         }
 
         /// <summary>
@@ -137,9 +137,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
         {
             UnturnedPlayer player = UnturnedPlayer.FromCSteamID((CSteamID)Convert.ToUInt64(id));
             AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-            await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_Head,
+            await EffectHelper.SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.Health_Head,
                 (int)(newHealth / Config.HealthSystemSettings.HeadHealth * 100), (int)comp.ProgressBarData.LastHealthHead);
-            EffectManager.sendUIEffectText((short)comp.EffectID, comp.TranspConnection, true, "tb_Head", Math.Round(newHealth, 0).ToString(CultureInfo.CurrentCulture));
+            EffectManager.sendUIEffectText((short)comp.effectId, comp.TranspConnection, true, "tb_Head", Math.Round(newHealth, 0).ToString(CultureInfo.CurrentCulture));
         }
 
         /// <summary>
@@ -151,9 +151,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
         {
             UnturnedPlayer player = UnturnedPlayer.FromCSteamID((CSteamID)Convert.ToUInt64(id));
             AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-            await EffectHelper.SendUIEffectProgressBarAsync((short)comp.EffectID, player.CSteamID, true, EProgressBar.Health_Simple,
+            await EffectHelper.SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.Health_Simple,
                 (int)(newHealth / Config.HealthSystemSettings.BaseHealth * 100), (int)comp.ProgressBarData.LastSimpleHealth);
-            EffectManager.sendUIEffectText((short)comp.EffectID, comp.TranspConnection, true, "tb_Health", Math.Round(newHealth, 0).ToString(CultureInfo.CurrentCulture));
+            EffectManager.sendUIEffectText((short)comp.effectId, comp.TranspConnection, true, "tb_Health", Math.Round(newHealth, 0).ToString(CultureInfo.CurrentCulture));
         }
     }
 }

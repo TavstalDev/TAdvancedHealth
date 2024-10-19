@@ -16,10 +16,10 @@ namespace Tavstal.TAdvancedHealth.Commands
 
         public void Execute(IRocketPlayer caller, string[] command)
         {
-            TAdvancedHealth.Instance.SendPlainCommandReply(caller, "#########################################");
-            TAdvancedHealth.Instance.SendPlainCommandReply(caller, $"# Build Version: {TAdvancedHealth.Version}");
-            TAdvancedHealth.Instance.SendPlainCommandReply(caller, $"# Build Date: {TAdvancedHealth.BuildDate}");
-            TAdvancedHealth.Instance.SendPlainCommandReply(caller, "#########################################");
+            AdvancedHealth.Instance.SendPlainCommandReply(caller, "#########################################");
+            AdvancedHealth.Instance.SendPlainCommandReply(caller, $"# Build Version: {AdvancedHealth.Version}");
+            AdvancedHealth.Instance.SendPlainCommandReply(caller, $"# Build Date: {AdvancedHealth.BuildDate}");
+            AdvancedHealth.Instance.SendPlainCommandReply(caller, "#########################################");
         }
     }
 }

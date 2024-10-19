@@ -23,25 +23,25 @@ namespace Tavstal.TAdvancedHealth.Commands
         {
             UnturnedPlayer player = (UnturnedPlayer)caller;
             AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-            HealthData health = await TAdvancedHealth.DatabaseManager.GetPlayerHealthAsync(player.Id);
+            HealthData health = await AdvancedHealth.DatabaseManager.GetPlayerHealthAsync(player.Id);
 
             if (args.Length == 0)
             {
-                TAdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "error_command_sethealthhud_args");
+                AdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "error_command_sethealthhud_args");
                 return;
             }
 
             if (args.Length == 1 && args[0].ToLower() != "list")
             {
-                HUDStyle style = TAdvancedHealth.Instance.Config.HUDStyles.Find(x => x.Enabled && (x.Name == args[0] || x.Aliases.ContainsIgnoreCase(args[0])));
+                HUDStyle style = AdvancedHealth.Instance.Config.HUDStyles.Find(x => x.Enabled && (x.Name == args[0] || x.Aliases.ContainsIgnoreCase(args[0])));
                 if (style == null)
                 {
-                    TAdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "error_command_sethealthhud_style_invalid", args[0]);
+                    AdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "error_command_sethealthhud_style_invalid", args[0]);
                     return;
                 }
                 ushort oldId = health.HUDEffectID;
-                comp.EffectID = style.EffectID;
-                await TAdvancedHealth.DatabaseManager.UpdateHUDEffectIdAsync(player.Id, style.EffectID);
+                comp.effectId = style.EffectID;
+                await AdvancedHealth.DatabaseManager.UpdateHUDEffectIdAsync(player.Id, style.EffectID);
                 
                 if (health.IsHUDEnabled)
                 {
@@ -62,7 +62,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                     }
                     catch
                     {
-                        TAdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "error_command_sethealthhud_args");
+                        AdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "error_command_sethealthhud_args");
                         return;
                     }
                 }
@@ -70,28 +70,28 @@ namespace Tavstal.TAdvancedHealth.Commands
                     page = 1;
 
                 bool isEnd = false;
-                List<HUDStyle> styles = TAdvancedHealth.Instance.Config.HUDStyles.FindAll(x => x.Enabled);
+                List<HUDStyle> styles = AdvancedHealth.Instance.Config.HUDStyles.FindAll(x => x.Enabled);
                 for (int i = 0; i < 3; i++)
                 {
                     int index = i + (page - 1) * 3;
                     if (styles.IsValidIndex(index))
                     {
-                        TAdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "command_sethealthhud_list_element", styles[index].Name);
+                        AdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "command_sethealthhud_list_element", styles[index].Name);
                     }
                     else
                     {
                         
                         isEnd = true;
-                        TAdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "command_sethealthhud_list_end");
+                        AdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "command_sethealthhud_list_end");
                         break;
                     }
                 }
 
                 if (!isEnd)
-                    TAdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "command_sethealthhud_list_next", page + 1);
+                    AdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "command_sethealthhud_list_next", page + 1);
             }
             else
-                TAdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "error_command_sethealthhud_args");
+                AdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "error_command_sethealthhud_args");
         }
     }
 }

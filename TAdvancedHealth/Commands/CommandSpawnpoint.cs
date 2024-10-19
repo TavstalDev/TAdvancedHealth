@@ -23,16 +23,16 @@ namespace Tavstal.TAdvancedHealth.Commands
             UnturnedPlayer player = (UnturnedPlayer)caller;
             if (args.Length == 1)
             {
-                Hospital hospital = TAdvancedHealth.Instance.Config.HospitalSettings.Hospitals.FirstOrDefault(x => x.Name.ToLower() == args[0].ToLower());
+                Hospital hospital = AdvancedHealth.Instance.Config.HospitalSettings.Hospitals.FirstOrDefault(x => x.Name.ToLower() == args[0].ToLower());
                 if (hospital != null)
                 {
                     hospital.Position.Add(new SerializableVector3(player.Position));
-                    TAdvancedHealth.Instance.Config.SaveConfig();
-                    TAdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "success_command_hospital_added");
+                    AdvancedHealth.Instance.Config.SaveConfig();
+                    AdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "success_command_hospital_added");
                 }
                 else
                 {
-                    TAdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "error_hospital_not_found");
+                    AdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "error_hospital_not_found");
                     //return;
                 }
             }

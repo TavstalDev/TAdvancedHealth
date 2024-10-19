@@ -16,8 +16,8 @@ namespace Tavstal.TAdvancedHealth.Harmony
     [HarmonyPatch(typeof(UseableMelee), "fire", new Type[] { })]
     public static class UseableMeleeHarmony
     {
-        private static TAdvancedHealthConfig _config => TAdvancedHealth.Instance.Config;
-        private static DatabaseManager _database => TAdvancedHealth.DatabaseManager;
+        private static AdvancedHealthConfig _config => AdvancedHealth.Instance.Config;
+        private static DatabaseManager _database => AdvancedHealth.DatabaseManager;
 
         [HarmonyPostfix]
         public static async void Postfix(object __instance)
@@ -32,7 +32,7 @@ namespace Tavstal.TAdvancedHealth.Harmony
             if (userComp.LastDefibliratorUses.TryGetValue(useableMelee.equippedMeleeAsset.id, out DateTime time))
                 if (time > DateTime.Now)
                 {
-                    TAdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "error_defiblirator_cooldown", (time - DateTime.Now).TotalSeconds.ToString("0.00"));
+                    AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "error_defiblirator_cooldown", (time - DateTime.Now).TotalSeconds.ToString("0.00"));
                     return;
                 }
                 else
@@ -45,7 +45,7 @@ namespace Tavstal.TAdvancedHealth.Harmony
 
             if (targetBasePlayer != null)
             {
-                TAdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "error_defiblirator_no_player");
+                AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "error_defiblirator_no_player");
                 return;
             }
 
@@ -59,17 +59,17 @@ namespace Tavstal.TAdvancedHealth.Harmony
                 if (chance != 0 && chance <= defibrillator.ReviveChance)
                 {
                     await targetComp.ReviveAsync();
-                    TAdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "success_defiblirator_revive", targetPlayer.CharacterName);
-                    TAdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "success_defiblirator_revive_other", userPlayer.CharacterName);
+                    AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "success_defiblirator_revive", targetPlayer.CharacterName);
+                    AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "success_defiblirator_revive_other", userPlayer.CharacterName);
                 }
                 else
                 {
-                    TAdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "error_defiblirator_revive_fail", targetPlayer.CharacterName);
+                    AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "error_defiblirator_revive_fail", targetPlayer.CharacterName);
                 }
                 userComp.LastDefibliratorUses.Add(useableMelee.equippedMeleeAsset.id, DateTime.Now.AddSeconds(defibrillator.RechargeTimeSecs));
             }
             else
-                TAdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "error_defiblirator_not_injured");
+                AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "error_defiblirator_not_injured");
 
         }
     }
