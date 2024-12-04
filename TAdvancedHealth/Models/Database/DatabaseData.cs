@@ -12,6 +12,9 @@ namespace Tavstal.TAdvancedHealth.Models.Database
 
         public DatabaseData() { }
 
-
+        public DatabaseData(string playerDataTable)
+        {
+            PlayerDataTable = playerDataTable;
+        }
     }
 }

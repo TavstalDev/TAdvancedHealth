@@ -23,7 +23,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
 {
     public static class UnturnedEventHandler
     {
+        // ReSharper disable once InconsistentNaming
         private static DatabaseManager _database => AdvancedHealth.DatabaseManager;
+        // ReSharper disable once InconsistentNaming
         private static AdvancedHealthConfig _config => AdvancedHealth.Instance.Config;
 
         /// <summary>
@@ -90,7 +92,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 HealthData health = await _database.GetPlayerHealthAsync(player.Id);
-                await EffectHelper.SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.Health_Simple, (int)((Math.Round(health.BaseHealth, 2) / _config.HealthSystemSettings.BaseHealth) * 100), 0);
+                await EffectHelper.SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.SimpleHealth, (int)((Math.Round(health.BaseHealth, 2) / _config.HealthSystemSettings.BaseHealth) * 100), 0);
             }
             catch (Exception e)
             {
@@ -114,9 +116,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                 comp.ProgressBarData.LastFood = value;
 
                 if (value <= 0)
-                   await comp.TryAddStateAsync(EPlayerState.NOFOOD);
+                   await comp.TryAddStateAsync(EPlayerState.NoFood);
                 else
-                   await comp.TryRemoveStateAsync(EPlayerState.NOFOOD);
+                   await comp.TryRemoveStateAsync(EPlayerState.NoFood);
             }
             catch (Exception e)
             {
@@ -160,9 +162,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                 comp.ProgressBarData.LastWater = value;
 
                 if (value <= 0)
-                   await comp.TryAddStateAsync(EPlayerState.NOWATER);
+                   await comp.TryAddStateAsync(EPlayerState.NoWater);
                 else
-                   await comp.TryRemoveStateAsync(EPlayerState.NOWATER);
+                   await comp.TryRemoveStateAsync(EPlayerState.NoWater);
             }
             catch (Exception e)
             {
@@ -186,9 +188,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                 comp.ProgressBarData.LastVirus = value;
 
                 if (value <= 0)
-                   await comp.TryAddStateAsync(EPlayerState.NOVIRUS);
+                   await comp.TryAddStateAsync(EPlayerState.NoVirus);
                 else
-                   await comp.TryRemoveStateAsync(EPlayerState.NOVIRUS);
+                   await comp.TryRemoveStateAsync(EPlayerState.NoVirus);
             }
             catch (Exception e)
             {
@@ -211,9 +213,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                 comp.ProgressBarData.LastOxygen = value;
 
                 if (value <= 0)
-                   await comp.TryAddStateAsync(EPlayerState.NOOXYGEN);
+                   await comp.TryAddStateAsync(EPlayerState.NoOxygen);
                 else
-                   await comp.TryRemoveStateAsync(EPlayerState.NOOXYGEN);
+                   await comp.TryRemoveStateAsync(EPlayerState.NoOxygen);
             }
             catch (Exception e)
             {
@@ -243,12 +245,12 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                     if (MathHelper.Next(1, 100) <= _config.HealthSystemSettings.HeavyBleedingChance)
                         comp.hasHeavyBleeding = true;
 
-                    await comp.TryAddStateAsync(EPlayerState.BLEEDING);
+                    await comp.TryAddStateAsync(EPlayerState.Bleeding);
                 }
                 else
                 {
                     comp.hasHeavyBleeding = false;
-                    await comp.TryRemoveStateAsync(EPlayerState.BLEEDING);
+                    await comp.TryRemoveStateAsync(EPlayerState.Bleeding);
                 }
 
             }
@@ -296,10 +298,10 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                             player.Player.stance.checkStance(EPlayerStance.PRONE, true);
                     }
 
-                    await comp.TryAddStateAsync(EPlayerState.BROKENBONE);
+                    await comp.TryAddStateAsync(EPlayerState.BrokenBone);
                 }
                 else
-                   await comp.TryRemoveStateAsync(EPlayerState.BROKENBONE);
+                   await comp.TryRemoveStateAsync(EPlayerState.BrokenBone);
 
             }
             catch (Exception e)
@@ -323,9 +325,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                     AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
                     if (isFullMoon)
-                       await comp.TryAddStateAsync(EPlayerState.FULLMOON);
+                       await comp.TryAddStateAsync(EPlayerState.FullMoon);
                     else
-                       await comp.TryRemoveStateAsync(EPlayerState.FULLMOON);
+                       await comp.TryRemoveStateAsync(EPlayerState.FullMoon);
                 }
 
             }
@@ -347,9 +349,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 if (isActive)
-                   await comp.TryAddStateAsync(EPlayerState.DEADZONE);
+                   await comp.TryAddStateAsync(EPlayerState.DeadZone);
                 else
-                   await comp.TryRemoveStateAsync(EPlayerState.DEADZONE);
+                   await comp.TryRemoveStateAsync(EPlayerState.DeadZone);
 
             }
             catch (Exception e)
@@ -370,9 +372,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 if (isActive)
-                    await comp.TryAddStateAsync(EPlayerState.SAFEZONE);
+                    await comp.TryAddStateAsync(EPlayerState.SafeZone);
                 else
-                   await comp.TryRemoveStateAsync(EPlayerState.SAFEZONE);
+                   await comp.TryRemoveStateAsync(EPlayerState.SafeZone);
 
             }
             catch (Exception e)
@@ -393,22 +395,22 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
-                EPlayerState state = EPlayerState.ACID;
+                EPlayerState state = EPlayerState.Acid;
 
                 if (newTemperature == EPlayerTemperature.ACID)
-                    state = EPlayerState.ACID;
+                    state = EPlayerState.Acid;
                 else if (newTemperature == EPlayerTemperature.BURNING)
-                    state = EPlayerState.BURNING;
+                    state = EPlayerState.Burning;
                 else if (newTemperature == EPlayerTemperature.COLD)
-                    state = EPlayerState.COLD;
+                    state = EPlayerState.Cold;
                 else if (newTemperature == EPlayerTemperature.COVERED)
-                    state = EPlayerState.COVERED;
+                    state = EPlayerState.Covered;
                 else if (newTemperature == EPlayerTemperature.FREEZING)
-                    state = EPlayerState.FREEZING;
+                    state = EPlayerState.Freezing;
                 else if (newTemperature == EPlayerTemperature.WARM)
-                    state = EPlayerState.WARM;
+                    state = EPlayerState.Warm;
                 else if (newTemperature == EPlayerTemperature.NONE)
-                    state = EPlayerState.NONE_TEMPERATURE;
+                    state = EPlayerState.NoneTemperature;
 
                 await comp.TryAddStateAsync(state);
 
@@ -558,22 +560,22 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                     if (med != null)
                     {
                         HealthData health = await _database.GetPlayerHealthAsync(player.Id);
-                        if (health.BodyHealth + med.HealsBodyHP <= _config.HealthSystemSettings.BodyHealth)
-                            health.BodyHealth += med.HealsBodyHP;
+                        if (health.BodyHealth + med.HealsBodyHp <= _config.HealthSystemSettings.BodyHealth)
+                            health.BodyHealth += med.HealsBodyHp;
                         else
                             health.BodyHealth = _config.HealthSystemSettings.BodyHealth;
 
-                        if (health.HeadHealth + med.HealsHeadHP <= _config.HealthSystemSettings.HeadHealth)
-                            health.HeadHealth += med.HealsHeadHP;
+                        if (health.HeadHealth + med.HealsHeadHp <= _config.HealthSystemSettings.HeadHealth)
+                            health.HeadHealth += med.HealsHeadHp;
                         else
                             health.HeadHealth = _config.HealthSystemSettings.HeadHealth;
 
                         if (med.CuresPain)
                             EffectManager.askEffectClearByID(_config.HealthSystemSettings.PainEffectID, player.SteamPlayer().transportConnection);
 
-                        if (health.LeftLegHealth + med.HealsLeftLegHP <= _config.HealthSystemSettings.LeftLegHealth)
+                        if (health.LeftLegHealth + med.HealsLeftLegHp <= _config.HealthSystemSettings.LeftLegHealth)
                         {
-                            health.LeftLegHealth += med.HealsLeftLegHP;
+                            health.LeftLegHealth += med.HealsLeftLegHp;
                             AdvancedHealth.Instance.InvokeAction(0.5f, () =>
                             {
                                 player.Broken = false;
@@ -590,9 +592,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                             });
                         }
 
-                        if (health.RightLegHealth + med.HealsRightLegHP <= _config.HealthSystemSettings.RightLegHealth)
+                        if (health.RightLegHealth + med.HealsRightLegHp <= _config.HealthSystemSettings.RightLegHealth)
                         {
-                            health.RightLegHealth += med.HealsRightLegHP;
+                            health.RightLegHealth += med.HealsRightLegHp;
                             AdvancedHealth.Instance.InvokeAction(0.5f, () =>
                             {
                                 player.Broken = false;
@@ -609,13 +611,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                             });
                         }
 
-                        if (health.LeftArmHealth + med.HealsLeftArmHP <= _config.HealthSystemSettings.LeftArmHealth)
-                            health.LeftArmHealth += med.HealsLeftArmHP;
+                        if (health.LeftArmHealth + med.HealsLeftArmHp <= _config.HealthSystemSettings.LeftArmHealth)
+                            health.LeftArmHealth += med.HealsLeftArmHp;
                         else
                             health.LeftArmHealth = _config.HealthSystemSettings.LeftArmHealth;
 
-                        if (health.RightArmHealth + med.HealsRightArmHP <= _config.HealthSystemSettings.RightArmHealth)
-                            health.RightArmHealth += med.HealsRightArmHP;
+                        if (health.RightArmHealth + med.HealsRightArmHp <= _config.HealthSystemSettings.RightArmHealth)
+                            health.RightArmHealth += med.HealsRightArmHp;
                         else
                             health.RightArmHealth = _config.HealthSystemSettings.RightArmHealth;
 
@@ -798,7 +800,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
 
 
                 if (LightingManager.isFullMoon)
-                    await comp.TryAddStateAsync(EPlayerState.FULLMOON);
+                    await comp.TryAddStateAsync(EPlayerState.FullMoon);
                 #endregion
                 #region Attach Events
                 player.Player.equipment.onEquipRequested += Event_OnPlayerEquipRequested;
@@ -852,7 +854,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                 #endregion
 
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                if (comp.dragState != EDragState.NONE)
+                if (comp.dragState != EDragState.None)
                     comp.UnDrag();
             }
             catch (Exception e)
@@ -888,12 +890,12 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                         if (health.HeadHealth - totalDamage > 0)
                         {
                             health.HeadHealth -= totalDamage;
-                            await _database.UpdateHealthAsync(player.Id, health.HeadHealth, EHealth.HEAD);
+                            await _database.UpdateHealthAsync(player.Id, health.HeadHealth, EHealth.Head);
                         }
                         else
                         {
                             health.HeadHealth = 0;
-                            await _database.UpdateHealthAsync(player.Id, 0, EHealth.HEAD);
+                            await _database.UpdateHealthAsync(player.Id, 0, EHealth.Head);
                         }
 
                         if (health.HeadHealth == 0)
@@ -935,12 +937,12 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                         if (health.BodyHealth - totalDamage > 0)
                         {
                             health.BodyHealth -= totalDamage;
-                            await _database.UpdateHealthAsync(player.Id, health.BodyHealth, EHealth.BODY);
+                            await _database.UpdateHealthAsync(player.Id, health.BodyHealth, EHealth.Body);
                         }
                         else
                         {
                             health.BodyHealth = 0;
-                            await _database.UpdateHealthAsync(player.Id, health.BodyHealth, EHealth.BODY);
+                            await _database.UpdateHealthAsync(player.Id, health.BodyHealth, EHealth.Body);
                         }
 
                         if (health.BodyHealth == 0)
@@ -979,12 +981,12 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                         if (health.LeftArmHealth - totalDamage > 0)
                         {
                             health.LeftArmHealth -= totalDamage;
-                            await _database.UpdateHealthAsync(player.Id, health.LeftArmHealth, EHealth.LEFT_ARM);
+                            await _database.UpdateHealthAsync(player.Id, health.LeftArmHealth, EHealth.LeftARM);
                         }
                         else
                         {
                             health.LeftArmHealth = 0;
-                            await _database.UpdateHealthAsync(player.Id, health.LeftArmHealth, EHealth.LEFT_ARM);
+                            await _database.UpdateHealthAsync(player.Id, health.LeftArmHealth, EHealth.LeftARM);
                         }
 
                         if (health.LeftArmHealth + health.RightArmHealth == 0)
@@ -1013,12 +1015,12 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                         if (health.RightArmHealth - totalDamage > 0)
                         {
                             health.RightArmHealth -= totalDamage;
-                            await _database.UpdateHealthAsync(player.Id, health.RightArmHealth, EHealth.RIGHT_ARM);
+                            await _database.UpdateHealthAsync(player.Id, health.RightArmHealth, EHealth.RightARM);
                         }
                         else
                         {
                             health.RightArmHealth = 0;
-                            await _database.UpdateHealthAsync(player.Id, health.RightArmHealth, EHealth.RIGHT_ARM);
+                            await _database.UpdateHealthAsync(player.Id, health.RightArmHealth, EHealth.RightARM);
                         }
 
                         if (health.RightArmHealth + health.RightArmHealth == 0)
@@ -1053,7 +1055,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                             health.LeftLegHealth = 0;
                         }
 
-                        await _database.UpdateHealthAsync(player.Id, health.LeftLegHealth, EHealth.LEFT_LEG);
+                        await _database.UpdateHealthAsync(player.Id, health.LeftLegHealth, EHealth.LeftLeg);
 
                         if (health.LeftLegHealth + health.RightLegHealth == 0)
                         {
@@ -1081,12 +1083,12 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                         if (health.RightLegHealth - totalDamage > 0)
                         {
                             health.RightLegHealth -= totalDamage;
-                            await _database.UpdateHealthAsync(player.Id, health.RightLegHealth, EHealth.RIGHT_LEG);
+                            await _database.UpdateHealthAsync(player.Id, health.RightLegHealth, EHealth.RightLeg);
                         }
                         else
                         {
                             health.RightLegHealth = 0;
-                            await _database.UpdateHealthAsync(player.Id, health.RightLegHealth, EHealth.RIGHT_LEG);
+                            await _database.UpdateHealthAsync(player.Id, health.RightLegHealth, EHealth.RightLeg);
                         }
 
                         if (health.RightLegHealth + health.RightLegHealth == 0)
@@ -1117,12 +1119,12 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                                     if (health.RightLegHealth - totalDamage > 0)
                                     {
                                         health.RightLegHealth -= totalDamage;
-                                        await _database.UpdateHealthAsync(player.Id, health.RightLegHealth, EHealth.RIGHT_LEG);
+                                        await _database.UpdateHealthAsync(player.Id, health.RightLegHealth, EHealth.RightLeg);
                                     }
                                     else
                                     {
                                         health.RightLegHealth = 0;
-                                        await _database.UpdateHealthAsync(player.Id, health.RightLegHealth, EHealth.RIGHT_LEG);
+                                        await _database.UpdateHealthAsync(player.Id, health.RightLegHealth, EHealth.RightLeg);
                                     }
 
                                     if (health.RightLegHealth + health.RightLegHealth == 0)
@@ -1140,12 +1142,12 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                                     if (health.LeftLegHealth - totalDamage > 0)
                                     {
                                         health.LeftLegHealth -= totalDamage;
-                                        await _database.UpdateHealthAsync(player.Id, health.LeftArmHealth, EHealth.LEFT_LEG);
+                                        await _database.UpdateHealthAsync(player.Id, health.LeftArmHealth, EHealth.LeftLeg);
                                     }
                                     else
                                     {
                                         health.LeftLegHealth = 0;
-                                        await _database.UpdateHealthAsync(player.Id, health.LeftArmHealth, EHealth.LEFT_LEG);
+                                        await _database.UpdateHealthAsync(player.Id, health.LeftArmHealth, EHealth.LeftLeg);
                                     }
 
                                     if (health.LeftLegHealth + health.RightLegHealth == 0)
@@ -1400,7 +1402,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 await comp.ReviveAsync();
-                if (comp.dragState != EDragState.NONE)
+                if (comp.dragState != EDragState.None)
                     comp.UnDrag();
 
 
@@ -1469,7 +1471,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
                 await EffectHelper.UpdateWholeHealthUIAsync(player);
-                if (comp.dragState != EDragState.NONE)
+                if (comp.dragState != EDragState.None)
                     comp.UnDrag();
 
                 EffectManager.sendUIEffectVisibility((short)comp.effectId, comp.TranspConnection, true, "RevivePanel", false);
@@ -1515,7 +1517,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                 {
                     AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
-                    if (comp.dragState == EDragState.DRAGGER)
+                    if (comp.dragState == EDragState.Dragger)
                         comp.UnDrag();
                 }
             }
@@ -1550,7 +1552,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                         if (uPlayer.Player.movement.pluginSpeedMultiplier == 0)
                             uPlayer.Player.movement.sendPluginSpeedMultiplier(1);
                         health.IsInjured = false;
-                        if (comp.dragState != EDragState.NONE)
+                        if (comp.dragState != EDragState.None)
                             comp.UnDrag();
 
                         uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);

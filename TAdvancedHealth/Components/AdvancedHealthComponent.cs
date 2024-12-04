@@ -22,7 +22,7 @@ namespace Tavstal.TAdvancedHealth.Components
         public bool hasHeavyBleeding;
         public readonly ProgressBarDatas ProgressBarData = new ProgressBarDatas();
         [FormerlySerializedAs("DragState")] 
-        public EDragState dragState = EDragState.NONE;
+        public EDragState dragState = EDragState.None;
         [FormerlySerializedAs("DragPartnerId")] 
         public CSteamID dragPartnerId = CSteamID.Nil;
         public HealthData HealthData {  get; set; }
@@ -56,9 +56,9 @@ namespace Tavstal.TAdvancedHealth.Components
                 {
                     var config = AdvancedHealth.Instance.Config;
 
-                    if (state == EPlayerState.NONE_TEMPERATURE)
+                    if (state == EPlayerState.NoneTemperature)
                     {
-                        StatusIcon icon2 = HealthHelper.GetStatusIcon(EPlayerState.WARM);
+                        StatusIcon icon2 = HealthHelper.GetStatusIcon(EPlayerState.Warm);
                         if (icon2 != null)
                         {
                             List<StatusIcon> icons = config.HealthSystemSettings.StatusIcons.FindAll(x => x.GroupIndex == icon2.GroupIndex && x.Status != state);
@@ -164,13 +164,13 @@ namespace Tavstal.TAdvancedHealth.Components
             AdvancedHealthComponent targetComp = target.GetComponent<AdvancedHealthComponent>();
             HealthData healthData = await AdvancedHealth.DatabaseManager.GetPlayerHealthAsync(target.Id);
 
-            if (healthData.IsInjured || targetComp.dragState != EDragState.NONE || !healthData.IsInjured || dragState != EDragState.NONE)
+            if (healthData.IsInjured || targetComp.dragState != EDragState.None || !healthData.IsInjured || dragState != EDragState.None)
                 return;
 
             dragPartnerId = target.CSteamID;
             targetComp.dragPartnerId = Player.CSteamID;
-            dragState = EDragState.DRAGGER;
-            targetComp.dragState = EDragState.DRAGGED;
+            dragState = EDragState.Dragger;
+            targetComp.dragState = EDragState.Dragged;
         }
 
         /// <summary>
@@ -190,7 +190,7 @@ namespace Tavstal.TAdvancedHealth.Components
                 }
             }
 
-            dragState = EDragState.NONE;
+            dragState = EDragState.None;
             dragPartnerId = CSteamID.Nil;
         }
 
@@ -275,7 +275,7 @@ namespace Tavstal.TAdvancedHealth.Components
             #endregion
 
             #region Dragging
-            if (dragState == EDragState.DRAGGER && dragPartnerId != CSteamID.Nil)
+            if (dragState == EDragState.Dragger && dragPartnerId != CSteamID.Nil)
             {
                 UnturnedPlayer partner = UnturnedPlayer.FromCSteamID(dragPartnerId);
 
@@ -288,7 +288,7 @@ namespace Tavstal.TAdvancedHealth.Components
             #region Regeneration
             bool shouldUpdateHealth = false;
             bool canRegenerate = Player.Player.life.food >= AdvancedHealth.Instance.Config.HealthSystemSettings.HealthRegenMinFood && Player.Player.life.water >= AdvancedHealth.Instance.Config.HealthSystemSettings.HealthRegenMinWater && Player.Player.life.virus >= AdvancedHealth.Instance.Config.HealthSystemSettings.HealthRegenMinVirus;
-            EDatabaseEvent databaseEvent = EDatabaseEvent.NONE;
+            EDatabaseEvent databaseEvent = EDatabaseEvent.None;
 
             // Head
             if (_nextHeadHealDate <= DateTime.Now)
@@ -297,7 +297,7 @@ namespace Tavstal.TAdvancedHealth.Components
                 {
                     HealthData.HeadHealth += 1;
                     shouldUpdateHealth = true;
-                    databaseEvent = EDatabaseEvent.HEAD;
+                    databaseEvent = EDatabaseEvent.Head;
                 }
                 _nextHeadHealDate = DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.HeadRegenTicks);
             }
@@ -309,10 +309,10 @@ namespace Tavstal.TAdvancedHealth.Components
                 {
                     HealthData.BodyHealth += 1;
                     shouldUpdateHealth = true;
-                    if (databaseEvent == EDatabaseEvent.NONE)
-                        databaseEvent = EDatabaseEvent.BODY;
+                    if (databaseEvent == EDatabaseEvent.None)
+                        databaseEvent = EDatabaseEvent.Body;
                     else
-                        databaseEvent |= EDatabaseEvent.BODY;
+                        databaseEvent |= EDatabaseEvent.Body;
                 }
                 _nextBodyHealDate = DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.BodyRegenTicks);
             }
@@ -326,19 +326,19 @@ namespace Tavstal.TAdvancedHealth.Components
                     {
                         HealthData.LeftArmHealth += 1;
                         shouldUpdateHealth = true;
-                        if (databaseEvent == EDatabaseEvent.NONE)
-                            databaseEvent = EDatabaseEvent.LEFT_ARM;
+                        if (databaseEvent == EDatabaseEvent.None)
+                            databaseEvent = EDatabaseEvent.LeftARM;
                         else
-                            databaseEvent |= EDatabaseEvent.LEFT_ARM;
+                            databaseEvent |= EDatabaseEvent.LeftARM;
                     }
                     if (HealthData.RightArmHealth + 1 <= AdvancedHealth.Instance.Config.HealthSystemSettings.RightArmHealth)
                     {
                         HealthData.RightArmHealth += 1;
                         shouldUpdateHealth = true;
-                        if (databaseEvent == EDatabaseEvent.NONE)
-                            databaseEvent = EDatabaseEvent.RIGHT_ARM;
+                        if (databaseEvent == EDatabaseEvent.None)
+                            databaseEvent = EDatabaseEvent.RightARM;
                         else
-                            databaseEvent |= EDatabaseEvent.RIGHT_ARM;
+                            databaseEvent |= EDatabaseEvent.RightARM;
                     }
                 }
                 _nextArmHealDate = DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.ArmRegenTicks);
@@ -353,19 +353,19 @@ namespace Tavstal.TAdvancedHealth.Components
                     {
                         HealthData.LeftLegHealth += 1;
                         shouldUpdateHealth = true;
-                        if (databaseEvent == EDatabaseEvent.NONE)
-                            databaseEvent = EDatabaseEvent.LEFT_LEG;
+                        if (databaseEvent == EDatabaseEvent.None)
+                            databaseEvent = EDatabaseEvent.LeftLeg;
                         else
-                            databaseEvent |= EDatabaseEvent.LEFT_LEG;
+                            databaseEvent |= EDatabaseEvent.LeftLeg;
                     }
                     if (HealthData.RightLegHealth + 1 <= AdvancedHealth.Instance.Config.HealthSystemSettings.RightLegHealth)
                     {
                         HealthData.RightLegHealth += 1;
                         shouldUpdateHealth = true;
-                        if (databaseEvent == EDatabaseEvent.NONE)
-                            databaseEvent = EDatabaseEvent.RIGHT_LEG;
+                        if (databaseEvent == EDatabaseEvent.None)
+                            databaseEvent = EDatabaseEvent.RightLeg;
                         else
-                            databaseEvent |= EDatabaseEvent.RIGHT_LEG;
+                            databaseEvent |= EDatabaseEvent.RightLeg;
                     }
                 }
                 _nextLegHealDate = DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.LegRegenTicks);

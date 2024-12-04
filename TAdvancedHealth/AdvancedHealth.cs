@@ -18,8 +18,8 @@ namespace Tavstal.TAdvancedHealth
         public static DatabaseManager DatabaseManager { get; private set; }
         public static bool IsConnectionAuthFailed { get; set; }
         private HarmonyLib.Harmony HarmonyPatcher { get; set; }
-        private bool _hasFullMoon { get; set; }
-        private DateTime _nextUpdate {  get; set; }
+        private bool _hasFullMoon;
+        private DateTime _nextUpdate;
 
         /// <summary>
         /// Called when the plugin is loaded.

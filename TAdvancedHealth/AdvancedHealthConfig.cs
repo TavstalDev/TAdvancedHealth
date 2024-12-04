@@ -119,98 +119,98 @@ namespace Tavstal.TAdvancedHealth
                 {
                     new StatusIcon
                     {
-                        Status = EPlayerState.ACID,
+                        Status = EPlayerState.Acid,
                         IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_acid.png",
                         GroupIndex = 1
                     },
                     new StatusIcon
                     {
-                        Status = EPlayerState.BLEEDING,
+                        Status = EPlayerState.Bleeding,
                         IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_bleeding.png",
                         GroupIndex = -1
                     },
                     new StatusIcon
                     {
-                        Status = EPlayerState.BROKENBONE,
+                        Status = EPlayerState.BrokenBone,
                         IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_brokenbone.png",
                         GroupIndex = -1
                     },
                     new StatusIcon
                     {
-                        Status = EPlayerState.BURNING,
+                        Status = EPlayerState.Burning,
                         IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_temperature_hot.png",
                         GroupIndex = 1
                     },
                     new StatusIcon
                     {
-                        Status = EPlayerState.COLD,
+                        Status = EPlayerState.Cold,
                         IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_temperature_down.png",
                         GroupIndex = 1
                     },
                     new StatusIcon
                     {
-                        Status = EPlayerState.COVERED,
+                        Status = EPlayerState.Covered,
                         IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_temperature_shelter.png",
                         GroupIndex = 1
                     },
                     new StatusIcon
                     {
-                        Status = EPlayerState.DEADZONE,
+                        Status = EPlayerState.DeadZone,
                         IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_deadzone.png",
                         GroupIndex = 2
                     },
                     new StatusIcon
                     {
-                        Status = EPlayerState.FREEZING,
+                        Status = EPlayerState.Freezing,
                         IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_temperature_cold.png",
                         GroupIndex = 1
                     },
                     new StatusIcon
                     {
-                        Status = EPlayerState.HANDCUFFED,
+                        Status = EPlayerState.Handcuffed,
                         IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_handcuffed.png",
                         GroupIndex = -1
                     },
                     new StatusIcon
                     {
-                        Status = EPlayerState.NOFOOD,
+                        Status = EPlayerState.NoFood,
                         IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_food.png",
                         GroupIndex = -1
                     },
                     new StatusIcon
                     {
-                        Status = EPlayerState.NOWATER,
+                        Status = EPlayerState.NoWater,
                         IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_water.png",
                         GroupIndex = -1
                     },
                     new StatusIcon
                     {
-                        Status = EPlayerState.NOOXYGEN,
+                        Status = EPlayerState.NoOxygen,
                         IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_lunge.png",
                         GroupIndex = -1
                     },
                     new StatusIcon
                     {
-                        Status = EPlayerState.NOVIRUS,
+                        Status = EPlayerState.NoVirus,
                         IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_radiation.png",
                         GroupIndex = -1
                     },
                     new StatusIcon
                     {
-                        Status = EPlayerState.SAFEZONE,
+                        Status = EPlayerState.SafeZone,
                         IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_safezone.png",
                         GroupIndex = 2
 
                     },
                     new StatusIcon
                     {
-                        Status = EPlayerState.WARM,
+                        Status = EPlayerState.Warm,
                         IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_temperature_up.png",
                         GroupIndex = 1
                     },
                     new StatusIcon
                     {
-                        Status = EPlayerState.FULLMOON,
+                        Status = EPlayerState.FullMoon,
                         IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_fullmoon.png",
                         GroupIndex = -1
                     }
@@ -256,12 +256,12 @@ namespace Tavstal.TAdvancedHealth
             };
             Medicines = new List<Medicine>
             {
-                new Medicine { ItemID = 15, HealsHeadHP = 26.25f, HealsBodyHP = 0, HealsLeftArmHP = 0, HealsLeftLegHP = 0, HealsRightArmHP = 0, HealsRightLegHP = 0, CuresPain = false },
-                new Medicine { ItemID = 403, HealsHeadHP = 0, HealsBodyHP = 52.5f, HealsLeftArmHP = 0, HealsLeftLegHP = 0, HealsRightArmHP = 0, HealsRightLegHP = 0, CuresPain = false },
-                new Medicine { ItemID = 96, HealsHeadHP = 0, HealsBodyHP = 0, HealsLeftArmHP = 0, HealsLeftLegHP = 45, HealsRightArmHP = 0, HealsRightLegHP = 45, CuresPain = false },
-                new Medicine { ItemID = 95, HealsHeadHP = 0, HealsBodyHP = 0, HealsLeftArmHP = 32.5f, HealsLeftLegHP = 0, HealsRightArmHP = 32.5f, HealsRightLegHP = 0, CuresPain = false },
-                new Medicine { ItemID = 394, HealsHeadHP = 0, HealsBodyHP = 0, HealsLeftArmHP = 45, HealsLeftLegHP = 0, HealsRightArmHP = 45, HealsRightLegHP = 0, CuresPain = false },
-                new Medicine { ItemID = 390, HealsHeadHP = 0, HealsBodyHP = 0, HealsLeftArmHP = 0, HealsLeftLegHP = 30, HealsRightArmHP = 0, HealsRightLegHP = 30, CuresPain = true }
+                new Medicine { ItemID = 15, HealsHeadHp = 26.25f, HealsBodyHp = 0, HealsLeftArmHp = 0, HealsLeftLegHp = 0, HealsRightArmHp = 0, HealsRightLegHp = 0, CuresPain = false },
+                new Medicine { ItemID = 403, HealsHeadHp = 0, HealsBodyHp = 52.5f, HealsLeftArmHp = 0, HealsLeftLegHp = 0, HealsRightArmHp = 0, HealsRightLegHp = 0, CuresPain = false },
+                new Medicine { ItemID = 96, HealsHeadHp = 0, HealsBodyHp = 0, HealsLeftArmHp = 0, HealsLeftLegHp = 45, HealsRightArmHp = 0, HealsRightLegHp = 45, CuresPain = false },
+                new Medicine { ItemID = 95, HealsHeadHp = 0, HealsBodyHp = 0, HealsLeftArmHp = 32.5f, HealsLeftLegHp = 0, HealsRightArmHp = 32.5f, HealsRightLegHp = 0, CuresPain = false },
+                new Medicine { ItemID = 394, HealsHeadHp = 0, HealsBodyHp = 0, HealsLeftArmHp = 45, HealsLeftLegHp = 0, HealsRightArmHp = 45, HealsRightLegHp = 0, CuresPain = false },
+                new Medicine { ItemID = 390, HealsHeadHp = 0, HealsBodyHp = 0, HealsLeftArmHp = 0, HealsLeftLegHp = 30, HealsRightArmHp = 0, HealsRightLegHp = 30, CuresPain = true }
             };
             OneHandedItems = new RestrictedItems
             {

@@ -61,7 +61,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                                         newHealth *= -1;
                                 }
 
-                                await AdvancedHealth.DatabaseManager.UpdateHealthAsync(callerPlayer.Id, newHealth, EHealth.HEAD);
+                                await AdvancedHealth.DatabaseManager.UpdateHealthAsync(callerPlayer.Id, newHealth, EHealth.Head);
                                 AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_succcess_sethealth", targetPlayer.CharacterName, AdvancedHealth.Instance.Localize("head"), newHealth);
                                 if (!targetPlayer.Equals(callerPlayer))
                                     AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_other", callerPlayer.CharacterName, AdvancedHealth.Instance.Localize("head"), newHealth);
@@ -80,7 +80,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                                         newHealth *= -1;
                                 }
 
-                                await AdvancedHealth.DatabaseManager.UpdateHealthAsync(callerPlayer.Id, newHealth, EHealth.BODY);
+                                await AdvancedHealth.DatabaseManager.UpdateHealthAsync(callerPlayer.Id, newHealth, EHealth.Body);
                                 AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_succcess_sethealth", targetPlayer.CharacterName, AdvancedHealth.Instance.Localize("body"), newHealth);
                                 if (!targetPlayer.Equals(callerPlayer))
                                     AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_other", callerPlayer.CharacterName, AdvancedHealth.Instance.Localize("body"), newHealth);
@@ -100,7 +100,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                                         newHealth *= -1;
                                 }
 
-                                await AdvancedHealth.DatabaseManager.UpdateHealthAsync(callerPlayer.Id, newHealth, EHealth.RIGHT_ARM);
+                                await AdvancedHealth.DatabaseManager.UpdateHealthAsync(callerPlayer.Id, newHealth, EHealth.RightARM);
                                 AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_succcess_sethealth", targetPlayer.CharacterName, AdvancedHealth.Instance.Localize("rightarm"), newHealth);
                                 if (!targetPlayer.Equals(callerPlayer))
                                     AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_other", callerPlayer.CharacterName, AdvancedHealth.Instance.Localize("rightarm"), newHealth);
@@ -120,7 +120,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                                         newHealth *= -1;
                                 }
 
-                                await AdvancedHealth.DatabaseManager.UpdateHealthAsync(callerPlayer.Id, newHealth, EHealth.LEFT_ARM);
+                                await AdvancedHealth.DatabaseManager.UpdateHealthAsync(callerPlayer.Id, newHealth, EHealth.LeftARM);
                                 AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_succcess_sethealth", targetPlayer.CharacterName, AdvancedHealth.Instance.Localize("leftarm"), newHealth);
                                 if (!targetPlayer.Equals(callerPlayer))
                                     AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_other", callerPlayer.CharacterName, AdvancedHealth.Instance.Localize("leftarm"), newHealth);
@@ -140,7 +140,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                                         newHealth *= -1;
                                 }
 
-                                await AdvancedHealth.DatabaseManager.UpdateHealthAsync(callerPlayer.Id, newHealth, EHealth.LEFT_LEG);
+                                await AdvancedHealth.DatabaseManager.UpdateHealthAsync(callerPlayer.Id, newHealth, EHealth.LeftLeg);
                                 AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_succcess_sethealth", targetPlayer.CharacterName, AdvancedHealth.Instance.Localize("leftleg"), newHealth);
                                 if (!targetPlayer.Equals(callerPlayer))
                                     AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_other", callerPlayer.CharacterName, AdvancedHealth.Instance.Localize("leftleg"), newHealth);
@@ -160,7 +160,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                                         newHealth *= -1;
                                 }
 
-                                await AdvancedHealth.DatabaseManager.UpdateHealthAsync(callerPlayer.Id, newHealth, EHealth.RIGHT_LEG);
+                                await AdvancedHealth.DatabaseManager.UpdateHealthAsync(callerPlayer.Id, newHealth, EHealth.RightLeg);
                                 AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_succcess_sethealth", targetPlayer.CharacterName, AdvancedHealth.Instance.Localize("rightleg"), newHealth);
                                 if (!targetPlayer.Equals(callerPlayer))
                                     AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_other", callerPlayer.CharacterName, AdvancedHealth.Instance.Localize("rightleg"), newHealth);

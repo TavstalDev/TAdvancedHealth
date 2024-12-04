@@ -2,8 +2,8 @@
 {
     public enum EDragState
     {
-       NONE,
-       DRAGGER,
-       DRAGGED
+       None = 0,
+       Dragger = 1,
+       Dragged = 2
     }
 }

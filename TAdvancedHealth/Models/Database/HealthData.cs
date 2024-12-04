@@ -33,7 +33,7 @@ namespace Tavstal.TAdvancedHealth.Models.Database
 
         public HealthData() { }
 
-        public HealthData(string playerId, float baseHealth, float headHealth, float bodyHealth, float rightArmHealth, float leftArmHealth, float rightLegHealth, float leftLegHealth, bool isInjured, bool isHUDEnabled, ushort hUDEffectID, DateTime deathDate)
+        public HealthData(string playerId, float baseHealth, float headHealth, float bodyHealth, float rightArmHealth, float leftArmHealth, float rightLegHealth, float leftLegHealth, bool isInjured, bool isHUDEnabled, ushort hudEffectID, DateTime deathDate)
         {
             PlayerId = playerId;
             BaseHealth = baseHealth;
@@ -45,7 +45,7 @@ namespace Tavstal.TAdvancedHealth.Models.Database
             LeftLegHealth = leftLegHealth;
             IsInjured = isInjured;
             IsHUDEnabled = isHUDEnabled;
-            HUDEffectID = hUDEffectID;
+            HUDEffectID = hudEffectID;
             DeathDate = deathDate;
         }
 

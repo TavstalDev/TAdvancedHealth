@@ -14,6 +14,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
 {
     public static class HealthHelper
     {
+        // ReSharper disable once InconsistentNaming
         private static AdvancedHealthConfig _config => AdvancedHealth.Instance.Config;
 
         /// <summary>

@@ -2,12 +2,12 @@
 {
     public enum EHealth
     {
-       BASE,
-       HEAD,
-       BODY,
-       LEFT_ARM,
-       RIGHT_ARM,
-       LEFT_LEG,
-       RIGHT_LEG,
+       Base = 0,
+       Head = 1,
+       Body = 2,
+       LeftARM = 3,
+       RightARM = 4,
+       LeftLeg = 5,
+       RightLeg = 6,
     }
 }

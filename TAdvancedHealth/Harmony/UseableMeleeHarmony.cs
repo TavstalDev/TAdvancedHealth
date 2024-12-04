@@ -16,10 +16,13 @@ namespace Tavstal.TAdvancedHealth.Harmony
     [HarmonyPatch(typeof(UseableMelee), "fire", new Type[] { })]
     public static class UseableMeleeHarmony
     {
+        // ReSharper disable once InconsistentNaming
         private static AdvancedHealthConfig _config => AdvancedHealth.Instance.Config;
+        // ReSharper disable once InconsistentNaming
         private static DatabaseManager _database => AdvancedHealth.DatabaseManager;
 
         [HarmonyPostfix]
+        // ReSharper disable once InconsistentNaming
         public static async void Postfix(object __instance)
         {
             UseableMelee useableMelee = (UseableMelee)__instance;

@@ -13,6 +13,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
 {
     public class DatabaseManager : DatabaseManagerBase
     {
+        // ReSharper disable once InconsistentNaming
         private static AdvancedHealthConfig _pluginConfig => AdvancedHealth.Instance.Config;
 
         public DatabaseManager(IConfigurationBase configuration) : base(AdvancedHealth.Instance, configuration) { }
@@ -82,7 +83,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
         /// <param name="healthData">The updated health data.</param>
         /// <param name="eventtype">The type of database event to trigger.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpdateHealthAsync(string id, HealthData healthData, EDatabaseEvent eventtype = EDatabaseEvent.ALL)
+        public async Task UpdateHealthAsync(string id, HealthData healthData, EDatabaseEvent eventtype = EDatabaseEvent.All)
         {
             try
             {
@@ -92,11 +93,11 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
                 switch (eventtype)
                 {
                     default:
-                    case EDatabaseEvent.NONE:
+                    case EDatabaseEvent.None:
                         {
                             break;
                         }
-                    case EDatabaseEvent.ALL:
+                    case EDatabaseEvent.All:
                         {
                             EventManager.FCallBaseHealthUpdated(id, healthData.BaseHealth);
                             EventManager.FCallBodyHealthUpdated(id, healthData.BodyHealth);
@@ -108,42 +109,42 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
                             EventManager.FCallRightLegHealthUpdated(id, healthData.RightLegHealth);
                             break;
                         }
-                    case EDatabaseEvent.BASE:
+                    case EDatabaseEvent.Base:
                         {
                             EventManager.FCallBaseHealthUpdated(id, healthData.BaseHealth);
                             break;
                         }
-                    case EDatabaseEvent.HEAD:
+                    case EDatabaseEvent.Head:
                         {
                             EventManager.FCallHeadHealthUpdated(id, healthData.HeadHealth);
                             break;
                         }
-                    case EDatabaseEvent.BODY:
+                    case EDatabaseEvent.Body:
                         {
                             EventManager.FCallBodyHealthUpdated(id, healthData.BodyHealth);
                             break;
                         }
-                    case EDatabaseEvent.LEFT_ARM:
+                    case EDatabaseEvent.LeftARM:
                         {
                             EventManager.FCallLeftArmHealthUpdated(id, healthData.LeftArmHealth);
                             break;
                         }
-                    case EDatabaseEvent.RIGHT_ARM:
+                    case EDatabaseEvent.RightARM:
                         {
                             EventManager.FCallRightArmHealthUpdated(id, healthData.RightArmHealth);
                             break;
                         }
-                    case EDatabaseEvent.LEFT_LEG:
+                    case EDatabaseEvent.LeftLeg:
                         {
                             EventManager.FCallLeftLegHealthUpdated(id, healthData.LeftLegHealth);
                             break;
                         }
-                    case EDatabaseEvent.RIGHT_LEG:
+                    case EDatabaseEvent.RightLeg:
                         {
                             EventManager.FCallRightLegHealthUpdated(id, healthData.RightLegHealth);
                             break;
                         }
-                    case EDatabaseEvent.INJURED:
+                    case EDatabaseEvent.Injured:
                         {
                             EventManager.FCallInjuredStateUpdated(id, healthData.IsInjured, healthData.DeathDate);
                             break;
@@ -226,14 +227,14 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
         /// <param name="newHealth">The new health value.</param>
         /// <param name="type">The type of health value to update (e.g., base health).</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpdateHealthAsync(string id, float newHealth, EHealth type = EHealth.BASE)
+        public async Task UpdateHealthAsync(string id, float newHealth, EHealth type = EHealth.Base)
         {
             try
             {
                 switch (type)
                 {
                     default:
-                    case EHealth.BASE:
+                    case EHealth.Base:
                         {
                             newHealth = MathHelper.Clamp(newHealth, 0, _pluginConfig.HealthSystemSettings.BaseHealth);
 
@@ -241,7 +242,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
                             EventManager.FCallBaseHealthUpdated(id, newHealth);
                             break;
                         }
-                    case EHealth.HEAD:
+                    case EHealth.Head:
                         {
                             newHealth = MathHelper.Clamp(newHealth, 0, _pluginConfig.HealthSystemSettings.HeadHealth);
 
@@ -249,7 +250,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
                             EventManager.FCallHeadHealthUpdated(id, newHealth);
                             break;
                         }
-                    case EHealth.BODY:
+                    case EHealth.Body:
                         {
                             newHealth = MathHelper.Clamp(newHealth, 0, _pluginConfig.HealthSystemSettings.BodyHealth);
 
@@ -257,7 +258,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
                             EventManager.FCallBodyHealthUpdated(id, newHealth);
                             break;
                         }
-                    case EHealth.LEFT_ARM:
+                    case EHealth.LeftARM:
                         {
                             newHealth = MathHelper.Clamp(newHealth, 0, _pluginConfig.HealthSystemSettings.LeftArmHealth);
 
@@ -265,7 +266,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
                             EventManager.FCallLeftArmHealthUpdated(id, newHealth);
                             break;
                         }
-                    case EHealth.RIGHT_ARM:
+                    case EHealth.RightARM:
                         {
                             newHealth = MathHelper.Clamp(newHealth, 0, _pluginConfig.HealthSystemSettings.RightArmHealth);
 
@@ -273,7 +274,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
                             EventManager.FCallRightArmHealthUpdated(id, newHealth);
                             break;
                         }
-                    case EHealth.LEFT_LEG:
+                    case EHealth.LeftLeg:
                         {
                             newHealth = MathHelper.Clamp(newHealth, 0, _pluginConfig.HealthSystemSettings.LeftLegHealth);
 
@@ -281,7 +282,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
                             EventManager.FCallLeftLegHealthUpdated(id, newHealth);
                             break;
                         }
-                    case EHealth.RIGHT_LEG:
+                    case EHealth.RightLeg:
                         {
                             newHealth = MathHelper.Clamp(newHealth, 0, _pluginConfig.HealthSystemSettings.RightLegHealth);
 
