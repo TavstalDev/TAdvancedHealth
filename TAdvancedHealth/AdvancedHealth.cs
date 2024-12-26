@@ -2,6 +2,7 @@
 using SDG.Unturned;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Tavstal.TAdvancedHealth.Utils.Handlers;
 using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Utils.Managers;
@@ -57,27 +58,30 @@ namespace Tavstal.TAdvancedHealth
         /// <summary>
         /// Called when the plugin is unloaded.
         /// </summary>
-        public override async void OnUnLoad()
+        public override void OnUnLoad()
         {
-            UnturnedEventHandler.Dettach();
-            HealthSystemEventHandler.Dettach();
+            UnturnedEventHandler.Detach();
+            HealthSystemEventHandler.Detach();
             HarmonyPatcher.UnpatchAll();
             Logger.Log("# TAdvancedHealth has been successfully unloaded!");
 
-            foreach (SteamPlayer steamPlayer in Provider.clients)
+            Task.Run(async () =>
             {
-                UnturnedPlayer p = UnturnedPlayer.FromSteamPlayer(steamPlayer);
-                HealthData health = await DatabaseManager.GetPlayerHealthAsync(p.Id);
-                EffectManager.askEffectClearByID(health.HUDEffectID, steamPlayer.transportConnection);
+                foreach (SteamPlayer steamPlayer in Provider.clients)
+                {
+                    UnturnedPlayer p = UnturnedPlayer.FromSteamPlayer(steamPlayer);
+                    HealthData health = await DatabaseManager.GetPlayerHealthAsync(p.Id);
+                    EffectManager.askEffectClearByID(health.HUDEffectID, steamPlayer.transportConnection);
 
-                p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowFood, true);
-                p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowHealth, true);
-                p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowOxygen, true);
-                p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStamina, true);
-                p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowVirus, true);
-                p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowWater, true);
-                p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStatusIcons, true);
-            }
+                    p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowFood, true);
+                    p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowHealth, true);
+                    p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowOxygen, true);
+                    p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStamina, true);
+                    p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowVirus, true);
+                    p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowWater, true);
+                    p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStatusIcons, true);
+                }
+            });
         }
 
         /// <summary>
@@ -95,7 +99,7 @@ namespace Tavstal.TAdvancedHealth
                 if (_hasFullMoon != LightingManager.isFullMoon)
                 {
                     _hasFullMoon = LightingManager.isFullMoon;
-                    UnturnedEventHandler.Event_OnMoonUpdated(LightingManager.isFullMoon);
+                    UnturnedEventHandler.OnMoonUpdated(LightingManager.isFullMoon);
                 }
 
                 _nextUpdate = DateTime.Now.AddSeconds(5);

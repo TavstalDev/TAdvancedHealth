@@ -254,126 +254,156 @@ namespace Tavstal.TAdvancedHealth.Components
             Player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
         }
     
-        private async void Update()
+        private void Update()
         {
             // TODO: Replace this with cache
-            HealthData = await AdvancedHealth.DatabaseManager.GetPlayerHealthAsync(Player.Id);
-
-            #region Injured
-            if (HealthData.IsInjured)
+            Task.Run(async () =>
             {
-                Player.Bleeding = false;
+                HealthData = await AdvancedHealth.DatabaseManager.GetPlayerHealthAsync(Player.Id);
 
-                int secs = (int)(HealthData.DeathDate - DateTime.Now).TotalSeconds;
-                EffectManager.sendUIEffectText((short)effectId, TranspConnection, true, "tb_message", AdvancedHealth.Instance.Localize("ui_bleeding", secs.ToString()));
-                if (HealthData.DeathDate < DateTime.Now)
+                #region Injured
+
+                if (HealthData.IsInjured)
                 {
-                    await BleedOutAsync();
-                    return;
-                }
-            }
-            #endregion
+                    Player.Bleeding = false;
 
-            #region Dragging
-            if (dragState == EDragState.Dragger && dragPartnerId != CSteamID.Nil)
-            {
-                UnturnedPlayer partner = UnturnedPlayer.FromCSteamID(dragPartnerId);
-
-                if (partner != null)
-                    if (Vector3.Distance(partner.Position, Player.Position) > 3)
-                        partner.Player.teleportToPlayer(Player.Player);
-            }
-            #endregion
-
-            #region Regeneration
-            bool shouldUpdateHealth = false;
-            bool canRegenerate = Player.Player.life.food >= AdvancedHealth.Instance.Config.HealthSystemSettings.HealthRegenMinFood && Player.Player.life.water >= AdvancedHealth.Instance.Config.HealthSystemSettings.HealthRegenMinWater && Player.Player.life.virus >= AdvancedHealth.Instance.Config.HealthSystemSettings.HealthRegenMinVirus;
-            EDatabaseEvent databaseEvent = EDatabaseEvent.None;
-
-            // Head
-            if (_nextHeadHealDate <= DateTime.Now)
-            {
-                if (HealthData.HeadHealth + 1 <= AdvancedHealth.Instance.Config.HealthSystemSettings.HeadHealth && canRegenerate)
-                {
-                    HealthData.HeadHealth += 1;
-                    shouldUpdateHealth = true;
-                    databaseEvent = EDatabaseEvent.Head;
-                }
-                _nextHeadHealDate = DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.HeadRegenTicks);
-            }
-
-            // Body
-            if (_nextBodyHealDate <= DateTime.Now)
-            {
-                if (HealthData.BodyHealth + 1 <= AdvancedHealth.Instance.Config.HealthSystemSettings.BodyHealth && canRegenerate)
-                {
-                    HealthData.BodyHealth += 1;
-                    shouldUpdateHealth = true;
-                    if (databaseEvent == EDatabaseEvent.None)
-                        databaseEvent = EDatabaseEvent.Body;
-                    else
-                        databaseEvent |= EDatabaseEvent.Body;
-                }
-                _nextBodyHealDate = DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.BodyRegenTicks);
-            }
-
-            // Arm
-            if (_nextArmHealDate <= DateTime.Now)
-            {
-                if (canRegenerate)
-                {
-                    if (HealthData.LeftArmHealth + 1 <= AdvancedHealth.Instance.Config.HealthSystemSettings.LeftArmHealth)
+                    int secs = (int)(HealthData.DeathDate - DateTime.Now).TotalSeconds;
+                    EffectManager.sendUIEffectText((short)effectId, TranspConnection, true, "tb_message",
+                        AdvancedHealth.Instance.Localize("ui_bleeding", secs.ToString()));
+                    if (HealthData.DeathDate < DateTime.Now)
                     {
-                        HealthData.LeftArmHealth += 1;
-                        shouldUpdateHealth = true;
-                        if (databaseEvent == EDatabaseEvent.None)
-                            databaseEvent = EDatabaseEvent.LeftARM;
-                        else
-                            databaseEvent |= EDatabaseEvent.LeftARM;
-                    }
-                    if (HealthData.RightArmHealth + 1 <= AdvancedHealth.Instance.Config.HealthSystemSettings.RightArmHealth)
-                    {
-                        HealthData.RightArmHealth += 1;
-                        shouldUpdateHealth = true;
-                        if (databaseEvent == EDatabaseEvent.None)
-                            databaseEvent = EDatabaseEvent.RightARM;
-                        else
-                            databaseEvent |= EDatabaseEvent.RightARM;
+                        await BleedOutAsync();
+                        return;
                     }
                 }
-                _nextArmHealDate = DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.ArmRegenTicks);
-            }
 
-            // Leg
-            if (_nextLegHealDate <= DateTime.Now)
-            {
-                if (canRegenerate)
+                #endregion
+
+                #region Dragging
+
+                if (dragState == EDragState.Dragger && dragPartnerId != CSteamID.Nil)
                 {
-                    if (HealthData.LeftLegHealth + 1 <= AdvancedHealth.Instance.Config.HealthSystemSettings.LeftLegHealth)
-                    {
-                        HealthData.LeftLegHealth += 1;
-                        shouldUpdateHealth = true;
-                        if (databaseEvent == EDatabaseEvent.None)
-                            databaseEvent = EDatabaseEvent.LeftLeg;
-                        else
-                            databaseEvent |= EDatabaseEvent.LeftLeg;
-                    }
-                    if (HealthData.RightLegHealth + 1 <= AdvancedHealth.Instance.Config.HealthSystemSettings.RightLegHealth)
-                    {
-                        HealthData.RightLegHealth += 1;
-                        shouldUpdateHealth = true;
-                        if (databaseEvent == EDatabaseEvent.None)
-                            databaseEvent = EDatabaseEvent.RightLeg;
-                        else
-                            databaseEvent |= EDatabaseEvent.RightLeg;
-                    }
-                }
-                _nextLegHealDate = DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.LegRegenTicks);
-            }
+                    UnturnedPlayer partner = UnturnedPlayer.FromCSteamID(dragPartnerId);
 
-            if (shouldUpdateHealth)
-                await AdvancedHealth.DatabaseManager.UpdateHealthAsync(Player.Id, HealthData, databaseEvent);
-            #endregion
+                    if (partner != null)
+                        if (Vector3.Distance(partner.Position, Player.Position) > 3)
+                            partner.Player.teleportToPlayer(Player.Player);
+                }
+
+                #endregion
+
+                #region Regeneration
+
+                bool shouldUpdateHealth = false;
+                bool canRegenerate =
+                    Player.Player.life.food >= AdvancedHealth.Instance.Config.HealthSystemSettings.HealthRegenMinFood &&
+                    Player.Player.life.water >=
+                    AdvancedHealth.Instance.Config.HealthSystemSettings.HealthRegenMinWater &&
+                    Player.Player.life.virus >= AdvancedHealth.Instance.Config.HealthSystemSettings.HealthRegenMinVirus;
+                EDatabaseEvent databaseEvent = EDatabaseEvent.None;
+
+                // Head
+                if (_nextHeadHealDate <= DateTime.Now)
+                {
+                    if (HealthData.HeadHealth + 1 <= AdvancedHealth.Instance.Config.HealthSystemSettings.HeadHealth &&
+                        canRegenerate)
+                    {
+                        HealthData.HeadHealth += 1;
+                        shouldUpdateHealth = true;
+                        databaseEvent = EDatabaseEvent.Head;
+                    }
+
+                    _nextHeadHealDate =
+                        DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.HeadRegenTicks);
+                }
+
+                // Body
+                if (_nextBodyHealDate <= DateTime.Now)
+                {
+                    if (HealthData.BodyHealth + 1 <= AdvancedHealth.Instance.Config.HealthSystemSettings.BodyHealth &&
+                        canRegenerate)
+                    {
+                        HealthData.BodyHealth += 1;
+                        shouldUpdateHealth = true;
+                        if (databaseEvent == EDatabaseEvent.None)
+                            databaseEvent = EDatabaseEvent.Body;
+                        else
+                            databaseEvent |= EDatabaseEvent.Body;
+                    }
+
+                    _nextBodyHealDate =
+                        DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.BodyRegenTicks);
+                }
+
+                // Arm
+                if (_nextArmHealDate <= DateTime.Now)
+                {
+                    if (canRegenerate)
+                    {
+                        if (HealthData.LeftArmHealth + 1 <=
+                            AdvancedHealth.Instance.Config.HealthSystemSettings.LeftArmHealth)
+                        {
+                            HealthData.LeftArmHealth += 1;
+                            shouldUpdateHealth = true;
+                            if (databaseEvent == EDatabaseEvent.None)
+                                databaseEvent = EDatabaseEvent.LeftARM;
+                            else
+                                databaseEvent |= EDatabaseEvent.LeftARM;
+                        }
+
+                        if (HealthData.RightArmHealth + 1 <=
+                            AdvancedHealth.Instance.Config.HealthSystemSettings.RightArmHealth)
+                        {
+                            HealthData.RightArmHealth += 1;
+                            shouldUpdateHealth = true;
+                            if (databaseEvent == EDatabaseEvent.None)
+                                databaseEvent = EDatabaseEvent.RightARM;
+                            else
+                                databaseEvent |= EDatabaseEvent.RightARM;
+                        }
+                    }
+
+                    _nextArmHealDate =
+                        DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.ArmRegenTicks);
+                }
+
+                // Leg
+                if (_nextLegHealDate <= DateTime.Now)
+                {
+                    if (canRegenerate)
+                    {
+                        if (HealthData.LeftLegHealth + 1 <=
+                            AdvancedHealth.Instance.Config.HealthSystemSettings.LeftLegHealth)
+                        {
+                            HealthData.LeftLegHealth += 1;
+                            shouldUpdateHealth = true;
+                            if (databaseEvent == EDatabaseEvent.None)
+                                databaseEvent = EDatabaseEvent.LeftLeg;
+                            else
+                                databaseEvent |= EDatabaseEvent.LeftLeg;
+                        }
+
+                        if (HealthData.RightLegHealth + 1 <=
+                            AdvancedHealth.Instance.Config.HealthSystemSettings.RightLegHealth)
+                        {
+                            HealthData.RightLegHealth += 1;
+                            shouldUpdateHealth = true;
+                            if (databaseEvent == EDatabaseEvent.None)
+                                databaseEvent = EDatabaseEvent.RightLeg;
+                            else
+                                databaseEvent |= EDatabaseEvent.RightLeg;
+                        }
+                    }
+
+                    _nextLegHealDate =
+                        DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.LegRegenTicks);
+                }
+
+                if (shouldUpdateHealth)
+                    await AdvancedHealth.DatabaseManager.UpdateHealthAsync(Player.Id, HealthData, databaseEvent);
+
+                #endregion
+            });
         }
     }
 }

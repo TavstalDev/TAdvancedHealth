@@ -1,25 +1,30 @@
 ﻿using Rocket.API;
 using Rocket.Unturned.Player;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Utils.Helpers;
 using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Helpers.Unturned;
+using Tavstal.TLibrary.Models.Commands;
+using Tavstal.TLibrary.Models.Plugin;
 
 namespace Tavstal.TAdvancedHealth.Commands
 {
-    public class CommandSetHealthHUD : IRocketCommand
+    public class CommandSetHealthHUD : CommandBase
     {
-        public AllowedCaller AllowedCaller => AllowedCaller.Player;
-        public string Name => "sethealthhud";
-        public string Help => "Sets/Lists the hud style.";
-        public string Syntax => "list <page> | [name]";
-        public List<string> Aliases => new List<string> { "sethhud", "shealthhud", "sethealthh" };
-        public List<string> Permissions => new List<string> { "tadvancedhealth.commands.sethealthhud" };
+        protected override IPlugin Plugin => AdvancedHealth.Instance;
+        public override AllowedCaller AllowedCaller => AllowedCaller.Player;
+        public override string Name => "sethealthhud";
+        public override string Help => "Sets/Lists the hud style.";
+        public override string Syntax => "list <page> | [name]";
+        public override List<string> Aliases => new List<string> { "sethhud", "shealthhud", "sethealthh" };
+        public override List<string> Permissions => new List<string> { "tadvancedhealth.commands.sethealthhud" };
+        protected override List<SubCommand> SubCommands => new List<SubCommand>();
 
-        public async void Execute(IRocketPlayer caller, string[] args)
+        protected override async Task<bool> ExecutionRequested(IRocketPlayer caller, string[] args)
         {
             UnturnedPlayer player = (UnturnedPlayer)caller;
             AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
@@ -28,7 +33,7 @@ namespace Tavstal.TAdvancedHealth.Commands
             if (args.Length == 0)
             {
                 AdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "error_command_sethealthhud_args");
-                return;
+                return true;
             }
 
             if (args.Length == 1 && args[0].ToLower() != "list")
@@ -37,7 +42,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                 if (style == null)
                 {
                     AdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "error_command_sethealthhud_style_invalid", args[0]);
-                    return;
+                    return true;
                 }
                 ushort oldId = health.HUDEffectID;
                 comp.effectId = style.EffectID;
@@ -63,7 +68,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                     catch
                     {
                         AdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "error_command_sethealthhud_args");
-                        return;
+                        return true;
                     }
                 }
                 if (page <= 0)
@@ -92,6 +97,7 @@ namespace Tavstal.TAdvancedHealth.Commands
             }
             else
                 AdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "error_command_sethealthhud_args");
+            return true;
         }
     }
 }

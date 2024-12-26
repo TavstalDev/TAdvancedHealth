@@ -2,21 +2,26 @@
 using Rocket.Unturned.Player;
 using SDG.Unturned;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Utils.Helpers;
+using Tavstal.TLibrary.Models.Commands;
+using Tavstal.TLibrary.Models.Plugin;
 
 namespace Tavstal.TAdvancedHealth.Commands
 {
-    public class CommandToggleHealthHUD : IRocketCommand
+    public class CommandToggleHealthHUD : CommandBase
     {
-        public AllowedCaller AllowedCaller => AllowedCaller.Player;
-        public string Name => "togglehealthhud";
-        public string Help => "Toggles the custom hud.";
-        public string Syntax => "/togglehealthhud";
-        public List<string> Aliases => new List<string> { "thealthhud", "togglehhud", "togglehh" };
-        public List<string> Permissions => new List<string> { "tadvancedhealth.commands.togglehud" };
+        protected override IPlugin Plugin => AdvancedHealth.Instance;
+        public override AllowedCaller AllowedCaller => AllowedCaller.Player;
+        public override string Name => "togglehealthhud";
+        public override string Help => "Toggles the custom hud.";
+        public override string Syntax => "/togglehealthhud";
+        public override List<string> Aliases => new List<string> { "thealthhud", "togglehhud", "togglehh" };
+        public override List<string> Permissions => new List<string> { "tadvancedhealth.commands.togglehud" };
+        protected override List<SubCommand> SubCommands => new List<SubCommand>();
 
-        public async void Execute(IRocketPlayer caller, string[] args)
+        protected override async Task<bool> ExecutionRequested(IRocketPlayer caller, string[] args)
         {
             UnturnedPlayer player = (UnturnedPlayer)caller;
             HealthData health = await AdvancedHealth.DatabaseManager.GetPlayerHealthAsync(player.Id);
@@ -49,6 +54,7 @@ namespace Tavstal.TAdvancedHealth.Commands
             }
 
             await AdvancedHealth.DatabaseManager.UpdateHUDEnabledAsync(player.Id, health.IsHUDEnabled);
+            return true;
         }
     }
 }

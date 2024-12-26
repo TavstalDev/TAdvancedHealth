@@ -2,22 +2,26 @@
 using Rocket.Unturned.Player;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TLibrary.Helpers.Unturned;
+using Tavstal.TLibrary.Models.Commands;
+using Tavstal.TLibrary.Models.Plugin;
 
 namespace Tavstal.TAdvancedHealth.Commands
 {
-    public class CommandSetHealth : IRocketCommand
+    public class CommandSetHealth : CommandBase
     {
-        public AllowedCaller AllowedCaller => AllowedCaller.Player;
-        public string Name => "sethealth";
-        public string Help => "Changes your health or somebody else's.";
-        public string Syntax => "/sethealth <player> [bodypart] [newHealth]";
-        public List<string> Aliases => new List<string>();
-        public List<string> Permissions => new List<string> { "tadvancedhealth.commands.sethealth" };
+        protected override IPlugin Plugin => AdvancedHealth.Instance;
+        public override AllowedCaller AllowedCaller => AllowedCaller.Player;
+        public override string Name => "sethealth";
+        public override string Help => "Changes your health or somebody else's.";
+        public override string Syntax => "/sethealth <player> [bodypart] [newHealth]";
+        public override List<string> Aliases => new List<string>();
+        public override List<string> Permissions => new List<string> { "tadvancedhealth.commands.sethealth" };
+        protected override List<SubCommand> SubCommands => new List<SubCommand>();
 
-
-        public async void Execute(IRocketPlayer caller, string[] args)
+        protected override async Task<bool> ExecutionRequested(IRocketPlayer caller, string[] args)
         {
             try
             {
@@ -33,7 +37,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                         if (targetPlayer == null)
                         {
                             AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "error_playet_not_found");
-                            return;
+                            return true;
                         }
 
                         bodyPart = args[1].ToLower();
@@ -176,6 +180,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                 AdvancedHealth.Logger.LogException("Error in SetHealth command:");
                 AdvancedHealth.Logger.LogError(e);
             }
+            return true;
         }
     }
 }
