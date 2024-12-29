@@ -12,6 +12,9 @@ using UnityEngine;
 
 namespace Tavstal.TAdvancedHealth.Utils.Helpers
 {
+    /// <summary>
+    /// A static class providing helper methods related to health management.
+    /// </summary>
     public static class HealthHelper
     {
         // ReSharper disable once InconsistentNaming
@@ -24,7 +27,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
         /// <returns>A task representing the asynchronous operation.</returns>
         public static async Task SetPlayerDownedAsync(UnturnedPlayer player)
         {
-            string voidname = "SetPlayerDownedAsync";
+            string methodName = "SetPlayerDownedAsync";
             try
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
@@ -77,7 +80,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.Log($"Error in {voidname}: {e}");
+                AdvancedHealth.Logger.Log($"Error in {methodName}: {e}");
             }
         }
 

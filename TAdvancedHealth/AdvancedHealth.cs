@@ -89,7 +89,7 @@ namespace Tavstal.TAdvancedHealth
         /// </summary>
         private void Update()
         {
-            string voidname = "UpdateHealthAsync()";
+            string methodName = "Update()";
             try
             {
                 if (_nextUpdate > DateTime.Now)
@@ -106,7 +106,7 @@ namespace Tavstal.TAdvancedHealth
             }
             catch (Exception e)
             {
-                Logger.Log($"Error in {voidname}: {e}");
+                Logger.Log($"Error in {methodName}: {e}");
             }
         }
 

@@ -290,5 +290,8 @@ namespace Tavstal.TAdvancedHealth
                 }
             };
         }
+        
+        public AdvancedHealthConfig() { }
+        public AdvancedHealthConfig(string fileName, string path) : base(fileName, path) { }
     }
 }

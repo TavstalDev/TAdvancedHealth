@@ -29,7 +29,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
         private static AdvancedHealthConfig _config => AdvancedHealth.Instance.Config;
 
         /// <summary>
-        /// Attaches event listeners to Unturned to enable event handling.
+        /// Attaches event listeners too Unturned to enable event handling.
         /// </summary>
         internal static void Attach()
         {
