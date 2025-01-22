@@ -299,13 +299,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
 
                         if (painChance <= _config.HealthSystemSettings.PainEffectChance)
                         {
-                            EffectManager.sendUIEffect(_config.HealthSystemSettings.PainEffectID,
+                            UEffectHelper.SendUIEffect(_config.HealthSystemSettings.PainEffectID,
                                 (short)_config.HealthSystemSettings.PainEffectID, comp.TranspConnection, true);
                             if (_config.HealthSystemSettings.PainEffectDuration > 0)
                                 AdvancedHealth.Instance.InvokeAction(_config.HealthSystemSettings.PainEffectDuration,
                                     () =>
                                     {
-                                        EffectManager.askEffectClearByID(_config.HealthSystemSettings.PainEffectID,
+                                        UEffectHelper.AskEffectClearByID(_config.HealthSystemSettings.PainEffectID,
                                             player.SteamPlayer().transportConnection);
                                     });
 
@@ -608,7 +608,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                             health.HeadHealth = _config.HealthSystemSettings.HeadHealth;
 
                         if (med.CuresPain)
-                            EffectManager.askEffectClearByID(_config.HealthSystemSettings.PainEffectID,
+                            UEffectHelper.AskEffectClearByID(_config.HealthSystemSettings.PainEffectID,
                                 player.SteamPlayer().transportConnection);
 
                         if (health.LeftLegHealth + med.HealsLeftLegHp <= _config.HealthSystemSettings.LeftLegHealth)
@@ -872,7 +872,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                     #region HideHealth HUD
                     if (health.IsHUDEnabled)
                     {
-                        EffectManager.sendUIEffect(comp.effectId, (short)comp.effectId, comp.TranspConnection, true);
+                        UEffectHelper.SendUIEffect(comp.effectId, (short)comp.effectId, comp.TranspConnection, true);
                         player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowFood, false);
                         player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowHealth, false);
                         player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowOxygen, false);
@@ -1467,7 +1467,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                     comp.UnDrag();
 
 
-                EffectManager.sendUIEffectVisibility((short)comp.effectId, comp.TranspConnection, true, "RevivePanel", false);
+                UEffectHelper.SendUIEffectVisibility((short)comp.effectId, comp.TranspConnection, true, "RevivePanel", false);
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
 
                 AdvancedHealth.Instance.InvokeAction(0.1f, () =>
@@ -1535,7 +1535,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                 if (comp.dragState != EDragState.None)
                     comp.UnDrag();
 
-                EffectManager.sendUIEffectVisibility((short)comp.effectId, comp.TranspConnection, true, "RevivePanel", false);
+                UEffectHelper.SendUIEffectVisibility((short)comp.effectId, comp.TranspConnection, true, "RevivePanel", false);
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
             }
             catch (Exception e)
@@ -1619,7 +1619,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                                 comp.UnDrag();
 
                             uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
-                            EffectManager.sendUIEffectVisibility((short)comp.effectId, comp.TranspConnection, true, "RevivePanel", false);
+                            UEffectHelper.SendUIEffectVisibility((short)comp.effectId, comp.TranspConnection, true, "RevivePanel", false);
                         }
                     });
                 }

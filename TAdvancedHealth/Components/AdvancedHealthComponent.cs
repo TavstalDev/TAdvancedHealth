@@ -10,6 +10,7 @@ using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TAdvancedHealth.Utils.Helpers;
+using Tavstal.TLibrary.Helpers.Unturned;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -141,15 +142,15 @@ namespace Tavstal.TAdvancedHealth.Components
                     EPlayerState value = states.ElementAt(i);
                     StatusIcon icon = HealthHelper.GetStatusIcon(value);
 
-                    EffectManager.sendUIEffectImageURL(effectID, Player.CSteamID, true, "Status#" + localuiname + "_img", icon.IconUrl);
+                    UEffectHelper.SendUIEffectImageURL(effectID, TranspConnection, true, "Status#" + localuiname + "_img", icon.IconUrl);
                     AdvancedHealth.Instance.InvokeAction(0.1f, () => {
                         if (states.Count >= localuiname)
-                            EffectManager.sendUIEffectVisibility(effectID, TranspConnection, true, "Status#" + localuiname, true);
+                            UEffectHelper.SendUIEffectVisibility(effectID, TranspConnection, true, "Status#" + localuiname, true);
                     });
                 }
                 else
                 {
-                    EffectManager.sendUIEffectVisibility(effectID, TranspConnection, true, "Status#" + localuiname, false);
+                    UEffectHelper.SendUIEffectVisibility(effectID, TranspConnection, true, "Status#" + localuiname, false);
                 }
             }
         }
@@ -232,7 +233,7 @@ namespace Tavstal.TAdvancedHealth.Components
             Player.Infection = 0;
             Player.Heal(100);
 
-            EffectManager.sendUIEffectVisibility((short)effectId, TranspConnection, true, "RevivePanel", false);
+            UEffectHelper.SendUIEffectVisibility((short)effectId, TranspConnection, true, "RevivePanel", false);
             Player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
         }
 
@@ -250,7 +251,7 @@ namespace Tavstal.TAdvancedHealth.Components
                 Player.Player.movement.sendPluginSpeedMultiplier(chsettings.DefaultWalkSpeed);
             Player.Player.movement.sendPluginJumpMultiplier(1f);
             await AdvancedHealth.DatabaseManager.UpdateInjuredAsync(Player.Id, false, DateTime.Now);
-            EffectManager.sendUIEffectVisibility((short)effectId, TranspConnection, true, "RevivePanel", false);
+            UEffectHelper.SendUIEffectVisibility((short)effectId, TranspConnection, true, "RevivePanel", false);
             Player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
         }
     
@@ -268,7 +269,7 @@ namespace Tavstal.TAdvancedHealth.Components
                     Player.Bleeding = false;
 
                     int secs = (int)(HealthData.DeathDate - DateTime.Now).TotalSeconds;
-                    EffectManager.sendUIEffectText((short)effectId, TranspConnection, true, "tb_message",
+                    UEffectHelper.SendUIEffectText((short)effectId, TranspConnection, true, "tb_message",
                         AdvancedHealth.Instance.Localize("ui_bleeding", secs.ToString()));
                     if (HealthData.DeathDate < DateTime.Now)
                     {

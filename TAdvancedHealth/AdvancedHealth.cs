@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Tavstal.TAdvancedHealth.Utils.Handlers;
 using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Utils.Managers;
+using Tavstal.TLibrary.Helpers.Unturned;
 using Tavstal.TLibrary.Models.Plugin;
 
 namespace Tavstal.TAdvancedHealth
@@ -71,7 +72,7 @@ namespace Tavstal.TAdvancedHealth
                 {
                     UnturnedPlayer p = UnturnedPlayer.FromSteamPlayer(steamPlayer);
                     HealthData health = await DatabaseManager.GetPlayerHealthAsync(p.Id);
-                    EffectManager.askEffectClearByID(health.HUDEffectID, steamPlayer.transportConnection);
+                    UEffectHelper.AskEffectClearByID(health.HUDEffectID, steamPlayer.transportConnection);
 
                     p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowFood, true);
                     p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowHealth, true);
