@@ -183,7 +183,7 @@ namespace Tavstal.TAdvancedHealth.Components
             dragState = EDragState.None;
             dragPartnerId = CSteamID.Nil;
 
-            if (!receivedFromPartner)
+            if (receivedFromPartner)
                 return;
             UnturnedPlayer partner = UnturnedPlayer.FromCSteamID(dragPartnerId);
             if (partner == null)
@@ -191,7 +191,7 @@ namespace Tavstal.TAdvancedHealth.Components
             AdvancedHealthComponent partnerComp = partner.GetComponent<AdvancedHealthComponent>();
             if (partnerComp == null)
                 return;
-            partnerComp.UnDrag();
+            partnerComp.UnDrag(true);
         }
 
         /// <summary>
