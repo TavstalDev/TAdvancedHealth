@@ -165,7 +165,7 @@ namespace Tavstal.TAdvancedHealth.Components
             AdvancedHealthComponent targetComp = target.GetComponent<AdvancedHealthComponent>();
             HealthData healthData = await AdvancedHealth.DatabaseManager.GetPlayerHealthAsync(target.Id);
 
-            if (!healthData.IsInjured || targetComp.dragState != EDragState.None || dragState != EDragState.None)
+            if (healthData.IsInjured || !HealthData.IsInjured || targetComp.dragState != EDragState.None || dragState != EDragState.None)
                 return;
 
             dragPartnerId = target.CSteamID;
