@@ -165,7 +165,7 @@ namespace Tavstal.TAdvancedHealth.Components
             AdvancedHealthComponent targetComp = target.GetComponent<AdvancedHealthComponent>();
             HealthData healthData = await AdvancedHealth.DatabaseManager.GetPlayerHealthAsync(target.Id);
 
-            if (healthData.IsInjured || targetComp.dragState != EDragState.None || !healthData.IsInjured || dragState != EDragState.None)
+            if (healthData.IsInjured || targetComp.dragState != EDragState.None || dragState != EDragState.None)
                 return;
 
             dragPartnerId = target.CSteamID;
@@ -177,10 +177,10 @@ namespace Tavstal.TAdvancedHealth.Components
         /// <summary>
         /// Stops dragging the player.
         /// </summary>
-        /// <param name="recievedFromPartner">A boolean indicating whether the command to stop dragging was received from a partner. Default is false.</param>
-        public void UnDrag(bool recievedFromPartner = false)
+        /// <param name="receivedFromPartner">A boolean indicating whether the command to stop dragging was received from a partner. Default is false.</param>
+        public void UnDrag(bool receivedFromPartner = false)
         {
-            if (recievedFromPartner)
+            if (receivedFromPartner)
             {
                 UnturnedPlayer partner = UnturnedPlayer.FromCSteamID(dragPartnerId);
                 if (partner != null)
