@@ -6,7 +6,7 @@ namespace Tavstal.TAdvancedHealth.Models.Database
 {
     public class HealthData
     {
-        [SqlMember(isPrimaryKey: true, isNullable: false)]
+        [SqlMember(columnType: "varchar(64)", isPrimaryKey: true, isNullable: false)]
         public string PlayerId { get; set; }
         [SqlMember(isNullable: true)]
         public float BaseHealth { get; set; }

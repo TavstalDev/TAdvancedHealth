@@ -63,6 +63,9 @@
       <HintPath>..\Libraries\SDG.NetTransport.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="TLibrary">
+      <HintPath>..\Libraries\TLibrary.dll</HintPath>
+    </Reference>
     <!--<Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -72,10 +75,6 @@
     <Reference Include="System.Web" />
     <Reference Include="System.Xml" />
     <Reference Include="System.Xml.Linq" />-->
-    <Reference Include="TLibrary">
-      <HintPath>..\Libraries\TLibrary.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="UnityEngine">
       <HintPath>..\Libraries\UnityEngine.dll</HintPath>
       <Private>False</Private>

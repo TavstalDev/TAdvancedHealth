@@ -63,9 +63,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                     player.Player.stance.checkStance(EPlayerStance.PRONE, true);
                     player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, true);
 
-                    EffectManager.sendUIEffectVisibility((short)comp.effectId, transCon, true, "bt_suicide", true);
-                    EffectManager.sendUIEffectText((short)comp.effectId, transCon, true, "tb_message", AdvancedHealth.Instance.Localize("ui_bleeding", (int)(healthData.DeathDate - DateTime.Now).TotalSeconds));
-                    EffectManager.sendUIEffectVisibility((short)comp.effectId, transCon, true, "RevivePanel", true);
+                    UEffectHelper.SendUIEffectVisibility((short)comp.effectId, transCon, true, "bt_suicide", true);
+                    UEffectHelper.SendUIEffectText((short)comp.effectId, transCon, true, "tb_message", AdvancedHealth.Instance.Localize("ui_bleeding", (int)(healthData.DeathDate - DateTime.Now).TotalSeconds));
+                    UEffectHelper.SendUIEffectVisibility((short)comp.effectId, transCon, true, "RevivePanel", true);
                     foreach (SteamPlayer sp in Provider.clients)
                     {
                         UnturnedPlayer tmpPlayer = UnturnedPlayer.FromSteamPlayer(sp);
