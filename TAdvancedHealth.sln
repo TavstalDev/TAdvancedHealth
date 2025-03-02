@@ -5,6 +5,8 @@ VisualStudioVersion = 15.0.28307.705
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAdvancedHealth", "TAdvancedHealth\TAdvancedHealth.csproj", "{B527632B-AF16-476B-ADA0-BEDC6011F32C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityUI", "AdvancedHealthUI\UnityUI.csproj", "{E6C2B4DC-397C-8367-BD4D-45A5A12ABFEC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{B527632B-AF16-476B-ADA0-BEDC6011F32C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B527632B-AF16-476B-ADA0-BEDC6011F32C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B527632B-AF16-476B-ADA0-BEDC6011F32C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6C2B4DC-397C-8367-BD4D-45A5A12ABFEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6C2B4DC-397C-8367-BD4D-45A5A12ABFEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6C2B4DC-397C-8367-BD4D-45A5A12ABFEC}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6C2B4DC-397C-8367-BD4D-45A5A12ABFEC}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
