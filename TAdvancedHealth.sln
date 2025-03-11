@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.705
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TAdvancedHealth", "TAdvancedHealth\TAdvancedHealth.csproj", "{B527632B-AF16-476B-ADA0-BEDC6011F32C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly-CSharp.csproj", "{D0B80864-3125-8ED6-4137-0B577769416B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B527632B-AF16-476B-ADA0-BEDC6011F32C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B527632B-AF16-476B-ADA0-BEDC6011F32C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B527632B-AF16-476B-ADA0-BEDC6011F32C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B527632B-AF16-476B-ADA0-BEDC6011F32C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D0B80864-3125-8ED6-4137-0B577769416B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0B80864-3125-8ED6-4137-0B577769416B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D0B80864-3125-8ED6-4137-0B577769416B}.Release|Any CPU.ActiveCfg = Debug|Any CPU
+		{D0B80864-3125-8ED6-4137-0B577769416B}.Release|Any CPU.Build.0 = Debug|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
