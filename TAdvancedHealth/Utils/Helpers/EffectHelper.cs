@@ -251,8 +251,8 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError("ProgressBar Error");
-                AdvancedHealth.Logger.LogError(e);
+                AdvancedHealth.Logger.Error("ProgressBar Error");
+                AdvancedHealth.Logger.Error(e);
             }
         }
 

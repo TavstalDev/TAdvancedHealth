@@ -97,7 +97,7 @@ namespace Tavstal.TAdvancedHealth.Components
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError(e.ToString());
+                AdvancedHealth.Logger.Error(e.ToString());
             }
         }
 
@@ -120,7 +120,7 @@ namespace Tavstal.TAdvancedHealth.Components
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError(e.ToString());
+                AdvancedHealth.Logger.Error(e.ToString());
             }
         }
 

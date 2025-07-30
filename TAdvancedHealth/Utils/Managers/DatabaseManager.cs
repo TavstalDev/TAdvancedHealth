@@ -43,8 +43,8 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.LogException("Error in checkSchema:");
-                AdvancedHealth.Logger.LogError(ex);
+                AdvancedHealth.Logger.Exception("Error in checkSchema:");
+                AdvancedHealth.Logger.Error(ex);
             }
         }
 
@@ -71,8 +71,8 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.LogException("Error in addHealthAsync:");
-                AdvancedHealth.Logger.LogError(ex);
+                AdvancedHealth.Logger.Exception("Error in addHealthAsync:");
+                AdvancedHealth.Logger.Error(ex);
             }
         }
 
@@ -153,8 +153,8 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.LogException("Error in updateHealthAsync:");
-                AdvancedHealth.Logger.LogError(ex);
+                AdvancedHealth.Logger.Exception("Error in updateHealthAsync:");
+                AdvancedHealth.Logger.Error(ex);
             }
         }
 
@@ -172,8 +172,8 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.LogException("Error in updateEffectIdAsync:");
-                AdvancedHealth.Logger.LogError(ex);
+                AdvancedHealth.Logger.Exception("Error in updateEffectIdAsync:");
+                AdvancedHealth.Logger.Error(ex);
             }
         }
 
@@ -191,8 +191,8 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.LogException("Error in updateEffectStateAsync:");
-                AdvancedHealth.Logger.LogError(ex);
+                AdvancedHealth.Logger.Exception("Error in updateEffectStateAsync:");
+                AdvancedHealth.Logger.Error(ex);
             }
         }
 
@@ -215,8 +215,8 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.LogException("Error in updateInjuredAsync:");
-                AdvancedHealth.Logger.LogError(ex);
+                AdvancedHealth.Logger.Exception("Error in updateInjuredAsync:");
+                AdvancedHealth.Logger.Error(ex);
             }
         }
 
@@ -294,8 +294,8 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.LogException("Error in updateBaseHealthAsync:");
-                AdvancedHealth.Logger.LogError(ex);
+                AdvancedHealth.Logger.Exception("Error in updateBaseHealthAsync:");
+                AdvancedHealth.Logger.Error(ex);
             }
         }
 
@@ -313,8 +313,8 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.LogException("Error in getHealthAsync:");
-                AdvancedHealth.Logger.LogError(ex);
+                AdvancedHealth.Logger.Exception("Error in getHealthAsync:");
+                AdvancedHealth.Logger.Error(ex);
             }
             return healthData;
         }
@@ -333,8 +333,8 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.LogException("Error in getHealthAsync:");
-                AdvancedHealth.Logger.LogError(ex);
+                AdvancedHealth.Logger.Exception("Error in getHealthAsync:");
+                AdvancedHealth.Logger.Error(ex);
             }
             return healthData;
         }

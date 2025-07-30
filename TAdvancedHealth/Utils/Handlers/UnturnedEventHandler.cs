@@ -99,7 +99,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 
@@ -127,7 +127,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 
@@ -147,7 +147,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 
@@ -175,7 +175,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 
@@ -203,7 +203,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 
@@ -231,7 +231,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 
@@ -269,7 +269,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 
@@ -328,7 +328,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 
@@ -357,7 +357,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 
@@ -382,7 +382,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-               AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+               AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 
@@ -408,7 +408,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 
@@ -445,7 +445,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 
@@ -481,7 +481,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
         #endregion
@@ -549,7 +549,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 
@@ -569,7 +569,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 
@@ -669,7 +669,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
         #endregion
@@ -717,7 +717,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 
@@ -756,7 +756,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
         #endregion
@@ -887,7 +887,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 
@@ -917,7 +917,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
         #endregion
@@ -1295,7 +1295,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 
@@ -1446,7 +1446,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 
@@ -1513,7 +1513,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 
@@ -1540,7 +1540,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
         #endregion
@@ -1584,7 +1584,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
         #endregion
@@ -1626,7 +1626,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogError($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
             }
         }
 

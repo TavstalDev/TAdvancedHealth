@@ -177,8 +177,8 @@ namespace Tavstal.TAdvancedHealth.Commands
             }
             catch (Exception e)
             {
-                AdvancedHealth.Logger.LogException("Error in SetHealth command:");
-                AdvancedHealth.Logger.LogError(e);
+                AdvancedHealth.Logger.Exception("Error in SetHealth command:");
+                AdvancedHealth.Logger.Error(e);
             }
             return true;
         }
