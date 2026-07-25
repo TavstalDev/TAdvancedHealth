@@ -1,20 +1,10 @@
-﻿using Newtonsoft.Json;
-using System;
-using Tavstal.TLibrary.Models.Database;
+﻿using Tavstal.TLibrary.Models.Config;
+using YamlDotNet.Serialization;
 
 namespace Tavstal.TAdvancedHealth.Models.Database
 {
-    [Serializable]
-    public class DatabaseData : DatabaseSettingsBase
+    public class DatabaseData : DatabaseConfigBase
     {
-        [JsonProperty(Order = 7)]
-        public string PlayerDataTable { get; set; }
-
-        public DatabaseData() { }
-
-        public DatabaseData(string playerDataTable)
-        {
-            PlayerDataTable = playerDataTable;
-        }
+        [YamlMember(Order = 7)] public string TablePrefix { get; set; } = "tahs_";
     }
 }
