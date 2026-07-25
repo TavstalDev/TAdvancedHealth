@@ -1,46 +1,42 @@
-﻿using Newtonsoft.Json;
-using SDG.Unturned;
+﻿using SDG.Unturned;
 using System.Collections.Generic;
 using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
-using Tavstal.TLibrary.Models.Plugin;
+using Tavstal.TLibrary.Models.Config;
+using YamlDotNet.Serialization;
+// ReSharper disable ClassNeverInstantiated.Global
 
 namespace Tavstal.TAdvancedHealth
 {
-    public class AdvancedHealthConfig : ConfigurationBase
+    public class AdvancedHealthConfig : YamlConfiguration
     {
-        [JsonProperty(Order = 3)]
+        [YamlMember(Order = 3)]
         public DatabaseData Database { get; set; }
-        [JsonProperty(Order = 4)]
-        public string MessageIcon { get; set; }
-        [JsonProperty(Order = 5)]
+        [YamlMember(Order = 4)]
         public DefibrillatorSettings DefibrillatorSettings { get; set; }
-        [JsonProperty(Order = 6)]
+        [YamlMember(Order = 5)]
         public HospitalSettings HospitalSettings { get; set; }
-        [JsonProperty(Order = 7)]
+        [YamlMember(Order = 6)]
         public AntiGroupFriendlyFireSettings AntiGroupFriendlyFireSettings { get; set; }
-        [JsonProperty(Order = 8)]
+        [YamlMember(Order = 7)]
         public HealthSystemSettings HealthSystemSettings { get; set; }
-        [JsonProperty(Order = 9)]
+        [YamlMember(Order = 8)]
         public List<HUDStyle> HUDStyles { get; set; }
-        [JsonProperty(Order = 10)]
+        [YamlMember(Order = 9)]
         public List<Medicine> Medicines { get; set; }
-        [JsonProperty(Order = 11)]
+        [YamlMember(Order = 10)]
         public RestrictedItems OneHandedItems { get; set; }
-        [JsonProperty(Order = 12)]
+        [YamlMember(Order = 11)]
         public RestrictedItems TwoHandedItems { get; set; }
 
         public override void LoadDefaults()
         {
-            DebugMode = false;
-            Locale = "en";
-            DownloadLocalePacks = true;
-            Database = new DatabaseData()
+            General = new GeneralConfig
             {
-                PlayerDataTable = "tahs_players"
+                MessageIcon = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon.png"
             };
-            MessageIcon = "https://raw.githubusercontent.com/TavstalDev/Icons/master/Plugins/icon_plugins_TAdvancedHealth.png";
+            Database = new DatabaseData();
             DefibrillatorSettings = new DefibrillatorSettings
             {
                 Enabled = true,
@@ -65,7 +61,7 @@ namespace Tavstal.TAdvancedHealth
                 EnableAntiGroupFriendlyFire = false,
                 EnableWarnMessage = true,
                 Message = "You are attacking a friendly player.",
-                MessageIcon = "https://raw.githubusercontent.com/TavstalDev/Icons/master/Plugins/icon_plugins_TAdvancedHealth.png",
+                MessageIcon = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon.png",
                 Groups = new List<string> { "police", "swat" }
             };
             HealthSystemSettings = new HealthSystemSettings
@@ -120,98 +116,98 @@ namespace Tavstal.TAdvancedHealth
                     new StatusIcon
                     {
                         Status = EPlayerState.Acid,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_acid.png",
+                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_acid.png",
                         GroupIndex = 1
                     },
                     new StatusIcon
                     {
                         Status = EPlayerState.Bleeding,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_bleeding.png",
+                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_bleeding.png",
                         GroupIndex = -1
                     },
                     new StatusIcon
                     {
                         Status = EPlayerState.BrokenBone,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_brokenbone.png",
+                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_brokenbone.png",
                         GroupIndex = -1
                     },
                     new StatusIcon
                     {
                         Status = EPlayerState.Burning,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_temperature_hot.png",
+                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_temperature_hot.png",
                         GroupIndex = 1
                     },
                     new StatusIcon
                     {
                         Status = EPlayerState.Cold,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_temperature_down.png",
+                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_temperature_down.png",
                         GroupIndex = 1
                     },
                     new StatusIcon
                     {
                         Status = EPlayerState.Covered,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_temperature_shelter.png",
+                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_temperature_shelter.png",
                         GroupIndex = 1
                     },
                     new StatusIcon
                     {
                         Status = EPlayerState.DeadZone,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_deadzone.png",
+                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_deadzone.png",
                         GroupIndex = 2
                     },
                     new StatusIcon
                     {
                         Status = EPlayerState.Freezing,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_temperature_cold.png",
+                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_temperature_cold.png",
                         GroupIndex = 1
                     },
                     new StatusIcon
                     {
                         Status = EPlayerState.Handcuffed,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_handcuffed.png",
+                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_handcuffed.png",
                         GroupIndex = -1
                     },
                     new StatusIcon
                     {
                         Status = EPlayerState.NoFood,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_food.png",
+                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_food.png",
                         GroupIndex = -1
                     },
                     new StatusIcon
                     {
                         Status = EPlayerState.NoWater,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_water.png",
+                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_water.png",
                         GroupIndex = -1
                     },
                     new StatusIcon
                     {
                         Status = EPlayerState.NoOxygen,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_lunge.png",
+                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_lunge.png",
                         GroupIndex = -1
                     },
                     new StatusIcon
                     {
                         Status = EPlayerState.NoVirus,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_radiation.png",
+                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_radiation.png",
                         GroupIndex = -1
                     },
                     new StatusIcon
                     {
                         Status = EPlayerState.SafeZone,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_safezone.png",
+                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_safezone.png",
                         GroupIndex = 2
 
                     },
                     new StatusIcon
                     {
                         Status = EPlayerState.Warm,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_temperature_up.png",
+                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_temperature_up.png",
                         GroupIndex = 1
                     },
                     new StatusIcon
                     {
                         Status = EPlayerState.FullMoon,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/Icons/master/TBetterHealthSystem/icon_fullmoon.png",
+                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_fullmoon.png",
                         GroupIndex = -1
                     }
                 }
