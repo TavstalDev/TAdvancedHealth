@@ -2,11 +2,14 @@
 using SDG.Unturned;
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using Tavstal.TAdvancedHealth.Utils.Handlers;
 using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Utils.Managers;
+using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Helpers.Unturned;
+using Tavstal.TLibrary.Models.Logging;
 using Tavstal.TLibrary.Models.Plugin;
 
 namespace Tavstal.TAdvancedHealth
@@ -16,19 +19,50 @@ namespace Tavstal.TAdvancedHealth
     /// </summary>
     public class AdvancedHealth : PluginBase<AdvancedHealthConfig>
     {
-        public static AdvancedHealth Instance { get; private set; }
-        public static DatabaseManager DatabaseManager { get; private set; }
+        public static AdvancedHealth Instance { get; private set; } = null!;
+        public static DatabaseManager DatabaseManager { get; private set; } = null!;
         public static bool IsConnectionAuthFailed { get; set; }
         private HarmonyLib.Harmony HarmonyPatcher { get; set; }
         private bool _hasFullMoon;
         private DateTime _nextUpdate;
 
+        public override void OnPreLoad()
+        {
+            Instance = this;
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("────────────────────────────────────────────────────────");
+            sb.AppendLine();
+            sb.AppendLine("████████╗███╗░░░███╗███████╗██████╗░░██████╗██╗░░░██╗░██████╗");
+            sb.AppendLine("╚══██╔══╝████╗░████║██╔════╝██╔══██╗██╔════╝╚██╗░██╔╝██╔════╝");
+            sb.AppendLine("░░░██║░░░██╔████╔██║█████╗░░██║░░██║╚█████╗░░╚████╔╝░╚█████╗░");
+            sb.AppendLine("░░░██║░░░██║╚██╔╝██║██╔══╝░░██║░░██║░╚═══██╗░░╚██╔╝░░░╚═══██╗");
+            sb.AppendLine("░░░██║░░░██║░╚═╝░██║███████╗██████╔╝██████╔╝░░░██║░░░██████╔╝");
+            sb.AppendLine("░░░╚═╝░░░╚═╝░░░░░╚═╝╚══════╝╚═════╝░╚═════╝░░░░╚═╝░░░╚═════╝░");
+            sb.AppendLine();
+            sb.AppendLine("[ About ]");
+            sb.AppendLine(" ▸ Developer : Tavstal");
+            sb.AppendLine(" ▸ Discord   : @Tavstal");
+            sb.AppendLine(" ▸ Website   : https://redstoneplugins.com");
+            sb.AppendLine(" ▸ GitHub    : https://github.com/TavstalDev");
+            sb.AppendLine();
+            sb.AppendLine("[ Build ]");
+            sb.AppendLine($" ▸ Version   : {Version}");
+            sb.AppendLine($" ▸ Build Date: {BuildDate} UTC");
+            sb.AppendLine($" ▸ TLibrary  : {LibraryVersion}");
+            sb.AppendLine();
+            sb.AppendLine("[ Support ]");
+            sb.AppendLine(" ▸ Report issues or request features:");
+            sb.AppendLine(" ▸ https://github.com/TavstalDev/TAdvancedHealth/issues");
+            sb.AppendLine();
+            sb.AppendLine("────────────────────────────────────────────────────────");
+            Logger.Log(ELogLevel.COMMAND, sb.ToString(), includePrefixes: false, color:  ConsoleColor.Cyan);
+        }
+        
         /// <summary>
         /// Called when the plugin is loaded.
         /// </summary>
         public override void OnLoad()
         {
-            Instance = this;
             DatabaseManager = new DatabaseManager(Config);
 
             UnturnedEventHandler.Attach();
@@ -37,29 +71,8 @@ namespace Tavstal.TAdvancedHealth
 
             HarmonyPatcher = new HarmonyLib.Harmony("tavstal.tadvancedhealth.harmony");
             HarmonyPatcher.PatchAll();
-
-            Logger.Log("████████╗███╗░░░███╗███████╗██████╗░░██████╗██╗░░░██╗░██████╗", ConsoleColor.Cyan, prefix: null);
-            Logger.Log("╚══██╔══╝████╗░████║██╔════╝██╔══██╗██╔════╝╚██╗░██╔╝██╔════╝", ConsoleColor.Cyan, prefix: null);
-            Logger.Log("░░░██║░░░██╔████╔██║█████╗░░██║░░██║╚█████╗░░╚████╔╝░╚█████╗░", ConsoleColor.Cyan, prefix: null);
-            Logger.Log("░░░██║░░░██║╚██╔╝██║██╔══╝░░██║░░██║░╚═══██╗░░╚██╔╝░░░╚═══██╗", ConsoleColor.Cyan, prefix: null);
-            Logger.Log("░░░██║░░░██║░╚═╝░██║███████╗██████╔╝██████╔╝░░░██║░░░██████╔╝", ConsoleColor.Cyan, prefix: null);
-            Logger.Log("░░░╚═╝░░░╚═╝░░░░░╚═╝╚══════╝╚═════╝░╚═════╝░░░░╚═╝░░░╚═════╝░", ConsoleColor.Cyan, prefix: null);
-            Logger.Log("#########################################", prefix: null);
-            Logger.Log("#       Thanks for using this plugin!   #", prefix: null);
-            Logger.Log("#########################################", prefix: null);
-            Logger.Log("# Developed By: Tavstal", prefix: null);
-            Logger.Log("# Discord:      @Tavstal", prefix: null);
-            Logger.Log("# Website:      https://redstoneplugins.com", prefix: null);
-            Logger.Log("# My GitHub:    https://tavstaldev.github.io", prefix: null);
-            Logger.Log("#########################################", prefix: null);
-            Logger.Log($"# Plugin Version:    {Version}", prefix: null);
-            Logger.Log($"# Build Date:        {BuildDate}", prefix: null);
-            Logger.Log($"# TLibrary Version:  {LibraryVersion}", prefix: null);
-            Logger.Log("#########################################", prefix: null);
-            Logger.Log("# Found an issue or have a suggestion?", prefix: null);
-            Logger.Log("# Report it here: https://github.com/TavstalDev/TAdvancedHealth/issues", prefix: null); 
-            Logger.Log("#########################################", prefix: null);
-            Logger.Log("# TAdvancedHealth has been loaded.");
+            
+            Logger.Info("# TAdvancedHealth has been loaded.");
         }
 
         /// <summary>
@@ -70,25 +83,23 @@ namespace Tavstal.TAdvancedHealth
             UnturnedEventHandler.Detach();
             HealthSystemEventHandler.Detach();
             HarmonyPatcher.UnpatchAll();
-            Logger.Log("# TAdvancedHealth has been successfully unloaded!");
-
-            Task.Run(async () =>
+            
+            foreach (SteamPlayer steamPlayer in Provider.clients)
             {
-                foreach (SteamPlayer steamPlayer in Provider.clients)
-                {
-                    UnturnedPlayer p = UnturnedPlayer.FromSteamPlayer(steamPlayer);
-                    HealthData health = await DatabaseManager.GetPlayerHealthAsync(p.Id);
-                    UEffectHelper.AskEffectClearByID(health.HUDEffectID, steamPlayer.transportConnection);
+                UnturnedPlayer uPlayer = UnturnedPlayer.FromSteamPlayer(steamPlayer);
+                foreach (var hudStyle in Config.HUDStyles)
+                    EffectManager.askEffectClearByID(hudStyle.EffectID, steamPlayer.transportConnection);
 
-                    p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowFood, true);
-                    p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowHealth, true);
-                    p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowOxygen, true);
-                    p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStamina, true);
-                    p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowVirus, true);
-                    p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowWater, true);
-                    p.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStatusIcons, true);
-                }
-            });
+                uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowFood, true);
+                uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowHealth, true);
+                uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowOxygen, true);
+                uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStamina, true);
+                uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowVirus, true);
+                uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowWater, true);
+                uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStatusIcons, true);
+            }
+            
+            Logger.Info("# TAdvancedHealth has been successfully unloaded!");
         }
 
         /// <summary>
@@ -111,9 +122,9 @@ namespace Tavstal.TAdvancedHealth
 
                 _nextUpdate = DateTime.Now.AddSeconds(5);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                Logger.Log($"Error in {methodName}: {e}");
+                Logger.Error($"Error in {methodName}.", ex);
             }
         }
 
