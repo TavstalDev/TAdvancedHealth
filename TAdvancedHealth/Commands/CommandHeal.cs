@@ -26,7 +26,7 @@ namespace Tavstal.TAdvancedHealth.Commands
             if (args.Length == 0)
             {
                 AdvancedHealthComponent comp = callerPlayer.GetComponent<AdvancedHealthComponent>();
-                await comp.ReviveAsync();
+                await comp.Revive();
 
                 AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_cure_success", callerPlayer.CharacterName);
             }
@@ -40,7 +40,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                 }
 
                 AdvancedHealthComponent targetComp = targetPlayer.GetComponent<AdvancedHealthComponent>();
-                await targetComp.ReviveAsync();
+                await targetComp.Revive();
 
                 AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_cure_success", targetPlayer.CharacterName);
             }

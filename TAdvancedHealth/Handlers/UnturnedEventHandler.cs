@@ -1,14 +1,14 @@
-﻿using Rocket.API;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Rocket.API;
 using Rocket.API.Serialisation;
 using Rocket.Unturned;
 using Rocket.Unturned.Events;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
 using Steamworks;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Database;
@@ -19,7 +19,7 @@ using Tavstal.TLibrary.Helpers.General;
 using Tavstal.TLibrary.Helpers.Unturned;
 using UnityEngine;
 
-namespace Tavstal.TAdvancedHealth.Utils.Handlers
+namespace Tavstal.TAdvancedHealth.Handlers
 {
     public static class UnturnedEventHandler
     {
@@ -33,13 +33,11 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
         /// </summary>
         internal static void Attach()
         {
-            U.Events.OnPlayerConnected += OnPlayerJoin;
-            U.Events.OnPlayerDisconnected += OnPlayerLeave;
+            
             UnturnedPlayerEvents.OnPlayerRevive += OnPlayerRevived;
             UnturnedPlayerEvents.OnPlayerUpdateGesture += OnPlayerGestureUpdated;
-            EffectManager.onEffectButtonClicked += OnButtonClickded;
-            VehicleManager.onEnterVehicleRequested += OnPlayerVehicleEnterRequested;
-            VehicleManager.onSwapSeatRequested += OnPlayerSwapSeatRequested;
+            
+            
             UnturnedPlayerEvents.OnPlayerUpdateHealth += OnPlayerHealthUpdate;
             UnturnedPlayerEvents.OnPlayerUpdateFood += OnPlayerFoodUpdate;
             UnturnedPlayerEvents.OnPlayerUpdateWater += OnPlayerWaterUpdate;
@@ -63,9 +61,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             U.Events.OnPlayerDisconnected -= OnPlayerLeave;
             UnturnedPlayerEvents.OnPlayerRevive -= OnPlayerRevived;
             UnturnedPlayerEvents.OnPlayerUpdateGesture -= OnPlayerGestureUpdated;
-            EffectManager.onEffectButtonClicked -= OnButtonClickded;
-            VehicleManager.onEnterVehicleRequested -= OnPlayerVehicleEnterRequested;
-            VehicleManager.onSwapSeatRequested -= OnPlayerSwapSeatRequested;
+            
             UnturnedPlayerEvents.OnPlayerUpdateHealth -= OnPlayerHealthUpdate;
             UnturnedPlayerEvents.OnPlayerUpdateFood -= OnPlayerFoodUpdate;
             UnturnedPlayerEvents.OnPlayerUpdateWater -= OnPlayerWaterUpdate;
@@ -94,7 +90,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                 Task.Run(async () =>
                 {
                     HealthData health = await _database.GetPlayerHealthAsync(player.Id);
-                    await EffectHelper.SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.SimpleHealth, (int)((Math.Round(health.BaseHealth, 2) / _config.HealthSystemSettings.BaseHealth) * 100), 0);
+                    await EffectHelper.SendUIEffectProgressBar((short)comp.effectId, player.CSteamID, true, EProgressBar.SimpleHealth, (int)((Math.Round(health.BaseHealth, 2) / _config.HealthSystemSettings.BaseHealth) * 100), 0);
                 });
             }
             catch (Exception e)
@@ -116,13 +112,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 Task.Run(async () =>
                 {
-                    await EffectHelper.SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.Food, player.Player.life.food, (int)comp.ProgressBarData.LastFood);
+                    await EffectHelper.SendUIEffectProgressBar((short)comp.effectId, player.CSteamID, true, EProgressBar.Food, player.Player.life.food, (int)comp.ProgressBarData.LastFood);
                     comp.ProgressBarData.LastFood = value;
 
                     if (value <= 0)
                         await comp.TryAddStateAsync(EPlayerState.NoFood);
                     else
-                        await comp.TryRemoveStateAsync(EPlayerState.NoFood);
+                        await comp.TryRemoveState(EPlayerState.NoFood);
                 });
             }
             catch (Exception e)
@@ -142,7 +138,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             try
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                Task.Run(async () => await EffectHelper.SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.Stamina, player.Player.life.stamina, (int)comp.ProgressBarData.LastStamina));
+                Task.Run(async () => await EffectHelper.SendUIEffectProgressBar((short)comp.effectId, player.CSteamID, true, EProgressBar.Stamina, player.Player.life.stamina, (int)comp.ProgressBarData.LastStamina));
                 comp.ProgressBarData.LastStamina = value;
             }
             catch (Exception e)
@@ -164,13 +160,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 Task.Run(async () =>
                 {
-                    await EffectHelper.SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.Water, player.Player.life.water, (int)comp.ProgressBarData.LastWater);
+                    await EffectHelper.SendUIEffectProgressBar((short)comp.effectId, player.CSteamID, true, EProgressBar.Water, player.Player.life.water, (int)comp.ProgressBarData.LastWater);
                     comp.ProgressBarData.LastWater = value;
 
                     if (value <= 0)
                         await comp.TryAddStateAsync(EPlayerState.NoWater);
                     else
-                        await comp.TryRemoveStateAsync(EPlayerState.NoWater);
+                        await comp.TryRemoveState(EPlayerState.NoWater);
                 });
             }
             catch (Exception e)
@@ -192,13 +188,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 Task.Run(async () =>
                 {
-                    await EffectHelper.SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.Radiation, player.Player.life.virus, (int)comp.ProgressBarData.LastVirus);
+                    await EffectHelper.SendUIEffectProgressBar((short)comp.effectId, player.CSteamID, true, EProgressBar.Radiation, player.Player.life.virus, (int)comp.ProgressBarData.LastVirus);
                     comp.ProgressBarData.LastVirus = value;
 
                     if (value <= 0)
                         await comp.TryAddStateAsync(EPlayerState.NoVirus);
                     else
-                        await comp.TryRemoveStateAsync(EPlayerState.NoVirus);
+                        await comp.TryRemoveState(EPlayerState.NoVirus);
                 });
             }
             catch (Exception e)
@@ -220,13 +216,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 Task.Run(async () =>
                 {
-                    await EffectHelper.SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.Oxygen, player.Player.life.oxygen, (int)comp.ProgressBarData.LastOxygen);
+                    await EffectHelper.SendUIEffectProgressBar((short)comp.effectId, player.CSteamID, true, EProgressBar.Oxygen, player.Player.life.oxygen, (int)comp.ProgressBarData.LastOxygen);
                     comp.ProgressBarData.LastOxygen = value;
 
                     if (value <= 0)
                         await comp.TryAddStateAsync(EPlayerState.NoOxygen);
                     else
-                        await comp.TryRemoveStateAsync(EPlayerState.NoOxygen);
+                        await comp.TryRemoveState(EPlayerState.NoOxygen);
                 });
             }
             catch (Exception e)
@@ -251,7 +247,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                     if (!state)
                     {
                         comp.hasHeavyBleeding = false;
-                        await comp.TryRemoveStateAsync(EPlayerState.Bleeding);
+                        await comp.TryRemoveState(EPlayerState.Bleeding);
                         return;
                     }
 
@@ -288,7 +284,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                 {
                     if (!state)
                     {
-                        await comp.TryRemoveStateAsync(EPlayerState.BrokenBone);
+                        await comp.TryRemoveState(EPlayerState.BrokenBone);
                         return;
                     }
                     
@@ -299,7 +295,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
 
                         if (painChance <= _config.HealthSystemSettings.PainEffectChance)
                         {
-                            UEffectHelper.SendUIEffect(_config.HealthSystemSettings.PainEffectID,
+                            EffectManager.sendUIEffect(_config.HealthSystemSettings.PainEffectID,
                                 (short)_config.HealthSystemSettings.PainEffectID, comp.TranspConnection, true);
                             if (_config.HealthSystemSettings.PainEffectDuration > 0)
                                 AdvancedHealth.Instance.InvokeAction(_config.HealthSystemSettings.PainEffectDuration,
@@ -351,7 +347,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                         if (isFullMoon)
                             await comp.TryAddStateAsync(EPlayerState.FullMoon);
                         else
-                            await comp.TryRemoveStateAsync(EPlayerState.FullMoon);
+                            await comp.TryRemoveState(EPlayerState.FullMoon);
                     }
                 });
             }
@@ -377,7 +373,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                     if (isActive)
                         await comp.TryAddStateAsync(EPlayerState.DeadZone);
                     else
-                        await comp.TryRemoveStateAsync(EPlayerState.DeadZone);
+                        await comp.TryRemoveState(EPlayerState.DeadZone);
                 });
             }
             catch (Exception e)
@@ -402,7 +398,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                     if (isActive)
                         await comp.TryAddStateAsync(EPlayerState.SafeZone);
                     else
-                        await comp.TryRemoveStateAsync(EPlayerState.SafeZone);
+                        await comp.TryRemoveState(EPlayerState.SafeZone);
                 });
 
             }
@@ -673,254 +669,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
         }
         #endregion
-        #region Vehicle Events
-        /// <summary>
-        /// Event handler for when a player requests to enter a vehicle.
-        /// </summary>
-        /// <param name="p">The player who requested to enter the vehicle.</param>
-        /// <param name="vehicle">The vehicle that the player is trying to enter.</param>
-        /// <param name="shouldAllow">A reference boolean indicating whether the player should be allowed to enter the vehicle.</param>
-        private static void OnPlayerVehicleEnterRequested(Player p, InteractableVehicle vehicle, ref bool shouldAllow)
-        {
-            string methodName = "OnPlayerVehicleEnterRequested";
-            try
-            {
-                UnturnedPlayer player = UnturnedPlayer.FromPlayer(p);
-                HealthData health = _database.GetPlayerHealth(player.Id);
-                if (vehicle.passengers[0].player != null)
-                    return;
-
-                if (!_config.HealthSystemSettings.CanDriveWithBrokenLegs)
-                    if (health.LeftLegHealth == 0 && health.RightLegHealth == 0 || player.Broken)
-                    {
-                        shouldAllow = false;
-                        return;
-                    }
-
-                if (!_config.HealthSystemSettings.CanDriveWithOneBrokenLeg)
-                    if (health.LeftLegHealth == 0 || health.RightLegHealth == 0 || player.Broken)
-                    {
-                        shouldAllow = false;
-                        return;
-                    }
-                
-                if (!_config.HealthSystemSettings.CanDriveWithBrokenArms)
-                    if (health.LeftArmHealth == 0 && health.RightArmHealth == 0)
-                    {
-                        shouldAllow = false;
-                        return;
-                    }
-                
-                if (!_config.HealthSystemSettings.CanDriveWithOneBrokenArm)
-                    if (health.LeftArmHealth == 0 || health.RightArmHealth == 0)
-                        shouldAllow = false;
-            }
-            catch (Exception e)
-            {
-                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
-            }
-        }
-
-        /// <summary>
-        /// Event handler for when a player requests to swap seats in a vehicle.
-        /// </summary>
-        /// <param name="p">The player who requested to swap seats.</param>
-        /// <param name="vehicle">The vehicle in which the seat swap is requested.</param>
-        /// <param name="shouldAllow">A reference boolean indicating whether the player should be allowed to swap seats.</param>
-        /// <param name="fromSeatIndex">The index of the seat the player is swapping from.</param>
-        /// <param name="toSeatIndex">A reference to the index of the seat the player is swapping to.</param>
-        private static void OnPlayerSwapSeatRequested(Player p, InteractableVehicle vehicle, ref bool shouldAllow, byte fromSeatIndex, ref byte toSeatIndex)
-        {
-            string methodName = "SwapSeat";
-            try
-            {
-                UnturnedPlayer player = UnturnedPlayer.FromPlayer(p);
-                HealthData healthData = _database.GetPlayerHealth(player.Id);
-                if (healthData.LeftLegHealth == 0 && healthData.RightLegHealth == 0 || player.Broken)
-                {
-                    if (toSeatIndex == 0 && !_config.HealthSystemSettings.CanDriveWithBrokenLegs)
-                        shouldAllow = false;
-                }
-                else if (healthData.LeftLegHealth == 0 || healthData.RightLegHealth == 0)
-                    if (toSeatIndex == 0 && !_config.HealthSystemSettings.CanDriveWithOneBrokenLeg)
-                        shouldAllow = false;
-
-                if (healthData.LeftArmHealth == 0 && healthData.RightArmHealth == 0 || player.Broken)
-                {
-                    if (!_config.HealthSystemSettings.CanDriveWithBrokenArms && toSeatIndex == 0)
-                        shouldAllow = false;
-                }
-                else if (healthData.LeftArmHealth == 0 || healthData.RightArmHealth == 0)
-                    if (!_config.HealthSystemSettings.CanDriveWithOneBrokenLeg && toSeatIndex == 0)
-                        shouldAllow = false;
-            }
-            catch (Exception e)
-            {
-                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
-            }
-        }
-        #endregion
         #region Player Events
-        #region General
-        /// <summary>
-        /// Event handler for when a player joins the server.
-        /// </summary>
-        /// <param name="player">The Unturned player who joined the server.</param>
-        private static void OnPlayerJoin(UnturnedPlayer player)
-        {
-            string methodName = "OnPlayerJoin";
-            try
-            {
-                Task.Run(async () =>
-                {
-                    #region Check Health Data
-                    HealthData health = await _database.GetPlayerHealthAsync(player.Id);
-                    if (health == null)
-                    {
-                        HUDStyle style = _config.HUDStyles.FirstOrDefault(x => x.Enabled);
-                        if (style == null)
-                            style = _config.HUDStyles[0];
-
-                        await _database.AddHealthDataAsync(player.Id, new HealthData
-                        {
-                            PlayerId = player.Id,
-                            HUDEffectID = style.EffectID,
-                            BaseHealth = _config.HealthSystemSettings.BaseHealth,
-                            BodyHealth = _config.HealthSystemSettings.BodyHealth,
-                            HeadHealth = _config.HealthSystemSettings.HeadHealth,
-                            LeftArmHealth = _config.HealthSystemSettings.LeftArmHealth,
-                            LeftLegHealth = _config.HealthSystemSettings.LeftLegHealth,
-                            RightArmHealth = _config.HealthSystemSettings.RightArmHealth,
-                            RightLegHealth = _config.HealthSystemSettings.RightLegHealth,
-                            IsInjured = false,
-                            IsHUDEnabled = true,
-                            DeathDate = DateTime.Now
-                        });
-                        health = await _database.GetPlayerHealthAsync(player.Id);
-                    }
-                    else
-                    {
-                        if (health.BaseHealth > _config.HealthSystemSettings.BaseHealth)
-                            health.BaseHealth = _config.HealthSystemSettings.BaseHealth;
-                        if (_config.HealthSystemSettings.EnableTarkovLikeHealth)
-                        {
-                            if (health.HeadHealth > _config.HealthSystemSettings.HeadHealth)
-                                health.HeadHealth = _config.HealthSystemSettings.HeadHealth;
-                            if (health.BodyHealth > _config.HealthSystemSettings.BodyHealth)
-                                health.BodyHealth = _config.HealthSystemSettings.BodyHealth;
-                            if (health.RightArmHealth > _config.HealthSystemSettings.RightArmHealth)
-                                health.RightArmHealth = _config.HealthSystemSettings.RightArmHealth;
-                            if (health.LeftArmHealth > _config.HealthSystemSettings.LeftArmHealth)
-                                health.LeftArmHealth = _config.HealthSystemSettings.LeftArmHealth;
-                            if (health.RightLegHealth > _config.HealthSystemSettings.RightLegHealth)
-                                health.RightLegHealth = _config.HealthSystemSettings.RightLegHealth;
-                            if (health.LeftLegHealth > _config.HealthSystemSettings.LeftLegHealth)
-                                health.LeftLegHealth = _config.HealthSystemSettings.LeftLegHealth;
-                            await _database.UpdateHealthAsync(player.Id, health);
-                        }
-                    }
-
-                    #endregion
-
-                    AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                    comp.effectId = health.HUDEffectID;
-
-                    #region Set ProgressBarData
-                    comp.ProgressBarData.LastHealthHead = health.HeadHealth;
-                    comp.ProgressBarData.LastHealthBody = health.BodyHealth;
-                    comp.ProgressBarData.LastHealthLeftArm = health.LeftArmHealth;
-                    comp.ProgressBarData.LastHealthLeftLeg = health.LeftLegHealth;
-                    comp.ProgressBarData.LastHealthRightArm = health.RightArmHealth;
-                    comp.ProgressBarData.LastHealthRightLeg = health.RightLegHealth;
-                    comp.ProgressBarData.LastFood = player.Player.life.food;
-                    comp.ProgressBarData.LastWater = player.Player.life.water;
-                    comp.ProgressBarData.LastVirus = player.Player.life.virus;
-                    comp.ProgressBarData.LastOxygen = player.Player.life.oxygen;
-                    comp.ProgressBarData.LastStamina = player.Player.life.stamina;
-                    #endregion
-
-                    #region Update States
-                    OnPlayerFoodUpdate(player, player.Player.life.food);
-                    OnPlayerWaterUpdate(player, player.Player.life.water);
-                    OnPlayerVirusUpdate(player, player.Player.life.virus);
-                    OnPlayerOxygenUpdate(player, player.Player.life.oxygen);
-                    OnPlayerStaminaUpdate(player, player.Player.life.stamina);
-                    OnPlayerBleedingUpdate(player, player.Bleeding);
-                    OnPlayerBrokenUpdate(player, player.Broken);
-                    OnPlayerSafezoneUpdated(player, player.Player.movement.isSafe);
-                    OnPlayerDeadzoneUpdated(player, player.Player.movement.isRadiated);
-                    OnPlayerTemperatureUpdate(player, player.Player.life.temperature);
-
-
-                    if (LightingManager.isFullMoon)
-                        await comp.TryAddStateAsync(EPlayerState.FullMoon);
-
-                    #endregion
-
-                    #region Attach Events
-                    player.Player.equipment.onEquipRequested += OnPlayerEquipRequested;
-                    player.Player.equipment.onDequipRequested += OnPlayerDequipRequested;
-                    player.Player.life.onHurt += OnPlayerLifeDamaged;
-                    player.Player.life.onOxygenUpdated += b => OnPlayerOxygenUpdate(player, b);
-                    player.Player.life.onTemperatureUpdated +=
-                        newTemperature => OnPlayerTemperatureUpdate(player, newTemperature);
-                    player.Player.movement.onSafetyUpdated += isSafe => OnPlayerSafezoneUpdated(player, isSafe);
-                    player.Player.movement.onRadiationUpdated += isRadio => OnPlayerDeadzoneUpdated(player, isRadio);
-                    player.Player.life.onVirusUpdated += virus => OnPlayerVirusUpdate(player, virus);
-                    #endregion
-
-                    #region HideHealth HUD
-                    if (health.IsHUDEnabled)
-                    {
-                        UEffectHelper.SendUIEffect(comp.effectId, (short)comp.effectId, comp.TranspConnection, true);
-                        player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowFood, false);
-                        player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowHealth, false);
-                        player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowOxygen, false);
-                        player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStamina, false);
-                        player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowVirus, false);
-                        player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowWater, false);
-                        player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStatusIcons, false);
-                        await EffectHelper.UpdateWholeHealthUIAsync(player);
-                    }
-                    #endregion
-                });
-            }
-            catch (Exception e)
-            {
-                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
-            }
-        }
-
-        /// <summary>
-        /// Event handler for when a player leaves the server.
-        /// </summary>
-        /// <param name="player">The Unturned player who left the server.</param>
-        private static void OnPlayerLeave(UnturnedPlayer player)
-        {
-            string methodName = "OnPlayerLeave";
-            try
-            {
-                #region Dettach Events
-                player.Player.equipment.onEquipRequested -= OnPlayerEquipRequested;
-                player.Player.equipment.onDequipRequested -= OnPlayerDequipRequested;
-                player.Player.life.onHurt -= OnPlayerLifeDamaged;
-                player.Player.life.onOxygenUpdated -= b => OnPlayerOxygenUpdate(player, b);
-                player.Player.life.onTemperatureUpdated -= newTemperature => OnPlayerTemperatureUpdate(player, newTemperature);
-                player.Player.movement.onSafetyUpdated -= isSafe => OnPlayerSafezoneUpdated(player, isSafe);
-                player.Player.movement.onRadiationUpdated -= isRadio => OnPlayerDeadzoneUpdated(player, isRadio);
-                player.Player.life.onVirusUpdated -= virus => OnPlayerVirusUpdate(player, virus);
-                #endregion
-
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                if (comp.dragState != EDragState.None)
-                    comp.UnDrag();
-            }
-            catch (Exception e)
-            {
-                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
-            }
-        }
-        #endregion
         #region Life Events
         /// <summary>
         /// Handles incoming damage inflicted on a player.
@@ -963,7 +712,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                                 int chanc = MathHelper.Next(1, 100);
                                 if (_config.HealthSystemSettings.InjuredChance >= chanc)
                                 {
-                                    await HealthHelper.SetPlayerDownedAsync(player);
+                                    await HealthHelper.SetPlayerDowned(player);
                                     return;
                                 }
                             }
@@ -1010,7 +759,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                                 int chanc = MathHelper.Next(1, 100);
                                 if (_config.HealthSystemSettings.InjuredChance >= chanc)
                                 {
-                                    await HealthHelper.SetPlayerDownedAsync(player);
+                                    await HealthHelper.SetPlayerDowned(player);
                                     return;
                                 }
                             }
@@ -1462,12 +1211,12 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             try
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                Task.Run(async () => await comp.ReviveAsync());
+                Task.Run(async () => await comp.Revive());
                 if (comp.dragState != EDragState.None)
                     comp.UnDrag();
 
 
-                UEffectHelper.SendUIEffectVisibility((short)comp.effectId, comp.TranspConnection, true, "RevivePanel", false);
+                EffectManager.sendUIEffectVisibility((short)comp.effectId, comp.TranspConnection, true, "RevivePanel", false);
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
 
                 AdvancedHealth.Instance.InvokeAction(0.1f, () =>
@@ -1535,7 +1284,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                 if (comp.dragState != EDragState.None)
                     comp.UnDrag();
 
-                UEffectHelper.SendUIEffectVisibility((short)comp.effectId, comp.TranspConnection, true, "RevivePanel", false);
+                EffectManager.sendUIEffectVisibility((short)comp.effectId, comp.TranspConnection, true, "RevivePanel", false);
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
             }
             catch (Exception e)
@@ -1571,7 +1320,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
                     {
                         UnturnedPlayer targetPlayer = UnturnedPlayer.FromPlayer(victimPlayer);
                         AdvancedHealthComponent playerComp = player.GetComponent<AdvancedHealthComponent>();
-                        Task.Run(async () => await playerComp.DragAsync(targetPlayer));
+                        Task.Run(async () => await playerComp.Drag(targetPlayer));
                     }
                 }
                 else if (gesture == UnturnedPlayerEvents.PlayerGesture.SurrenderStop)
@@ -1588,48 +1337,6 @@ namespace Tavstal.TAdvancedHealth.Utils.Handlers
             }
         }
         #endregion
-        #endregion
-        #region UI
-        /// <summary>
-        /// Event handler for when a player clicks a button.
-        /// </summary>
-        /// <param name="player">The player who clicked the button.</param>
-        /// <param name="buttonName">The name of the button that was clicked.</param>
-        private static void OnButtonClickded(Player player, string buttonName)
-        {
-            string methodName = "OnButtonClicked";
-            try
-            {
-                UnturnedPlayer uPlayer = UnturnedPlayer.FromPlayer(player);
-                AdvancedHealthComponent comp = uPlayer.GetComponent<AdvancedHealthComponent>();
-                if (buttonName == "bt_suicide" || buttonName == "bt_suicide2")
-                {
-                    Task.Run(async () =>
-                    {
-                        HealthData health = await _database.GetPlayerHealthAsync(uPlayer.Id);
-                        if (health.IsInjured)
-                        {
-                            comp.allowDamage = true;
-                            uPlayer.Player.life.askDamage(100, uPlayer.Position.normalized, EDeathCause.BLEEDING, ELimb.SKULL, CSteamID.Nil, out _);
-
-                            if (uPlayer.Player.movement.pluginSpeedMultiplier == 0)
-                                uPlayer.Player.movement.sendPluginSpeedMultiplier(1);
-                            health.IsInjured = false;
-                            if (comp.dragState != EDragState.None)
-                                comp.UnDrag();
-
-                            uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
-                            UEffectHelper.SendUIEffectVisibility((short)comp.effectId, comp.TranspConnection, true, "RevivePanel", false);
-                        }
-                    });
-                }
-            }
-            catch (Exception e)
-            {
-                AdvancedHealth.Logger.Error($"Error in {methodName}: {e}");
-            }
-        }
-
         #endregion
     }
 

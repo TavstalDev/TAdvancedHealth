@@ -50,7 +50,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                 if (health.IsHUDEnabled)
                 {
                     UEffectHelper.AskEffectClearByID(oldId, player.SteamPlayer().transportConnection);
-                    UEffectHelper.SendUIEffect(style.EffectID, (short)style.EffectID, player.SteamPlayer().transportConnection, true);
+                    EffectManager.sendUIEffect(style.EffectID, (short)style.EffectID, player.SteamPlayer().transportConnection, true);
                     await EffectHelper.UpdateWholeHealthUIAsync(player);
                 }
             }

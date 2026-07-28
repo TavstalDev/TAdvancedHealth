@@ -2,7 +2,7 @@
 using Rocket.Unturned.Player;
 using SDG.Unturned;
 using System;
-using System.Threading.Tasks;
+using HarmonyLib;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Database;
@@ -10,6 +10,8 @@ using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Helpers.General;
 using Tavstal.TLibrary.Helpers.Unturned;
 using UnityEngine;
+// ReSharper disable UnusedType.Global
+// ReSharper disable UnusedMember.Global
 
 namespace Tavstal.TAdvancedHealth.Harmony
 {
@@ -42,7 +44,7 @@ namespace Tavstal.TAdvancedHealth.Harmony
                     userComp.LastDefibliratorUses.Remove(useableMelee.equippedMeleeAsset.id);
 
             var userLook = userPlayer.Player.look;
-            Player targetBasePlayer = null;
+            Player? targetBasePlayer = null;
             if (Physics.Raycast(new Ray(userLook.aim.position, userLook.aim.forward), out RaycastHit hit, 2.5f, RayMasks.PLAYER))
                 targetBasePlayer = hit.transform.GetComponent<Player>();
 
@@ -55,34 +57,30 @@ namespace Tavstal.TAdvancedHealth.Harmony
             UnturnedPlayer targetPlayer = UnturnedPlayer.FromPlayer(targetBasePlayer);
             AdvancedHealthComponent targetComp = targetPlayer.GetComponent<AdvancedHealthComponent>();
 
-            Task.Run(async () =>
+            HealthData? targetHealth = HealthManager.Get(targetPlayer.CSteamID.m_SteamID);
+            if (targetHealth is { IsInjured: false })
             {
-                HealthData targetHealth = await _database.GetPlayerHealthAsync(targetPlayer.Id);
-                if (!targetHealth.IsInjured)
-                {
-                    AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "error_defiblirator_not_injured");
-                    return;
-                }
+                AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "error_defiblirator_not_injured");
+                return;
+            }
 
-                int chance = MathHelper.Next(1, 100);
-                if (chance != 0 && chance <= defibrillator.ReviveChance)
-                {
-                    await targetComp.ReviveAsync();
-                    AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "success_defiblirator_revive",
-                        targetPlayer.CharacterName);
-                    AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(),
-                        "success_defiblirator_revive_other", userPlayer.CharacterName);
-                }
-                else
-                {
-                    AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "error_defiblirator_revive_fail",
-                        targetPlayer.CharacterName);
-                }
+            int chance = MathHelper.Next(1, 100);
+            if (chance != 0 && chance <= defibrillator.ReviveChance)
+            { 
+                targetComp.Revive();
+                AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "success_defiblirator_revive",
+                    targetPlayer.CharacterName);
+                AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(),
+                    "success_defiblirator_revive_other", userPlayer.CharacterName);
+            }
+            else
+            {
+                AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "error_defiblirator_revive_fail",
+                    targetPlayer.CharacterName);
+            }
 
-                userComp.LastDefibliratorUses.Add(useableMelee.equippedMeleeAsset.id,
-                    DateTime.Now.AddSeconds(defibrillator.RechargeTimeSecs));
-
-            });
+            userComp.LastDefibliratorUses.Add(useableMelee.equippedMeleeAsset.id,
+                DateTime.Now.AddSeconds(defibrillator.RechargeTimeSecs));
         }
     }
 }

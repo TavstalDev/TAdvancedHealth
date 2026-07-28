@@ -7,6 +7,8 @@ using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
+using Tavstal.TAdvancedHealth.Utils.Managers;
+using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Helpers.Unturned;
 using UnityEngine;
 
@@ -25,62 +27,65 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
         /// </summary>
         /// <param name="player">The Unturned player to be set as downed.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public static async Task SetPlayerDownedAsync(UnturnedPlayer player)
+        public static void SetPlayerDowned(UnturnedPlayer player)
         {
             string methodName = "SetPlayerDownedAsync";
             try
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 var transCon = player.SteamPlayer().transportConnection;
-                HealthData healthData = await AdvancedHealth.DatabaseManager.GetPlayerHealthAsync(player.Id);
-                if (!healthData.IsInjured)
+                HealthData? healthData = HealthManager.Get(player.CSteamID.m_SteamID);
+                if (healthData == null || !healthData.IsInjured)
+                    return;
+
+                if (player.Dead)
+                    return;
+
+                player.Player.equipment.dequip();
+                if (player.Infection > 25)
+                    player.Infection = 0;
+                player.Heal(100, false, false);
+                player.Bleeding = false;
+                player.Broken = true;
+                if (player.Hunger < 50)
+                    player.Hunger = 50;
+                if (player.Thirst < 50)
+                    player.Thirst = 50;
+                player.Player.movement.sendPluginSpeedMultiplier(0f);
+                player.Player.movement.sendPluginJumpMultiplier(0f);
+
+                healthData.DeathDate = DateTime.Now.AddSeconds(_config.HealthSystemSettings.InjuredDeathTimeSecs);
+                healthData.IsInjured = true;
+                healthData.HeadHealth = _config.HealthSystemSettings.HeadHealth;
+                healthData.BodyHealth = _config.HealthSystemSettings.BodyHealth;
+                healthData.LeftArmHealth = _config.HealthSystemSettings.LeftArmHealth;
+                healthData.RightArmHealth = _config.HealthSystemSettings.RightArmHealth;
+                healthData.LeftLegHealth = _config.HealthSystemSettings.LeftLegHealth;
+                healthData.RightLegHealth = _config.HealthSystemSettings.RightLegHealth;
+
+                player.Player.stance.checkStance(EPlayerStance.PRONE, true);
+                player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, true);
+
+                EffectManager.sendUIEffectVisibility((short)comp.effectId, transCon, true, "bt_suicide", true);
+                EffectManager.sendUIEffectText((short)comp.effectId, transCon, true, "tb_message",
+                    AdvancedHealth.Instance.Localize("ui_bleeding",
+                        (int)(healthData.DeathDate - DateTime.Now).TotalSeconds));
+                EffectManager.sendUIEffectVisibility((short)comp.effectId, transCon, true, "RevivePanel", true);
+                foreach (SteamPlayer sp in Provider.clients)
                 {
-                    if (player.Dead) { return; }
-                    player.Player.equipment.dequip();
-                    if (player.Infection > 25)
-                        player.Infection = 0;
-                    player.Heal(100, false, false);
-                    player.Bleeding = false;
-                    player.Broken = true;
-                    if (player.Hunger < 50)
-                        player.Hunger = 50;
-                    if (player.Thirst < 50)
-                        player.Thirst = 50;
-                    player.Player.movement.sendPluginSpeedMultiplier(0f);
-                    player.Player.movement.sendPluginJumpMultiplier(0f);
-
-                    healthData.DeathDate = DateTime.Now.AddSeconds(_config.HealthSystemSettings.InjuredDeathTimeSecs);
-                    healthData.IsInjured = true;
-                    healthData.HeadHealth = _config.HealthSystemSettings.HeadHealth;
-                    healthData.BodyHealth = _config.HealthSystemSettings.BodyHealth;
-                    healthData.LeftArmHealth = _config.HealthSystemSettings.LeftArmHealth;
-                    healthData.RightArmHealth = _config.HealthSystemSettings.RightArmHealth;
-                    healthData.LeftLegHealth = _config.HealthSystemSettings.LeftLegHealth;
-                    healthData.RightLegHealth = _config.HealthSystemSettings.RightLegHealth;
-                    await AdvancedHealth.DatabaseManager.UpdateHealthAsync(player.Id, healthData);
-
-
-                    player.Player.stance.checkStance(EPlayerStance.PRONE, true);
-                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, true);
-
-                    UEffectHelper.SendUIEffectVisibility((short)comp.effectId, transCon, true, "bt_suicide", true);
-                    UEffectHelper.SendUIEffectText((short)comp.effectId, transCon, true, "tb_message", AdvancedHealth.Instance.Localize("ui_bleeding", (int)(healthData.DeathDate - DateTime.Now).TotalSeconds));
-                    UEffectHelper.SendUIEffectVisibility((short)comp.effectId, transCon, true, "RevivePanel", true);
-                    foreach (SteamPlayer sp in Provider.clients)
+                    UnturnedPlayer tmpPlayer = UnturnedPlayer.FromSteamPlayer(sp);
+                    if ((tmpPlayer.HasPermission(_config.DefibrillatorSettings.PermissionForUseDefiblirator) ||
+                         tmpPlayer.CSteamID == player.CSteamID) && !player.IsAdmin)
                     {
-                        UnturnedPlayer tmpPlayer = UnturnedPlayer.FromSteamPlayer(sp);
-                        if ((tmpPlayer.HasPermission(_config.DefibrillatorSettings.PermissionForUseDefiblirator) || tmpPlayer.CSteamID == player.CSteamID) && !player.IsAdmin)
-                        {
-                            var teleportLocation = new Vector3(player.Position.x, player.Position.y, player.Position.z);
-                            tmpPlayer.Player.quests.sendSetMarker(true, teleportLocation);
-                            AdvancedHealth.Instance.SendChatMessage(sp, "player_injured", player.CharacterName);
-                        }
+                        var teleportLocation = new Vector3(player.Position.x, player.Position.y, player.Position.z);
+                        tmpPlayer.Player.quests.sendSetMarker(true, teleportLocation);
+                        AdvancedHealth.Instance.SendChatMessage(sp, "player_injured", player.CharacterName);
                     }
                 }
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                AdvancedHealth.Logger.Log($"Error in {methodName}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {methodName}.", ex);
             }
         }
 
@@ -108,9 +113,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
         /// </summary>
         /// <param name="state">The player state for which to retrieve the status icon.</param>
         /// <returns>The status icon corresponding to the specified player state.</returns>
-        public static StatusIcon GetStatusIcon(EPlayerState state)
-        {
-            return _config.HealthSystemSettings.StatusIcons.Find(x => x.Status == state);
-        }
+        public static StatusIcon? GetStatusIcon(EPlayerState state) =>
+            _config.HealthSystemSettings.StatusIcons.Find(x => x.Status == state);
     }
 }

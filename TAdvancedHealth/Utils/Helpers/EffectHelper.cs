@@ -4,10 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Threading.Tasks;
+using SDG.Unturned;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
-using Tavstal.TLibrary.Helpers.Unturned;
+using Tavstal.TAdvancedHealth.Utils.Managers;
+using Tavstal.TLibrary.Extensions;
 
 namespace Tavstal.TAdvancedHealth.Utils.Helpers
 {
@@ -25,12 +27,15 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
         /// <param name="type">The type of progress bar.</param>
         /// <param name="percent">The current percentage value of the progress bar.</param>
         /// <param name="lastPercent">The previous percentage value of the progress bar.</param>
-        public static async Task SendUIEffectProgressBarAsync(short key, CSteamID steamID, bool reliable, EProgressBar type, int percent, int lastPercent)
+        public static void SendUIEffectProgressBar(short key, CSteamID steamID, bool reliable, EProgressBar type, int percent, int lastPercent)
         {
             try
             {
                 UnturnedPlayer player = UnturnedPlayer.FromCSteamID(steamID);
-                HealthData health = await AdvancedHealth.DatabaseManager.GetPlayerHealthAsync(player.Id);
+                HealthData? health = HealthManager.Get(steamID.m_SteamID);
+                if (health == null)
+                    return;
+                
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 var transCon = player.SteamPlayer().transportConnection;
                 string childName;
@@ -43,14 +48,14 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                             {
                                 foreach (string s in comp.ProgressBarData.VisibleSimpleHealth)
                                 {
-                                    UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
+                                    EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
                                 }
                                 comp.ProgressBarData.VisibleSimpleHealth = new List<string>();
                             }
 
-                            UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", lastPercent.ToString()), false);
+                            EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", lastPercent.ToString()), false);
                             comp.ProgressBarData.VisibleSimpleHealth.Add(childName.Replace("{index}", percent.ToString()));
-                            UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
+                            EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
 
                             break;
                         }
@@ -61,13 +66,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                             {
                                 foreach (string s in comp.ProgressBarData.VisibleFood)
                                 {
-                                    UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
+                                    EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
                                 }
                                 comp.ProgressBarData.VisibleFood = new List<string>();
                             }
 
                             comp.ProgressBarData.VisibleFood.Add(childName.Replace("{index}", percent.ToString()));
-                            UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
+                            EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
 
                             break;
                         }
@@ -78,13 +83,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                             {
                                 foreach (string s in comp.ProgressBarData.VisibleWater)
                                 {
-                                    UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
+                                    EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
                                 }
                                 comp.ProgressBarData.VisibleWater = new List<string>();
                             }
 
                             comp.ProgressBarData.VisibleWater.Add(childName.Replace("{index}", percent.ToString()));
-                            UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
+                            EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
 
                             break;
                         }
@@ -95,13 +100,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                             {
                                 foreach (string s in comp.ProgressBarData.VisibleVirus)
                                 {
-                                    UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
+                                    EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
                                 }
                                 comp.ProgressBarData.VisibleVirus = new List<string>();
                             }
 
                             comp.ProgressBarData.VisibleVirus.Add(childName.Replace("{index}", percent.ToString()));
-                            UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
+                            EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
 
                             break;
                         }
@@ -112,13 +117,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                             {
                                 foreach (string s in comp.ProgressBarData.VisibleOxygen)
                                 {
-                                    UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
+                                    EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
                                 }
                                 comp.ProgressBarData.VisibleOxygen = new List<string>();
                             }
 
                             comp.ProgressBarData.VisibleOxygen.Add(childName.Replace("{index}", percent.ToString()));
-                            UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
+                            EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
 
                             break;
                         }
@@ -129,13 +134,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                             {
                                 foreach (string s in comp.ProgressBarData.VisibleStamina)
                                 {
-                                    UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
+                                    EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
                                 }
                                 comp.ProgressBarData.VisibleStamina = new List<string>();
                             }
 
                             comp.ProgressBarData.VisibleStamina.Add(childName.Replace("{index}", percent.ToString()));
-                            UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
+                            EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
 
                             break;
                         }
@@ -146,13 +151,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                             {
                                 foreach (string s in comp.ProgressBarData.VisibleHead)
                                 {
-                                    UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
+                                    EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
                                 }
                                 comp.ProgressBarData.VisibleHead = new List<string>();
                             }
 
                             comp.ProgressBarData.VisibleHead.Add(childName.Replace("{index}", percent.ToString()));
-                            UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
+                            EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
 
                             break;
                         }
@@ -163,13 +168,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                             {
                                 foreach (string s in comp.ProgressBarData.VisibleBody)
                                 {
-                                    UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
+                                    EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
                                 }
                                 comp.ProgressBarData.VisibleBody = new List<string>();
                             }
 
                             comp.ProgressBarData.VisibleBody.Add(childName.Replace("{index}", percent.ToString()));
-                            UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
+                            EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
 
                             break;
                         }
@@ -180,13 +185,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                             {
                                 foreach (string s in comp.ProgressBarData.VisibleLeftArm)
                                 {
-                                    UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
+                                    EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
                                 }
                                 comp.ProgressBarData.VisibleLeftArm = new List<string>();
                             }
 
                             comp.ProgressBarData.VisibleLeftArm.Add(childName.Replace("{index}", percent.ToString()));
-                            UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
+                            EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
 
                             break;
                         }
@@ -197,13 +202,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                             {
                                 foreach (string s in comp.ProgressBarData.VisibleLeftLeg)
                                 {
-                                    UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
+                                    EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
                                 }
                                 comp.ProgressBarData.VisibleLeftLeg = new List<string>();
                             }
 
                             comp.ProgressBarData.VisibleLeftLeg.Add(childName.Replace("{index}", percent.ToString()));
-                            UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
+                            EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
 
                             break;
                         }
@@ -214,13 +219,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                             {
                                 foreach (string s in comp.ProgressBarData.VisibleRightArm)
                                 {
-                                    UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
+                                    EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
                                 }
                                 comp.ProgressBarData.VisibleRightArm = new List<string>();
                             }
 
                             comp.ProgressBarData.VisibleRightArm.Add(childName.Replace("{index}", percent.ToString()));
-                            UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
+                            EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
 
                             break;
                         }
@@ -231,13 +236,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                             {
                                 foreach (string s in comp.ProgressBarData.VisibleRightLeg)
                                 {
-                                    UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
+                                    EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, s, false);
                                 }
                                 comp.ProgressBarData.VisibleRightLeg = new List<string>();
                             }
 
                             comp.ProgressBarData.VisibleRightLeg.Add(childName.Replace("{index}", percent.ToString()));
-                            UEffectHelper.SendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
+                            EffectManager.sendUIEffectVisibility((short)health.HUDEffectID, transCon, true, childName.Replace("{index}", percent.ToString()), true);
 
                             break;
                         }
@@ -245,13 +250,12 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                         throw new Exception("How did we get here ?");
                 }
 
-                UEffectHelper.SendUIEffectVisibility(key, transCon, reliable, childName.Replace("{index}", lastPercent.ToString()), false);
-                UEffectHelper.SendUIEffectVisibility(key, transCon, reliable, childName.Replace("{index}", percent.ToString()), true);
+                EffectManager.sendUIEffectVisibility(key, transCon, reliable, childName.Replace("{index}", lastPercent.ToString()), false);
+                EffectManager.sendUIEffectVisibility(key, transCon, reliable, childName.Replace("{index}", percent.ToString()), true);
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                AdvancedHealth.Logger.Error("ProgressBar Error");
-                AdvancedHealth.Logger.Error(e);
+                AdvancedHealth.Logger.Error("ProgressBar Error", ex);
             }
         }
 
@@ -260,40 +264,43 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
         /// </summary>
         /// <param name="player">The Unturned player whose health UI is to be updated.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        private static async Task UpdateHealthUIAsync(UnturnedPlayer player)
+        private static void UpdateHealthUI(UnturnedPlayer player)
         {
             string voidname = "UpdateHealthUI";
             try
             {
-                HealthData health = await AdvancedHealth.DatabaseManager.GetPlayerHealthAsync(player.Id);
+                HealthData? health = HealthManager.Get(player.CSteamID.m_SteamID);
+                if  (health == null)
+                    return;
+                
                 var transCon = player.SteamPlayer().transportConnection;
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
                 //Base
-                UEffectHelper.SendUIEffectText((short)comp.effectId, transCon, true, "tb_Health", Math.Round(health.BaseHealth, 2).ToString(CultureInfo.CurrentCulture));
-                await SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.SimpleHealth, (int)((Math.Round(health.BaseHealth, 2) / _config.HealthSystemSettings.BaseHealth) * 100), (int)((comp.ProgressBarData.LastSimpleHealth / _config.HealthSystemSettings.BaseHealth) * 100));
+                EffectManager.sendUIEffectText((short)comp.effectId, transCon, true, "tb_Health", Math.Round(health.BaseHealth, 2).ToString(CultureInfo.CurrentCulture));
+                SendUIEffectProgressBar((short)comp.effectId, player.CSteamID, true, EProgressBar.SimpleHealth, (int)((Math.Round(health.BaseHealth, 2) / _config.HealthSystemSettings.BaseHealth) * 100), (int)((comp.ProgressBarData.LastSimpleHealth / _config.HealthSystemSettings.BaseHealth) * 100));
                 //Head
-                UEffectHelper.SendUIEffectText((short)comp.effectId, transCon, true, "tb_Head", Math.Round(health.HeadHealth, 2).ToString(CultureInfo.CurrentCulture));
-                await SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.HeadHealth, (int)((Math.Round(health.HeadHealth, 2) / _config.HealthSystemSettings.HeadHealth) * 100), (int)((comp.ProgressBarData.LastHealthHead / _config.HealthSystemSettings.HeadHealth) * 100));
-                //Bpdy
-                UEffectHelper.SendUIEffectText((short)comp.effectId, transCon, true, "tb_Body", Math.Round(health.BodyHealth, 2).ToString(CultureInfo.CurrentCulture));
-                await SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.BodyHealth, (int)((Math.Round(health.BodyHealth, 2) / _config.HealthSystemSettings.BodyHealth) * 100), (int)((comp.ProgressBarData.LastHealthBody / _config.HealthSystemSettings.BodyHealth) * 100));
+                EffectManager.sendUIEffectText((short)comp.effectId, transCon, true, "tb_Head", Math.Round(health.HeadHealth, 2).ToString(CultureInfo.CurrentCulture));
+                SendUIEffectProgressBar((short)comp.effectId, player.CSteamID, true, EProgressBar.HeadHealth, (int)((Math.Round(health.HeadHealth, 2) / _config.HealthSystemSettings.HeadHealth) * 100), (int)((comp.ProgressBarData.LastHealthHead / _config.HealthSystemSettings.HeadHealth) * 100));
+                //Body
+                EffectManager.sendUIEffectText((short)comp.effectId, transCon, true, "tb_Body", Math.Round(health.BodyHealth, 2).ToString(CultureInfo.CurrentCulture));
+                SendUIEffectProgressBar((short)comp.effectId, player.CSteamID, true, EProgressBar.BodyHealth, (int)((Math.Round(health.BodyHealth, 2) / _config.HealthSystemSettings.BodyHealth) * 100), (int)((comp.ProgressBarData.LastHealthBody / _config.HealthSystemSettings.BodyHealth) * 100));
                 //LeftArm
-                UEffectHelper.SendUIEffectText((short)comp.effectId, transCon, true, "tb_LeftArm", Math.Round(health.LeftArmHealth, 2).ToString(CultureInfo.CurrentCulture));
-                await SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.LeftArmHealth, (int)((Math.Round(health.LeftArmHealth, 2) / _config.HealthSystemSettings.LeftArmHealth) * 100), (int)((comp.ProgressBarData.LastHealthLeftArm / _config.HealthSystemSettings.LeftArmHealth) * 100));
+                EffectManager.sendUIEffectText((short)comp.effectId, transCon, true, "tb_LeftArm", Math.Round(health.LeftArmHealth, 2).ToString(CultureInfo.CurrentCulture));
+                SendUIEffectProgressBar((short)comp.effectId, player.CSteamID, true, EProgressBar.LeftArmHealth, (int)((Math.Round(health.LeftArmHealth, 2) / _config.HealthSystemSettings.LeftArmHealth) * 100), (int)((comp.ProgressBarData.LastHealthLeftArm / _config.HealthSystemSettings.LeftArmHealth) * 100));
                 //LeftLeg
-                UEffectHelper.SendUIEffectText((short)comp.effectId, transCon, true, "tb_LeftLeg", Math.Round(health.LeftLegHealth, 2).ToString(CultureInfo.CurrentCulture));
-                await SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.LeftLegHealth, (int)((Math.Round(health.LeftLegHealth, 2) / _config.HealthSystemSettings.LeftLegHealth) * 100), (int)((comp.ProgressBarData.LastHealthLeftLeg / _config.HealthSystemSettings.LeftLegHealth) * 100));
+                EffectManager.sendUIEffectText((short)comp.effectId, transCon, true, "tb_LeftLeg", Math.Round(health.LeftLegHealth, 2).ToString(CultureInfo.CurrentCulture));
+                SendUIEffectProgressBar((short)comp.effectId, player.CSteamID, true, EProgressBar.LeftLegHealth, (int)((Math.Round(health.LeftLegHealth, 2) / _config.HealthSystemSettings.LeftLegHealth) * 100), (int)((comp.ProgressBarData.LastHealthLeftLeg / _config.HealthSystemSettings.LeftLegHealth) * 100));
                 //RightArm
-                UEffectHelper.SendUIEffectText((short)comp.effectId, transCon, true, "tb_RightArm", Math.Round(health.RightArmHealth, 2).ToString(CultureInfo.CurrentCulture));
-                await SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.RightArmHealth, (int)((Math.Round(health.RightArmHealth, 2) / _config.HealthSystemSettings.RightArmHealth) * 100), (int)((comp.ProgressBarData.LastHealthRightArm / _config.HealthSystemSettings.RightArmHealth) * 100));
+                EffectManager.sendUIEffectText((short)comp.effectId, transCon, true, "tb_RightArm", Math.Round(health.RightArmHealth, 2).ToString(CultureInfo.CurrentCulture));
+                SendUIEffectProgressBar((short)comp.effectId, player.CSteamID, true, EProgressBar.RightArmHealth, (int)((Math.Round(health.RightArmHealth, 2) / _config.HealthSystemSettings.RightArmHealth) * 100), (int)((comp.ProgressBarData.LastHealthRightArm / _config.HealthSystemSettings.RightArmHealth) * 100));
                 //RightLeg
-                UEffectHelper.SendUIEffectText((short)comp.effectId, transCon, true, "tb_RightLeg", Math.Round(health.RightLegHealth, 2).ToString(CultureInfo.CurrentCulture));
-                await SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.RightLegHealth, (int)((Math.Round(health.RightLegHealth, 2) / _config.HealthSystemSettings.RightLegHealth) * 100), (int)((comp.ProgressBarData.LastHealthRightLeg / _config.HealthSystemSettings.RightLegHealth) * 100));
+                EffectManager.sendUIEffectText((short)comp.effectId, transCon, true, "tb_RightLeg", Math.Round(health.RightLegHealth, 2).ToString(CultureInfo.CurrentCulture));
+                SendUIEffectProgressBar((short)comp.effectId, player.CSteamID, true, EProgressBar.RightLegHealth, (int)((Math.Round(health.RightLegHealth, 2) / _config.HealthSystemSettings.RightLegHealth) * 100), (int)((comp.ProgressBarData.LastHealthRightLeg / _config.HealthSystemSettings.RightLegHealth) * 100));
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                AdvancedHealth.Logger.Log($"Error in {voidname}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {voidname}.", ex);
             }
         }
 
@@ -307,10 +314,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
             string voidname = "UpdateHealthUI";
             try
             {
-                HealthData health = await AdvancedHealth.DatabaseManager.GetPlayerHealthAsync(player.Id);
+                HealthData? health = HealthManager.Get(player.CSteamID.m_SteamID);
+                if (health == null)
+                    return;
+                
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
-                await UpdateHealthUIAsync(player);
+                UpdateHealthUI(player);
                 comp.ProgressBarData.LastHealthHead = health.HeadHealth;
                 comp.ProgressBarData.LastHealthBody = health.BodyHealth;
                 comp.ProgressBarData.LastHealthLeftArm = health.LeftArmHealth;
@@ -318,16 +328,16 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                 comp.ProgressBarData.LastHealthRightArm = health.RightArmHealth;
                 comp.ProgressBarData.LastHealthRightLeg = health.RightLegHealth;
                 //Stats
-                await SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.Food, player.Player.life.food, player.Player.life.food);
-                await SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.Stamina, player.Player.life.stamina, player.Player.life.stamina);
-                await SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.Water, player.Player.life.water, player.Player.life.water);
-                await SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.Radiation, player.Player.life.virus, player.Player.life.virus);
-                await SendUIEffectProgressBarAsync((short)comp.effectId, player.CSteamID, true, EProgressBar.Oxygen, player.Player.life.oxygen, player.Player.life.oxygen);
+                SendUIEffectProgressBar((short)comp.effectId, player.CSteamID, true, EProgressBar.Food, player.Player.life.food, player.Player.life.food);
+                SendUIEffectProgressBar((short)comp.effectId, player.CSteamID, true, EProgressBar.Stamina, player.Player.life.stamina, player.Player.life.stamina);
+                SendUIEffectProgressBar((short)comp.effectId, player.CSteamID, true, EProgressBar.Water, player.Player.life.water, player.Player.life.water);
+                SendUIEffectProgressBar((short)comp.effectId, player.CSteamID, true, EProgressBar.Radiation, player.Player.life.virus, player.Player.life.virus);
+                SendUIEffectProgressBar((short)comp.effectId, player.CSteamID, true, EProgressBar.Oxygen, player.Player.life.oxygen, player.Player.life.oxygen);
 
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                AdvancedHealth.Logger.Log($"Error in {voidname}: {e}");
+                AdvancedHealth.Logger.Error($"Error in {voidname}.", ex);
             }
         }
     }

@@ -40,7 +40,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                     player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStatusIcons, false);
                 });
                 health.IsHUDEnabled = true;
-                UEffectHelper.SendUIEffect(health.HUDEffectID, (short)health.HUDEffectID, player.SteamPlayer().transportConnection, true);
+                EffectManager.sendUIEffect(health.HUDEffectID, (short)health.HUDEffectID, player.SteamPlayer().transportConnection, true);
                 await EffectHelper.UpdateWholeHealthUIAsync(player);
             }
             else
