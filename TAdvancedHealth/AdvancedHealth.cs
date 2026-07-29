@@ -19,8 +19,7 @@ namespace Tavstal.TAdvancedHealth
     {
         public static AdvancedHealth Instance { get; private set; } = null!;
         public static DatabaseManager DatabaseManager { get; private set; } = null!;
-        public static bool IsConnectionAuthFailed { get; set; }
-        private HarmonyLib.Harmony HarmonyPatcher { get; set; }
+        private HarmonyLib.Harmony? HarmonyPatcher { get; set; }
         private bool _hasFullMoon;
         private DateTime _nextUpdate;
 
@@ -93,7 +92,7 @@ namespace Tavstal.TAdvancedHealth
             UIEventHandler.Detach();
             VehicleEventHandler.Detach();
             HealthSystemEventHandler.Detach();
-            HarmonyPatcher.UnpatchAll();
+            HarmonyPatcher?.UnpatchAll();
             
             foreach (SteamPlayer steamPlayer in Provider.clients)
             {

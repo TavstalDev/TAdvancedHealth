@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using SDG.Unturned;
 using Tavstal.TAdvancedHealth.Components;
-using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TLibrary.Extensions;
 
@@ -22,7 +21,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
             {
                 UnturnedPlayer player = UnturnedPlayer.FromCSteamID(steamID);
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                HealthData? healthData = comp.HealthData;
+                var healthData = comp.HealthData;
                 if (healthData == null)
                     return;
                 
@@ -244,17 +243,16 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.Error("ProgressBar Error", ex);
+                AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(SendUIEffectProgressBar)}.", ex);
             }
         }
         
         private static void UpdateHealthUI(UnturnedPlayer player)
         {
-            string voidname = "UpdateHealthUI";
             try
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                HealthData? healthData = comp.HealthData;
+                var healthData = comp.HealthData;
                 if (healthData == null)
                     return;
                 var transCon = player.SteamPlayer().transportConnection;
@@ -283,17 +281,16 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.Error($"Unexpected error occured in {voidname}.", ex);
+                AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(UpdateHealthUI)}.", ex);
             }
         }
         
         public static void UpdateWholeHealthUI(UnturnedPlayer player)
         {
-            string voidname = "UpdateHealthUI";
             try
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                HealthData? healthData = comp.HealthData;
+                var healthData = comp.HealthData;
                 if (healthData == null)
                     return;
                 
@@ -314,7 +311,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.Error($"Unexpected error occured in {voidname}.", ex);
+                AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(UpdateWholeHealthUI)}.", ex);
             }
         }
     }

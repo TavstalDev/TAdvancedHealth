@@ -4,7 +4,6 @@ using SDG.Unturned;
 using System;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Config;
-using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Helpers.Unturned;
@@ -14,17 +13,15 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
 {
     public static class HealthHelper
     {
-        // ReSharper disable once InconsistentNaming
         private static AdvancedHealthConfig _config => AdvancedHealth.Instance.Config;
         
         public static void SetPlayerDowned(UnturnedPlayer player)
         {
-            string methodName = "SetPlayerDownedAsync";
             try
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 var transCon = player.SteamPlayer().transportConnection;
-                HealthData? healthData = comp.HealthData;
+                var healthData = comp.HealthData;
                 if (healthData == null)
                     return;
                 
@@ -47,14 +44,13 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                 player.Player.movement.sendPluginSpeedMultiplier(0f);
                 player.Player.movement.sendPluginJumpMultiplier(0f);
 
-                healthData.DeathDate = DateTime.Now.AddSeconds(_config.HealthSystemSettings.InjuredDeathTimeSecs);
-                healthData.IsInjured = true;
-                healthData.HeadHealth = _config.HealthSystemSettings.HeadHealth;
-                healthData.BodyHealth = _config.HealthSystemSettings.BodyHealth;
-                healthData.LeftArmHealth = _config.HealthSystemSettings.LeftArmHealth;
-                healthData.RightArmHealth = _config.HealthSystemSettings.RightArmHealth;
-                healthData.LeftLegHealth = _config.HealthSystemSettings.LeftLegHealth;
-                healthData.RightLegHealth = _config.HealthSystemSettings.RightLegHealth;
+                healthData.SetInjured(true);
+                healthData.SetHeadHealth(_config.HealthSystemSettings.HeadHealth);
+                healthData.SetBodyHealth(_config.HealthSystemSettings.BodyHealth);
+                healthData.SetLeftArmHealth(_config.HealthSystemSettings.LeftArmHealth);
+                healthData.SetRightArmHealth(_config.HealthSystemSettings.RightArmHealth);
+                healthData.SetLeftLegHealth(_config.HealthSystemSettings.LeftLegHealth);
+                healthData.SetRightLegHealth(_config.HealthSystemSettings.RightLegHealth);
 
                 player.Player.stance.checkStance(EPlayerStance.PRONE, true);
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, true);
@@ -67,7 +63,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                 foreach (SteamPlayer sp in Provider.clients)
                 {
                     UnturnedPlayer tmpPlayer = UnturnedPlayer.FromSteamPlayer(sp);
-                    if ((tmpPlayer.HasPermission(_config.DefibrillatorSettings.PermissionForUseDefiblirator) ||
+                    if ((tmpPlayer.HasPermission(_config.DefibrillatorSettings.Permission) ||
                          tmpPlayer.CSteamID == player.CSteamID) && !player.IsAdmin)
                     {
                         var teleportLocation = new Vector3(player.Position.x, player.Position.y, player.Position.z);
@@ -78,7 +74,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.Error($"Unexpected error occured in {methodName}.", ex);
+                AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(SetPlayerDowned)}.", ex);
             }
         }
         
@@ -86,7 +82,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
         {
             bool can = false;
 
-            if (health != 0 && damage != 0 && _config.HealthSystemSettings.CanStartBleeding)
+            if (health != 0 && damage != 0 && _config.HealthSystemSettings.Combat.CanStartBleeding)
             {
                 if (health / 100 * 20 <= damage)
                     can = true;

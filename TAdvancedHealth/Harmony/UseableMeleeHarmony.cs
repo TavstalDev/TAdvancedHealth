@@ -5,7 +5,6 @@ using System;
 using HarmonyLib;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Config;
-using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TLibrary.Helpers.General;
 using Tavstal.TLibrary.Helpers.Unturned;
 using UnityEngine;
@@ -25,8 +24,8 @@ namespace Tavstal.TAdvancedHealth.Harmony
         {
             UseableMelee useableMelee = (UseableMelee)__instance;
             UnturnedPlayer userPlayer = UnturnedPlayer.FromPlayer(useableMelee.player);
-            Defibrillator defibrillator = _config.DefibrillatorSettings.DefibrillatorItems.Find(x => x.ItemID == useableMelee.equippedMeleeAsset.id);
-            if (!_config.DefibrillatorSettings.Enabled || (_config.DefibrillatorSettings.Enabled && !userPlayer.HasPermission(_config.DefibrillatorSettings.PermissionForUseDefiblirator)) || defibrillator == null)
+            Defibrillator defibrillator = _config.DefibrillatorSettings.Items.Find(x => x.ItemID == useableMelee.equippedMeleeAsset.id);
+            if (!_config.DefibrillatorSettings.Enable || (_config.DefibrillatorSettings.Enable && !userPlayer.HasPermission(_config.DefibrillatorSettings.Permission)) || defibrillator == null)
                 return;
 
             AdvancedHealthComponent userComp = userPlayer.GetComponent<AdvancedHealthComponent>();
@@ -53,7 +52,7 @@ namespace Tavstal.TAdvancedHealth.Harmony
             UnturnedPlayer targetPlayer = UnturnedPlayer.FromPlayer(targetBasePlayer);
             AdvancedHealthComponent targetComp = targetPlayer.GetComponent<AdvancedHealthComponent>();
 
-            HealthData? targetHealth = targetComp.HealthData;
+            var targetHealth = targetComp.HealthData;
             if (targetHealth is { IsInjured: false })
             {
                 AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "error_defiblirator_not_injured");

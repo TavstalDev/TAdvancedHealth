@@ -5,8 +5,8 @@ using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Tavstal.TAdvancedHealth.Models;
 using Tavstal.TAdvancedHealth.Models.Config;
-using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TAdvancedHealth.Utils.Helpers;
 using Tavstal.TLibrary.Extensions;
@@ -50,29 +50,20 @@ namespace Tavstal.TAdvancedHealth.Components
             {
                 try
                 {
-                    HealthData = await AdvancedHealth.DatabaseManager.HealthData.GetAsync(Player.Id);
-                    if (HealthData == null)
+                    var healthData = await AdvancedHealth.DatabaseManager.HealthData.GetAsync(Player.Id);
+                    if (healthData != null)
                     {
-                        var cshSettings = AdvancedHealth.Instance.Config.HealthSystemSettings;
-                        HUDStyle style = AdvancedHealth.Instance.Config.HUDStyles.FirstOrDefault(x => x.Enabled) ??
-                                          AdvancedHealth.Instance.Config.HUDStyles[0];
-
-                        HealthData = new HealthData
-                        {
-                            PlayerId = Player.Id,
-                            BaseHealth = cshSettings.BaseHealth,
-                            HeadHealth = cshSettings.HeadHealth,
-                            BodyHealth = cshSettings.BodyHealth,
-                            LeftArmHealth = cshSettings.LeftArmHealth,
-                            RightArmHealth = cshSettings.RightArmHealth,
-                            LeftLegHealth = cshSettings.LeftLegHealth,
-                            RightLegHealth = cshSettings.RightLegHealth,
-                            DeathDate = DateTime.Now,
-                            IsInjured = false,
-                            IsHUDEnabled = true,
-                            HUDEffectID = style.EffectID
-                        };
+                        HealthData = new Health(healthData);
+                        return;
                     }
+                    
+                    var cshSettings = AdvancedHealth.Instance.Config.HealthSystemSettings;
+                    HUDStyle style = AdvancedHealth.Instance.Config.HUDStyles.FirstOrDefault(x => x.Enable) ??
+                                     AdvancedHealth.Instance.Config.HUDStyles[0];
+
+                    HealthData = new Health(Player.Id, cshSettings.BaseHealth, cshSettings.HeadHealth, cshSettings.BodyHealth,
+                        cshSettings.RightArmHealth, cshSettings.LeftArmHealth, cshSettings.RightLegHealth, cshSettings.LeftLegHealth,
+                        false, true, style.EffectID);
                 }
                 catch (Exception ex)
                 {
@@ -83,11 +74,14 @@ namespace Tavstal.TAdvancedHealth.Components
 
         protected override void Unload()
         {
+            if (HealthData == null)
+                return;
+            var healthData = HealthData.ToHealthData();
             BackgroundThreadDispatcher.Run(async () =>
             {
                 try
                 {
-                    HealthData = await AdvancedHealth.DatabaseManager.HealthData.GetAsync(Player.Id);
+                    await AdvancedHealth.DatabaseManager.HealthData.UpdateAsync(Player.Id, healthData);
                 }
                 catch (Exception ex)
                 {
@@ -227,22 +221,22 @@ namespace Tavstal.TAdvancedHealth.Components
         {
             var chsettings = AdvancedHealth.Instance.Config.HealthSystemSettings;
 
-            if (!Mathf.Approximately(Player.Player.movement.pluginSpeedMultiplier, chsettings.DefaultWalkSpeed))
-                Player.Player.movement.sendPluginSpeedMultiplier(chsettings.DefaultWalkSpeed);
+            if (!Mathf.Approximately(Player.Player.movement.pluginSpeedMultiplier, chsettings.Movement.DefaultWalkSpeed))
+                Player.Player.movement.sendPluginSpeedMultiplier(chsettings.Movement.DefaultWalkSpeed);
             Player.Player.movement.sendPluginJumpMultiplier(1f);
             allowDamage = false;
             hasHeavyBleeding = false;
 
             if (HealthData != null)
             {
-                HealthData.BaseHealth = chsettings.BaseHealth;
-                HealthData.HeadHealth = chsettings.HeadHealth;
-                HealthData.BodyHealth = chsettings.BodyHealth;
-                HealthData.LeftArmHealth = chsettings.LeftArmHealth;
-                HealthData.RightArmHealth = chsettings.RightArmHealth;
-                HealthData.LeftLegHealth = chsettings.LeftLegHealth;
-                HealthData.RightLegHealth = chsettings.RightLegHealth;
-                HealthData.IsInjured = false;
+                HealthData.SetBaseHealth(chsettings.BaseHealth);
+                HealthData.SetHeadHealth(chsettings.HeadHealth);
+                HealthData.SetBodyHealth(chsettings.BodyHealth);
+                HealthData.SetLeftArmHealth(chsettings.LeftArmHealth);
+                HealthData.SetRightArmHealth(chsettings.RightArmHealth);
+                HealthData.SetLeftLegHealth(chsettings.LeftLegHealth);
+                HealthData.SetRightLegHealth(chsettings.RightLegHealth);
+                HealthData.SetInjured(false);
             }
 
             Player.Broken = false;
@@ -261,20 +255,16 @@ namespace Tavstal.TAdvancedHealth.Components
             allowDamage = true;
             Player.Player.life.askDamage(100, Player.Position.normalized, EDeathCause.BLEEDING, ELimb.SKULL, CSteamID.Nil, out _);
             var chsettings = AdvancedHealth.Instance.Config.HealthSystemSettings;
-            if (!Mathf.Approximately(Player.Player.movement.pluginSpeedMultiplier, chsettings.DefaultWalkSpeed))
-                Player.Player.movement.sendPluginSpeedMultiplier(chsettings.DefaultWalkSpeed);
+            if (!Mathf.Approximately(Player.Player.movement.pluginSpeedMultiplier, chsettings.Movement.DefaultWalkSpeed))
+                Player.Player.movement.sendPluginSpeedMultiplier(chsettings.Movement.DefaultWalkSpeed);
             Player.Player.movement.sendPluginJumpMultiplier(1f);
 
-            if (HealthData != null)
-            {
-                HealthData.IsInjured = false;
-                HealthData.DeathDate = DateTime.Now;
-            }
+            HealthData?.SetInjured(false);
 
             EffectManager.sendUIEffectVisibility((short)effectId, TranspConnection, true, "RevivePanel", false);
             Player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
         }
-    
+
         private void Update()
         {
             if (dragState == EDragState.Dragger && dragPartnerId != CSteamID.Nil)
@@ -285,11 +275,12 @@ namespace Tavstal.TAdvancedHealth.Components
                     if (Vector3.Distance(partner.Position, Player.Position) > 3)
                         partner.Player.teleportToPlayer(Player.Player);
             }
-            
+
             if (HealthData == null)
                 return;
-            
+
             #region Injured
+
             if (HealthData.IsInjured)
             {
                 Player.Bleeding = false;
@@ -303,73 +294,63 @@ namespace Tavstal.TAdvancedHealth.Components
                     return;
                 }
             }
+
             #endregion
-            
+
             #region Regeneration
-            
-                bool canRegenerate =
-                    Player.Player.life.food >= AdvancedHealth.Instance.Config.HealthSystemSettings.HealthRegenMinFood &&
-                    Player.Player.life.water >=
-                    AdvancedHealth.Instance.Config.HealthSystemSettings.HealthRegenMinWater &&
-                    Player.Player.life.virus >= AdvancedHealth.Instance.Config.HealthSystemSettings.HealthRegenMinVirus;
 
-                // Head
-                if (_nextHeadHealDate <= DateTime.Now)
+            bool canRegenerate =
+                Player.Player.life.food >= AdvancedHealth.Instance.Config.HealthSystemSettings.Regen.HealthRegenMinFood &&
+                Player.Player.life.water >=
+                AdvancedHealth.Instance.Config.HealthSystemSettings.Regen.HealthRegenMinWater &&
+                Player.Player.life.virus >= AdvancedHealth.Instance.Config.HealthSystemSettings.Regen.HealthRegenMinVirus;
+
+            // Head
+            if (_nextHeadHealDate <= DateTime.Now)
+            {
+                if (canRegenerate)
+                    HealthData.SetHeadHealth(HealthData.HeadHealth + 1);
+
+                _nextHeadHealDate =
+                    DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.Regen.HeadRegenTicks);
+            }
+
+            // Body
+            if (_nextBodyHealDate <= DateTime.Now)
+            {
+                if (canRegenerate)
+                    HealthData.SetBodyHealth(HealthData.BodyHealth + 1);
+
+                _nextBodyHealDate =
+                    DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.Regen.BodyRegenTicks);
+            }
+
+            // Arm
+            if (_nextArmHealDate <= DateTime.Now)
+            {
+                if (canRegenerate)
                 {
-                    if (HealthData.HeadHealth + 1 <= AdvancedHealth.Instance.Config.HealthSystemSettings.HeadHealth &&
-                        canRegenerate)
-                        HealthData.HeadHealth += 1;
-
-                    _nextHeadHealDate =
-                        DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.HeadRegenTicks);
+                    HealthData.SetLeftArmHealth(HealthData.LeftArmHealth + 1);
+                    HealthData.SetRightArmHealth(HealthData.RightArmHealth + 1);
                 }
 
-                // Body
-                if (_nextBodyHealDate <= DateTime.Now)
-                {
-                    if (HealthData.BodyHealth + 1 <= AdvancedHealth.Instance.Config.HealthSystemSettings.BodyHealth &&
-                        canRegenerate)
-                        HealthData.BodyHealth += 1;
+                _nextArmHealDate =
+                    DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.Regen.ArmRegenTicks);
+            }
 
-                    _nextBodyHealDate =
-                        DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.BodyRegenTicks);
+            // Leg
+            if (_nextLegHealDate <= DateTime.Now)
+            {
+                if (canRegenerate)
+                {
+                    HealthData.SetLeftLegHealth(HealthData.LeftLegHealth + 1);
+                    HealthData.SetRightLegHealth(HealthData.RightLegHealth + 1);
                 }
 
-                // Arm
-                if (_nextArmHealDate <= DateTime.Now)
-                {
-                    if (canRegenerate)
-                    {
-                        if (HealthData.LeftArmHealth + 1 <=
-                            AdvancedHealth.Instance.Config.HealthSystemSettings.LeftArmHealth)
-                            HealthData.LeftArmHealth += 1;
+                _nextLegHealDate =
+                    DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.Regen.LegRegenTicks);
+            }
 
-                        if (HealthData.RightArmHealth + 1 <=
-                            AdvancedHealth.Instance.Config.HealthSystemSettings.RightArmHealth)
-                            HealthData.RightArmHealth += 1;
-                    }
-
-                    _nextArmHealDate =
-                        DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.ArmRegenTicks);
-                }
-
-                // Leg
-                if (_nextLegHealDate <= DateTime.Now)
-                {
-                    if (canRegenerate)
-                    {
-                        if (HealthData.LeftLegHealth + 1 <=
-                            AdvancedHealth.Instance.Config.HealthSystemSettings.LeftLegHealth)
-                            HealthData.LeftLegHealth += 1;
-
-                        if (HealthData.RightLegHealth + 1 <=
-                            AdvancedHealth.Instance.Config.HealthSystemSettings.RightLegHealth)
-                            HealthData.RightLegHealth += 1;
-                    }
-
-                    _nextLegHealDate =
-                        DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.LegRegenTicks);
-                }
             #endregion
         }
     }
