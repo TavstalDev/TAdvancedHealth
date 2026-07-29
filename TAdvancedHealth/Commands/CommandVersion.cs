@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Reflection;
 using Tavstal.TLibrary.Helpers.Unturned;
+// ReSharper disable UnusedType.Global
 
 namespace Tavstal.TAdvancedHealth.Commands
 {
@@ -16,10 +17,16 @@ namespace Tavstal.TAdvancedHealth.Commands
 
         public void Execute(IRocketPlayer caller, string[] command)
         {
-            AdvancedHealth.Instance.SendPlainCommandReply(caller, "#########################################");
-            AdvancedHealth.Instance.SendPlainCommandReply(caller, $"# Build Version: {AdvancedHealth.Version}");
-            AdvancedHealth.Instance.SendPlainCommandReply(caller, $"# Build Date: {AdvancedHealth.BuildDate}");
-            AdvancedHealth.Instance.SendPlainCommandReply(caller, "#########################################");
+            var instance = AdvancedHealth.Instance;
+            var config = instance.Config.General;
+            var icon = config.MessageIcon;
+            string message = string.Join(System.Environment.NewLine, 
+                $"&b&l[{instance.GetPluginName()}]&r System Info:",
+                $"&b • Version: &r{AdvancedHealth.Version}",
+                $"&b • Build Date: &r{AdvancedHealth.BuildDate}",
+                "&b • Developer: &rTavstal");
+            
+            instance.SendPlainCommandReply(caller, message, icon);
         }
     }
 }
