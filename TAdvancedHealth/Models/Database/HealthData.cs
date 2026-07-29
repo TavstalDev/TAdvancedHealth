@@ -31,7 +31,10 @@ namespace Tavstal.TAdvancedHealth.Models.Database
         [SqlMember]
         public DateTime DeathDate { get; set; }
 
-        public HealthData() { }
+        public HealthData()
+        {
+            PlayerId = string.Empty;
+        }
 
         public HealthData(string playerId, float baseHealth, float headHealth, float bodyHealth, float rightArmHealth, float leftArmHealth, float rightLegHealth, float leftLegHealth, bool isInjured, bool isHUDEnabled, ushort hudEffectID, DateTime deathDate)
         {

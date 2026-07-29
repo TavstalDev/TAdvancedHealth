@@ -1,196 +1,132 @@
 ﻿using System.Collections.Generic;
+using Tavstal.TAdvancedHealth.Models.Config.HealthSystem;
+using YamlDotNet.Serialization;
 
 namespace Tavstal.TAdvancedHealth.Models.Config
 {
     public class HealthSystemSettings
     {
+        [YamlMember(Order = 0, Description = "Effect ID for the pain screen overlay")]
         public ushort PainEffectID { get; set; }
+        
+        [YamlMember(Order = 1, Description = "Enables per-limb health system")]
         public bool EnableTarkovLikeHealth { get; set; }
+        
+        [YamlMember(Order = 2, Description = "Base health when Tarkov-like health is disabled")]
         public float BaseHealth { get; set; }
-        private float _headHealth;
-        private float _bodyHealth;
-        private float _rightArmHealth;
-        private float _rightLegHealth;
-        private float _leftArmHealth;
-        private float _leftLegHealth;
+        
+        [YamlMember(Order = 3, Description = "Per-limb maximum health values")]
+        public LimbHealthSettings LimbHealth { get; set; } = new LimbHealthSettings();
+
+        [YamlMember(Order = 4, Description = "Movement speed and walking restriction settings")]
+        public MovementSettings Movement { get; set; } = new MovementSettings();
+
+        [YamlMember(Order = 5, Description = "Death, driving, item and jump restriction settings")]
+        public RestrictionSettings Restrictions { get; set; } = new RestrictionSettings();
+
+        [YamlMember(Order = 6, Description = "Bleeding, injury and pain effect settings")]
+        public CombatSettings Combat { get; set; } = new CombatSettings();
+
+        [YamlMember(Order = 7, Description = "Health regeneration tick settings")]
+        public RegenSettings Regen { get; set; } = new RegenSettings();
+
+        [YamlMember(Order = 8, Description = "Status effect icon configurations")]
+        public List<StatusIcon> StatusIcons { get; set; } = new List<StatusIcon>();
+
+        [YamlIgnore]
         public float HeadHealth
         {
             get
             {
                 if (EnableTarkovLikeHealth)
-                    return _headHealth;
-                else
-                    return BaseHealth;
+                    return LimbHealth.Head;
+                return BaseHealth;
             }
             set
             {
                 if (EnableTarkovLikeHealth)
-                    _headHealth = value;
+                    LimbHealth.Head = value;
             }
         }
+        
+        [YamlIgnore]
         public float BodyHealth
         {
             get
             {
                 if (EnableTarkovLikeHealth)
-                    return _bodyHealth;
-                else
-                    return BaseHealth;
+                    return LimbHealth.Body;
+                return BaseHealth;
             }
             set
             {
                 if (EnableTarkovLikeHealth)
-                    _bodyHealth = value;
+                    LimbHealth.Body = value;
             }
         }
+        
+        [YamlIgnore]
         public float RightArmHealth
         {
             get
             {
                 if (EnableTarkovLikeHealth)
-                    return _rightArmHealth;
-                else
-                    return BaseHealth;
+                    return LimbHealth.RightArm;
+                return BaseHealth;
             }
             set
             {
                 if (EnableTarkovLikeHealth)
-                    _rightArmHealth = value;
+                    LimbHealth.RightArm = value;
             }
         }
+        
+        [YamlIgnore]
         public float RightLegHealth
         {
             get
             {
                 if (EnableTarkovLikeHealth)
-                    return _rightLegHealth;
-                else
-                    return BaseHealth;
+                    return LimbHealth.RightLeg;
+                return BaseHealth;
             }
             set
             {
                 if (EnableTarkovLikeHealth)
-                    _rightLegHealth = value;
+                    LimbHealth.RightLeg = value;
             }
         }
+        
+        [YamlIgnore]
         public float LeftArmHealth
         {
             get
             {
                 if (EnableTarkovLikeHealth)
-                    return _leftArmHealth;
-                else
-                    return BaseHealth;
+                    return LimbHealth.LeftArm;
+                return BaseHealth;
             }
             set
             {
                 if (EnableTarkovLikeHealth)
-                    _leftArmHealth = value;
+                    LimbHealth.LeftArm = value;
             }
         }
+        
+        [YamlIgnore]
         public float LeftLegHealth
         {
             get
             {
                 if (EnableTarkovLikeHealth)
-                    return _leftLegHealth;
-                else
-                    return BaseHealth;
+                    return LimbHealth.LeftLeg;
+                return BaseHealth;
             }
             set
             {
                 if (EnableTarkovLikeHealth)
-                    _leftLegHealth = value;
+                    LimbHealth.LeftLeg = value;
             }
-        }
-        public float DefaultWalkSpeed { get; set; }
-        public float WalkSpeedWithOneBrokenLeg { get; set; }
-        public float WalkSpeedWithBrokenLegs { get; set; }
-        public bool DieWhenArmsHealthIsZero { get; set; }
-        public bool DieWhenLegsHealthIsZero { get; set; }
-        public bool DieWhenBodyHealthIsZero { get; set; }
-        public bool DieWhenHeadHealthIsZero { get; set; }
-        public bool CanDriveWithOneBrokenLeg { get; set; }
-        public bool CanDriveWithBrokenLegs { get; set; }
-        public bool CanDriveWithOneBrokenArm { get; set; }
-        public bool CanDriveWithBrokenArms { get; set; }
-        public bool CanHoldOneHandItemsWithOneBrokenArm { get; set; }
-        public bool CanHoldTwoHandItemsWithOneBrokenArm { get; set; }
-        public bool CanHoldOneHandItemsWithBrokenArms { get; set; }
-        public bool CanHoldTwoHandItemsWithBrokenArms { get; set; }
-        public bool CanJumpWithOneBrokenLeg { get; set; }
-        public bool CanJumpWithBrokenLegs { get; set; }
-        public bool CanStartBleeding { get; set; }
-        public float HeavyBleedingChance { get; set; }
-        public float BleedingDamage { get; set; }
-        public float HeavyBleedingDamage { get; set; }
-        public bool CanWalkWithOneBrokenLeg { get; set; }
-        public bool CanWalkWithBrokenLegs { get; set; }
-        public bool CanBeInjured { get; set; }
-        public double InjuredDeathTimeSecs { get; set; }
-        public float HealthRegenMinFood { get; set; }
-        public float HealthRegenMinWater { get; set; }
-        public float HealthRegenMinVirus { get; set; }
-        public bool CanHavePainEffect { get; set; }
-        public float PainEffectChance { get; set; }
-        public float PainEffectDuration { get; set; }
-        public float InjuredChance { get; set; }
-        public float LegRegenTicks { get; set; }
-        public float ArmRegenTicks { get; set; }
-        public float BodyRegenTicks { get; set; }
-        public float HeadRegenTicks { get; set; }
-        public List<StatusIcon> StatusIcons { get; set; }
-
-        public HealthSystemSettings() { }
-
-        public HealthSystemSettings(ushort painEffectID, bool enableTarkovLikeHealth, float baseHealth, float headHealth, float bodyHealth, float rightArmHealth, float rightLegHealth, float leftArmHealth, float leftLegHealth, float defaultWalkSpeed, float walkSpeedWithOneBrokenLeg, float walkSpeedWithBrokenLegs, bool dieWhenArmsHealthIsZero, bool dieWhenLegsHealthIsZero, bool dieWhenBodyHealthIsZero, bool dieWhenHeadHealthIsZero, bool canDriveWithOneBrokenLeg, bool canDriveWithBrokenLegs, bool canDriveWithOneBrokenArm, bool canDriveWithBrokenArms, bool canHoldOneHandItemsWithOneBrokenArm, bool canHoldTwoHandItemsWithOneBrokenArm, bool canHoldOneHandItemsWithBrokenArms, bool canHoldTwoHandItemsWithBrokenArms, bool canJumpWithOneBrokenLeg, bool canJumpWithBrokenLegs, bool canStartBleeding, float heavyBleedingChance, float bleedingDamage, float heavyBleedingDamage, bool canWalkWithOneBrokenLeg, bool canWalkWithBrokenLegs, bool canBeInjured, double injuredDeathTimeSecs, float healthRegenMinFood, float healthRegenMinWater, float healthRegenMinVirus, bool canHavePainEffect, float painEffectChance, float painEffectDuration, float injuredChance, float legRegenTicks, float armRegenTicks, float bodyRegenTicks, float headRegenTicks, List<StatusIcon> statusIcons)
-        {
-            PainEffectID = painEffectID;
-            EnableTarkovLikeHealth = enableTarkovLikeHealth;
-            BaseHealth = baseHealth;
-            _headHealth = headHealth;
-            _bodyHealth = bodyHealth;
-            _rightArmHealth = rightArmHealth;
-            _rightLegHealth = rightLegHealth;
-            _leftArmHealth = leftArmHealth;
-            _leftLegHealth = leftLegHealth;
-            DefaultWalkSpeed = defaultWalkSpeed;
-            WalkSpeedWithOneBrokenLeg = walkSpeedWithOneBrokenLeg;
-            WalkSpeedWithBrokenLegs = walkSpeedWithBrokenLegs;
-            DieWhenArmsHealthIsZero = dieWhenArmsHealthIsZero;
-            DieWhenLegsHealthIsZero = dieWhenLegsHealthIsZero;
-            DieWhenBodyHealthIsZero = dieWhenBodyHealthIsZero;
-            DieWhenHeadHealthIsZero = dieWhenHeadHealthIsZero;
-            CanDriveWithOneBrokenLeg = canDriveWithOneBrokenLeg;
-            CanDriveWithBrokenLegs = canDriveWithBrokenLegs;
-            CanDriveWithOneBrokenArm = canDriveWithOneBrokenArm;
-            CanDriveWithBrokenArms = canDriveWithBrokenArms;
-            CanHoldOneHandItemsWithOneBrokenArm = canHoldOneHandItemsWithOneBrokenArm;
-            CanHoldTwoHandItemsWithOneBrokenArm = canHoldTwoHandItemsWithOneBrokenArm;
-            CanHoldOneHandItemsWithBrokenArms = canHoldOneHandItemsWithBrokenArms;
-            CanHoldTwoHandItemsWithBrokenArms = canHoldTwoHandItemsWithBrokenArms;
-            CanJumpWithOneBrokenLeg = canJumpWithOneBrokenLeg;
-            CanJumpWithBrokenLegs = canJumpWithBrokenLegs;
-            CanStartBleeding = canStartBleeding;
-            HeavyBleedingChance = heavyBleedingChance;
-            BleedingDamage = bleedingDamage;
-            HeavyBleedingDamage = heavyBleedingDamage;
-            CanWalkWithOneBrokenLeg = canWalkWithOneBrokenLeg;
-            CanWalkWithBrokenLegs = canWalkWithBrokenLegs;
-            CanBeInjured = canBeInjured;
-            InjuredDeathTimeSecs = injuredDeathTimeSecs;
-            HealthRegenMinFood = healthRegenMinFood;
-            HealthRegenMinWater = healthRegenMinWater;
-            HealthRegenMinVirus = healthRegenMinVirus;
-            CanHavePainEffect = canHavePainEffect;
-            PainEffectChance = painEffectChance;
-            PainEffectDuration = painEffectDuration;
-            InjuredChance = injuredChance;
-            LegRegenTicks = legRegenTicks;
-            ArmRegenTicks = armRegenTicks;
-            BodyRegenTicks = bodyRegenTicks;
-            HeadRegenTicks = headRegenTicks;
-            StatusIcons = statusIcons;
         }
     }
 }

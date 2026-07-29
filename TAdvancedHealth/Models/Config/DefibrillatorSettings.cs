@@ -1,22 +1,31 @@
 ﻿using System.Collections.Generic;
+using YamlDotNet.Serialization;
 
 namespace Tavstal.TAdvancedHealth.Models.Config
 {
     public class DefibrillatorSettings
     {
-        public bool Enabled { get; set; }
+        [YamlMember(Order = 0, Description = "Enables defibrillator system")]
+        public bool Enable { get; set; }
+        [YamlMember(Order = 1, Description = "Requires permission to use defibrillators")]
         public bool EnablePermission { get; set; }
-        public string PermissionForUseDefiblirator { get; set; }
-        public List<Defibrillator> DefibrillatorItems { get; set; }
+        [YamlMember(Order = 2, Description = "Permission required to use defibrillators")]
+        public string Permission { get; set; }
+        [YamlMember(Order = 3, Description = "List of defibrillator item definitions")]
+        public List<Defibrillator> Items { get; set; }
 
-        public DefibrillatorSettings() { }
-
-        public DefibrillatorSettings(bool enabled, bool enablePermission, string permissionForUseDefiblirator, List<Defibrillator> defibrillatorItems)
+        public DefibrillatorSettings()
         {
-            Enabled = enabled;
+            Permission = "";
+            Items = new List<Defibrillator>();
+        }
+
+        public DefibrillatorSettings(bool enable, bool enablePermission, string permission, List<Defibrillator> items)
+        {
+            Enable = enable;
             EnablePermission = enablePermission;
-            PermissionForUseDefiblirator = permissionForUseDefiblirator;
-            DefibrillatorItems = defibrillatorItems;
+            Permission = permission;
+            Items = items;
         }
     }
 }

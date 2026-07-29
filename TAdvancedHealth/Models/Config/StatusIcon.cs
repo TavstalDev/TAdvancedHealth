@@ -8,7 +8,10 @@ namespace Tavstal.TAdvancedHealth.Models.Config
         public string IconUrl { get; set; }
         public int GroupIndex { get; set; }
 
-        public StatusIcon() { }
+        public StatusIcon()
+        {
+            IconUrl = "";
+        }
 
         public StatusIcon(EPlayerState status, string iconUrl, int groupIndex)
         {

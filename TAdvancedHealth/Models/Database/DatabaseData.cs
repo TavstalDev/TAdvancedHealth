@@ -5,6 +5,6 @@ namespace Tavstal.TAdvancedHealth.Models.Database
 {
     public class DatabaseData : DatabaseConfigBase
     {
-        [YamlMember(Order = 7)] public string TablePrefix { get; set; } = "tahs_";
+        [YamlMember(Order = 7, Description = "Prefix for database table names")] public string TablePrefix { get; set; } = "tahs_";
     }
 }
