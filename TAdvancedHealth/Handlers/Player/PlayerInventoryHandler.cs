@@ -4,7 +4,6 @@ using Rocket.Unturned.Player;
 using SDG.Unturned;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Config;
-using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TLibrary.Extensions;
 
 namespace Tavstal.TAdvancedHealth.Handlers.Player
@@ -36,7 +35,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     isMedicine = true;
                 }
 
-                HealthData? healthData = comp.HealthData;
+                var healthData = comp.HealthData;
                 if (healthData == null)
                     return;
                     
@@ -44,15 +43,15 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 {
                     if (!isMedicine)
                     {
-                        if (!_config.HealthSystemSettings.CanHoldOneHandItemsWithBrokenArms)
-                            if (_config.OneHandedItems.ItemID.Contains(jar.item.id) || _config.OneHandedItems.ItemTypes.Contains(asset.type))
+                        if (!_config.HealthSystemSettings.Restrictions.CanHoldOneHandItemsWithBrokenArms)
+                            if (_config.OneHandedItems.Items.Contains(jar.item.id) || _config.OneHandedItems.ItemTypes.Contains(asset.type))
                             {
                                 shouldAllow = false;
                                 if (player.Player.equipment.itemID != 0)
                                     player.Player.equipment.dequip();
                             }
-                        if (!_config.HealthSystemSettings.CanHoldTwoHandItemsWithBrokenArms)
-                            if (_config.TwoHandedItems.ItemID.Contains(jar.item.id) || _config.TwoHandedItems.ItemTypes.Contains(asset.type))
+                        if (!_config.HealthSystemSettings.Restrictions.CanHoldTwoHandItemsWithBrokenArms)
+                            if (_config.TwoHandedItems.Items.Contains(jar.item.id) || _config.TwoHandedItems.ItemTypes.Contains(asset.type))
                             {
                                 shouldAllow = false;
                                 if (player.Player.equipment.itemID != 0)
@@ -63,15 +62,15 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 else if (healthData.RightArmHealth == 0 || healthData.LeftArmHealth == 0)
                     if (!isMedicine)
                     {
-                        if (!_config.HealthSystemSettings.CanHoldOneHandItemsWithOneBrokenArm)
-                            if (_config.OneHandedItems.ItemID.Contains(jar.item.id) || _config.OneHandedItems.ItemTypes.Contains(asset.type))
+                        if (!_config.HealthSystemSettings.Restrictions.CanHoldOneHandItemsWithOneBrokenArm)
+                            if (_config.OneHandedItems.Items.Contains(jar.item.id) || _config.OneHandedItems.ItemTypes.Contains(asset.type))
                             {
                                 shouldAllow = false;
                                 if (player.Player.equipment.itemID != 0)
                                     player.Player.equipment.dequip();
                             }
-                        if (!_config.HealthSystemSettings.CanHoldTwoHandItemsWithOneBrokenArm)
-                            if (_config.TwoHandedItems.ItemID.Contains(jar.item.id) || _config.TwoHandedItems.ItemTypes.Contains(asset.type))
+                        if (!_config.HealthSystemSettings.Restrictions.CanHoldTwoHandItemsWithOneBrokenArm)
+                            if (_config.TwoHandedItems.Items.Contains(jar.item.id) || _config.TwoHandedItems.ItemTypes.Contains(asset.type))
                             {
                                 shouldAllow = false;
                                 if (player.Player.equipment.itemID != 0)
@@ -107,83 +106,44 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
 
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 if (comp.lastEquipedItem == 0)
-                {
                     return;
-                }
                 
                 Medicine? med = _config.Medicines.FirstOrDefault(x => x.ItemID == comp.lastEquipedItem);
-                if (med != null)
+                comp.lastEquipedItem = 0;
+                if (med == null)
+                    return;
+                
+                var health = comp.HealthData;
+                if (health == null)
+                    return;
+                
+                health.SetHeadHealth(health.HeadHealth + med.HeadHp);
+                health.SetBodyHealth(health.BodyHealth + med.BodyHp);
+                health.SetLeftArmHealth(health.LeftArmHealth + med.LeftArmHp);
+                health.SetRightArmHealth(health.RightArmHealth + med.RightArmHp);
+                if (med.LeftLegHp > 0)
                 {
-                    HealthData? health = comp.HealthData;
-                    if (health != null)
+                    health.SetLeftLegHealth(health.LeftLegHealth + med.LeftLegHp);
+                    AdvancedHealth.Instance.InvokeAction(0.5f, () =>
                     {
-                        if (health.BodyHealth + med.HealsBodyHp <= _config.HealthSystemSettings.BodyHealth)
-                            health.BodyHealth += med.HealsBodyHp;
-                        else
-                            health.BodyHealth = _config.HealthSystemSettings.BodyHealth;
-
-                        if (health.HeadHealth + med.HealsHeadHp <= _config.HealthSystemSettings.HeadHealth)
-                            health.HeadHealth += med.HealsHeadHp;
-                        else
-                            health.HeadHealth = _config.HealthSystemSettings.HeadHealth;
-
-                        if (med.CuresPain)
-                            EffectManager.askEffectClearByID(_config.HealthSystemSettings.PainEffectID,
-                                player.SteamPlayer().transportConnection);
-
-                        if (health.LeftLegHealth + med.HealsLeftLegHp <= _config.HealthSystemSettings.LeftLegHealth)
-                        {
-                            health.LeftLegHealth += med.HealsLeftLegHp;
-                            AdvancedHealth.Instance.InvokeAction(0.5f, () =>
-                            {
-                                player.Broken = false;
-                                player.Player.movement.sendPluginJumpMultiplier(1f);
-                            });
-                        }
-                        else
-                        {
-                            health.LeftLegHealth = _config.HealthSystemSettings.LeftLegHealth;
-                            AdvancedHealth.Instance.InvokeAction(0.5f, () =>
-                            {
-                                player.Broken = false;
-                                player.Player.movement.sendPluginJumpMultiplier(1f);
-                            });
-                        }
-
-                        if (health.RightLegHealth + med.HealsRightLegHp <=
-                            _config.HealthSystemSettings.RightLegHealth)
-                        {
-                            health.RightLegHealth += med.HealsRightLegHp;
-                            AdvancedHealth.Instance.InvokeAction(0.5f, () =>
-                            {
-                                player.Broken = false;
-                                player.Player.movement.sendPluginJumpMultiplier(1f);
-                            });
-                        }
-                        else
-                        {
-                            health.RightLegHealth = _config.HealthSystemSettings.RightLegHealth;
-                            AdvancedHealth.Instance.InvokeAction(0.5f, () =>
-                            {
-                                player.Broken = false;
-                                player.Player.movement.sendPluginJumpMultiplier(1f);
-                            });
-                        }
-
-                        if (health.LeftArmHealth + med.HealsLeftArmHp <= _config.HealthSystemSettings.LeftArmHealth)
-                            health.LeftArmHealth += med.HealsLeftArmHp;
-                        else
-                            health.LeftArmHealth = _config.HealthSystemSettings.LeftArmHealth;
-
-                        if (health.RightArmHealth + med.HealsRightArmHp <=
-                            _config.HealthSystemSettings.RightArmHealth)
-                            health.RightArmHealth += med.HealsRightArmHp;
-                        else
-                            health.RightArmHealth = _config.HealthSystemSettings.RightArmHealth;
-                    }
+                        player.Broken = false;
+                        player.Player.movement.sendPluginJumpMultiplier(1f);
+                    });
                 }
 
-                comp.lastEquipedItem = 0;
+                if (med.RightLegHp > 0)
+                {
+                    health.SetRightLegHealth(health.RightLegHealth + med.RightLegHp);
+                    AdvancedHealth.Instance.InvokeAction(0.5f, () =>
+                    {
+                        player.Broken = false;
+                        player.Player.movement.sendPluginJumpMultiplier(1f);
+                    });
+                }
+
+                if (med.CuresPain)
+                    EffectManager.askEffectClearByID(_config.HealthSystemSettings.PainEffectID,
+                        player.SteamPlayer().transportConnection);
             }
             catch (Exception ex)
             {

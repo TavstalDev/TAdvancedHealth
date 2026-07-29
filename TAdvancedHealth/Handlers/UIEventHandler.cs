@@ -3,7 +3,6 @@ using Rocket.Unturned.Player;
 using SDG.Unturned;
 using Steamworks;
 using Tavstal.TAdvancedHealth.Components;
-using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TLibrary.Extensions;
 
@@ -23,14 +22,13 @@ namespace Tavstal.TAdvancedHealth.Handlers
         
         private static void OnButtonClickded(SDG.Unturned.Player player, string buttonName)
         {
-            string methodName = "OnButtonClicked";
             try
             {
                 UnturnedPlayer uPlayer = UnturnedPlayer.FromPlayer(player);
                 AdvancedHealthComponent comp = uPlayer.GetComponent<AdvancedHealthComponent>();
                 if (buttonName == "bt_suicide" || buttonName == "bt_suicide2")
                 {
-                    HealthData? health = comp.HealthData;
+                    var health = comp.HealthData;
                     if (health == null)
                         return;
                     
@@ -41,7 +39,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
 
                         if (uPlayer.Player.movement.pluginSpeedMultiplier == 0)
                             uPlayer.Player.movement.sendPluginSpeedMultiplier(1);
-                        health.IsInjured = false;
+                        health.SetInjured(false);
                         if (comp.dragState != EDragState.None)
                             comp.UnDrag();
 
@@ -52,7 +50,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.Error($"Unexpected error occured in {methodName}.", ex);
+                AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(OnButtonClickded)}.", ex);
             }
         }
     }

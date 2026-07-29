@@ -3,7 +3,6 @@ using Rocket.Unturned.Events;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
 using Tavstal.TAdvancedHealth.Components;
-using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TAdvancedHealth.Utils.Helpers;
 using Tavstal.TLibrary.Extensions;
@@ -166,13 +165,13 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     return;
                 }
 
-                if (!_config.HealthSystemSettings.CanStartBleeding)
+                if (!_config.HealthSystemSettings.Combat.CanStartBleeding)
                 {
                     player.Bleeding = false;
                     return;
                 }
 
-                if (MathHelper.Next(1, 100) <= _config.HealthSystemSettings.HeavyBleedingChance)
+                if (MathHelper.Next(1, 100) <= _config.HealthSystemSettings.Combat.HeavyBleedingChance)
                     comp.hasHeavyBleeding = true;
 
                 comp.TryAddState(EPlayerState.Bleeding);
@@ -194,16 +193,16 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     return;
                 }
                 
-                if (_config.HealthSystemSettings.CanHavePainEffect)
+                if (_config.HealthSystemSettings.Combat.CanHavePainEffect)
                 {
                     int painChance = MathHelper.Next(1, 100);
 
-                    if (painChance <= _config.HealthSystemSettings.PainEffectChance)
+                    if (painChance <= _config.HealthSystemSettings.Combat.PainEffectChance)
                     {
                        UEffectHelper.SendUIEffect(_config.HealthSystemSettings.PainEffectID,
                             (short)_config.HealthSystemSettings.PainEffectID, comp.TranspConnection, true);
-                        if (_config.HealthSystemSettings.PainEffectDuration > 0)
-                            AdvancedHealth.Instance.InvokeAction(_config.HealthSystemSettings.PainEffectDuration,
+                        if (_config.HealthSystemSettings.Combat.PainEffectDuration > 0)
+                            AdvancedHealth.Instance.InvokeAction(_config.HealthSystemSettings.Combat.PainEffectDuration,
                                 () =>
                                 {
                                     EffectManager.askEffectClearByID(_config.HealthSystemSettings.PainEffectID,
@@ -213,17 +212,17 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     }
                 }
 
-                HealthData? health = comp.HealthData;
+                var health = comp.HealthData;
                 if (health != null)
                 {
                     if (health.LeftLegHealth == 0 && health.RightLegHealth == 0)
                     {
-                        if (!_config.HealthSystemSettings.CanWalkWithBrokenLegs)
+                        if (!_config.HealthSystemSettings.Movement.CanWalkWithBrokenLegs)
                             player.Player.stance.checkStance(EPlayerStance.PRONE, true);
                     }
                     else if (health.LeftLegHealth == 0 || health.RightLegHealth == 0)
                     {
-                        if (!_config.HealthSystemSettings.CanWalkWithOneBrokenLeg)
+                        if (!_config.HealthSystemSettings.Movement.CanWalkWithOneBrokenLeg)
                             player.Player.stance.checkStance(EPlayerStance.PRONE, true);
                     }
                 }
@@ -325,7 +324,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             try
             {
                 var comp = player.GetComponent<AdvancedHealthComponent>();
-                HealthData? health = comp.HealthData;
+                var health = comp.HealthData;
                 if (health == null)
                     return;
                 
@@ -337,9 +336,9 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
 
                 if (health.LeftLegHealth == 0 || health.RightLegHealth == 0)
                 {
-                    if (!_config.HealthSystemSettings.CanWalkWithOneBrokenLeg)
+                    if (!_config.HealthSystemSettings.Movement.CanWalkWithOneBrokenLeg)
                         player.Player.stance.checkStance(EPlayerStance.PRONE, true);
-                    else if (!_config.HealthSystemSettings.CanWalkWithBrokenLegs && health.LeftLegHealth == 0 &&
+                    else if (!_config.HealthSystemSettings.Movement.CanWalkWithBrokenLegs && health.LeftLegHealth == 0 &&
                              health.RightLegHealth == 0)
                         player.Player.stance.checkStance(EPlayerStance.PRONE, true);
                 }

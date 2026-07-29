@@ -8,8 +8,8 @@ using Rocket.Unturned.Player;
 using SDG.Unturned;
 using Steamworks;
 using Tavstal.TAdvancedHealth.Components;
+using Tavstal.TAdvancedHealth.Models;
 using Tavstal.TAdvancedHealth.Models.Config;
-using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TAdvancedHealth.Utils.Helpers;
 using Tavstal.TLibrary.Extensions;
@@ -87,7 +87,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                         }
                         else
                         {
-                            Hospital? hospital = _config.HospitalSettings.Hospitals.FirstOrDefault(x => player.HasPermission(x.SpawnPermission.ToLower()));
+                            Hospital? hospital = _config.HospitalSettings.Hospitals.FirstOrDefault(x => player.HasPermission(x.Permission.ToLower()));
                             if (hospital is { Position: { } })
                             {
                                 int index = MathHelper.Next(0, hospital.Position.Count - 1);
@@ -121,7 +121,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(parameters.player);
                 AdvancedHealthComponent cp = player.GetComponent<AdvancedHealthComponent>();
-                HealthData? health = cp.HealthData;
+                var health = cp.HealthData;
                 if (health == null)
                     return;
                 var healthSettings = _config.HealthSystemSettings;
@@ -160,7 +160,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     }
                 }*/
 
-                if (friendlyFireSettings.EnableAntiGroupFriendlyFire)
+                if (friendlyFireSettings.Enable)
                 {
                     UnturnedPlayer victim = UnturnedPlayer.FromPlayer(parameters.player);
                     UnturnedPlayer attacker = UnturnedPlayer.FromCSteamID(parameters.killer);
@@ -221,7 +221,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                         break;
                     case EDeathCause.BLEEDING:
                     {
-                        parameters.damage = cp.hasHeavyBleeding ? healthSettings.HeavyBleedingDamage : healthSettings.BleedingDamage;
+                        parameters.damage = cp.hasHeavyBleeding ? healthSettings.Combat.HeavyBleedingDamage : healthSettings.Combat.BleedingDamage;
                         player.Bleeding = true;
                         break;
                     }
@@ -263,7 +263,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
 
                 player.Player.life.askHeal(100, false, false);
-                HealthData? health = comp.HealthData;
+                var health = comp.HealthData;
                 if (health == null)
                     return;
                 
@@ -284,7 +284,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                         break;
                     case EDeathCause.BLEEDING:
                     {
-                        totalDamage = comp.hasHeavyBleeding ? _config.HealthSystemSettings.HeavyBleedingDamage : _config.HealthSystemSettings.BleedingDamage;
+                        totalDamage = comp.hasHeavyBleeding ? _config.HealthSystemSettings.Combat.HeavyBleedingDamage : _config.HealthSystemSettings.Combat.BleedingDamage;
                         player.Bleeding = true;
                         break;
                     }
@@ -307,267 +307,245 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             }
         }
         
-        private static void HandleIncomingDamage(UnturnedPlayer player, HealthData health, CSteamID killer, float totalDamage, ELimb limb, EDeathCause cause, Vector3 ragdoll)
+        private static void HandleIncomingDamage(UnturnedPlayer player, Health health, CSteamID killer, float totalDamage, ELimb limb, EDeathCause cause, Vector3 ragdoll)
         {
             AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
             switch (limb)
             {
                 // HEAD
                 case ELimb.SKULL:
-                    {
+                {
 
-                        if (HealthHelper.CanBleed(health.HeadHealth, totalDamage))
-                            player.Bleeding = true;
+                    if (HealthHelper.CanBleed(health.HeadHealth, totalDamage))
+                        player.Bleeding = true;
 
-                        if (health.HeadHealth - totalDamage > 0)
-                        {
-                            health.HeadHealth -= totalDamage;
-                        }
-                        else
-                        {
-                            health.HeadHealth = 0;
-                        }
+                    health.SetHeadHealth(health.HeadHealth - totalDamage);
 
-                        if (health.HeadHealth == 0)
-                        {
-                            if (_config.HealthSystemSettings.CanBeInjured && !health.IsInjured)
-                            {
-                                int chanc = MathHelper.Next(1, 100);
-                                if (_config.HealthSystemSettings.InjuredChance >= chanc)
-                                {
-                                    HealthHelper.SetPlayerDowned(player);
-                                    return;
-                                }
-                            }
-
-                            if (_config.HealthSystemSettings.DieWhenHeadHealthIsZero)
-                            {
-                                comp.allowDamage = true;
-                                CSteamID id = CSteamID.Nil;
-                                if (EDeathCause.ZOMBIE != cause)
-                                {
-                                    if (killer != CSteamID.Nil)
-                                        id = killer;
-                                }
-                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
-                            }
-                        }
+                    if (health.HeadHealth > 0)
                         break;
+
+                    if (_config.HealthSystemSettings.Combat.CanBeInjured && !health.IsInjured)
+                    {
+                        int chanc = MathHelper.Next(1, 100);
+                        if (_config.HealthSystemSettings.Combat.InjuredChance >= chanc)
+                        {
+                            HealthHelper.SetPlayerDowned(player);
+                            return;
+                        }
                     }
+
+                    if (!_config.HealthSystemSettings.Restrictions.DieWhenHeadHealthIsZero)
+                        break;
+
+                    comp.allowDamage = true;
+                    CSteamID id = CSteamID.Nil;
+                    if (EDeathCause.ZOMBIE != cause)
+                    {
+                        if (killer != CSteamID.Nil)
+                            id = killer;
+                    }
+
+                    player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
+                    break;
+                }
                 // BODY
                 case ELimb.LEFT_BACK:
                 case ELimb.LEFT_FRONT:
                 case ELimb.RIGHT_BACK:
                 case ELimb.RIGHT_FRONT:
                 case ELimb.SPINE:
-                    {
-                        if (HealthHelper.CanBleed(health.BodyHealth, totalDamage))
-                            player.Bleeding = true;
+                {
+                    if (HealthHelper.CanBleed(health.BodyHealth, totalDamage))
+                        player.Bleeding = true;
 
-                        if (health.BodyHealth - totalDamage > 0)
-                        {
-                            health.BodyHealth -= totalDamage;
-                        }
-                        else
-                        {
-                            health.BodyHealth = 0;
-                        }
+                    health.SetBodyHealth(health.BodyHealth - totalDamage);
 
-                        if (health.BodyHealth == 0)
-                        {
-                            if (_config.HealthSystemSettings.CanBeInjured && !health.IsInjured)
-                            {
-                                int chanc = MathHelper.Next(1, 100);
-                                if (_config.HealthSystemSettings.InjuredChance >= chanc)
-                                {
-                                    HealthHelper.SetPlayerDowned(player);
-                                    return;
-                                }
-                            }
-
-                            if (_config.HealthSystemSettings.DieWhenBodyHealthIsZero)
-                            {
-                                comp.allowDamage = true;
-                                CSteamID id = CSteamID.Nil;
-                                if (EDeathCause.ZOMBIE != cause)
-                                {
-                                    if (killer != CSteamID.Nil)
-                                        id = killer;
-                                }
-                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
-                            }
-                        }
+                    if (health.BodyHealth > 0)
                         break;
+
+                    if (_config.HealthSystemSettings.Combat.CanBeInjured && !health.IsInjured)
+                    {
+                        int chanc = MathHelper.Next(1, 100);
+                        if (_config.HealthSystemSettings.Combat.InjuredChance >= chanc)
+                        {
+                            HealthHelper.SetPlayerDowned(player);
+                            return;
+                        }
                     }
+
+                    if (!_config.HealthSystemSettings.Restrictions.DieWhenBodyHealthIsZero)
+                        break;
+                    
+                    comp.allowDamage = true;
+                    CSteamID id = CSteamID.Nil;
+                    if (EDeathCause.ZOMBIE != cause)
+                    {
+                        if (killer != CSteamID.Nil)
+                            id = killer;
+                    }
+
+                    player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
+                    break;
+                }
                 // LEFT ARM
                 case ELimb.LEFT_ARM:
                 case ELimb.LEFT_HAND:
-                    {
-                        if (HealthHelper.CanBleed(health.LeftArmHealth, totalDamage))
-                            player.Bleeding = true;
+                {
+                    if (HealthHelper.CanBleed(health.LeftArmHealth, totalDamage))
+                        player.Bleeding = true;
 
-                        if (health.LeftArmHealth - totalDamage > 0)
-                        {
-                            health.LeftArmHealth -= totalDamage;
-                        }
-                        else
-                        {
-                            health.LeftArmHealth = 0;
-                        }
+                    health.SetLeftArmHealth(health.LeftArmHealth - totalDamage);
 
-                        if (health.LeftArmHealth + health.RightArmHealth == 0)
-                        {
-                            if (_config.HealthSystemSettings.DieWhenArmsHealthIsZero)
-                            {
-                                comp.allowDamage = true;
-                                CSteamID id = CSteamID.Nil;
-                                if (EDeathCause.ZOMBIE != cause)
-                                {
-                                    if (killer != CSteamID.Nil)
-                                        id = killer;
-                                }
-                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
-                            }
-                        }
+                    if (health.LeftArmHealth + health.RightArmHealth > 0)
                         break;
+
+                    if (!_config.HealthSystemSettings.Restrictions.DieWhenArmsHealthIsZero)
+                        break;
+                    
+                    comp.allowDamage = true;
+                    CSteamID id = CSteamID.Nil;
+                    if (EDeathCause.ZOMBIE != cause)
+                    {
+                        if (killer != CSteamID.Nil)
+                            id = killer;
                     }
+
+                    player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
+                    break;
+                }
                 // RIGHT ARM
                 case ELimb.RIGHT_ARM:
                 case ELimb.RIGHT_HAND:
-                    {
-                        if (HealthHelper.CanBleed(health.RightArmHealth, totalDamage))
-                            player.Bleeding = true;
+                {
+                    if (HealthHelper.CanBleed(health.RightArmHealth, totalDamage))
+                        player.Bleeding = true;
 
-                        if (health.RightArmHealth - totalDamage > 0)
-                            health.RightArmHealth -= totalDamage;
-                        else
-                            health.RightArmHealth = 0;
+                    health.SetRightArmHealth(health.RightArmHealth - totalDamage);
 
-                        if (health.RightArmHealth + health.RightArmHealth == 0)
-                        {
-                            if (_config.HealthSystemSettings.DieWhenArmsHealthIsZero)
-                            {
-                                comp.allowDamage = true;
-                                CSteamID id = CSteamID.Nil;
-                                if (EDeathCause.ZOMBIE != cause)
-                                {
-                                    if (killer != CSteamID.Nil)
-                                        id = killer;
-                                }
-                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
-                            }
-                        }
+                    if (health.RightArmHealth + health.RightArmHealth > 0)
                         break;
+
+                    if (!_config.HealthSystemSettings.Restrictions.DieWhenArmsHealthIsZero)
+                        break;
+                    
+                    comp.allowDamage = true;
+                    CSteamID id = CSteamID.Nil;
+                    if (EDeathCause.ZOMBIE != cause)
+                    {
+                        if (killer != CSteamID.Nil)
+                            id = killer;
                     }
+
+                    player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
+                    break;
+                }
                 // LEFT LEG
                 case ELimb.LEFT_LEG:
                 case ELimb.LEFT_FOOT:
-                    {
-                        if (HealthHelper.CanBleed(health.LeftLegHealth, totalDamage))
-                            player.Bleeding = true;
+                {
+                    if (HealthHelper.CanBleed(health.LeftLegHealth, totalDamage))
+                        player.Bleeding = true;
 
-                        if (health.LeftLegHealth - totalDamage > 0)
-                            health.LeftLegHealth -= totalDamage;
-                        else
-                            health.LeftLegHealth = 0;
+                    health.SetLeftLegHealth(health.LeftLegHealth - totalDamage);
 
-                        if (health.LeftLegHealth + health.RightLegHealth == 0)
-                        {
-                            if (_config.HealthSystemSettings.DieWhenLegsHealthIsZero)
-                            {
-                                comp.allowDamage = true;
-                                CSteamID id = CSteamID.Nil;
-                                if (EDeathCause.ZOMBIE != cause)
-                                {
-                                    if (killer != CSteamID.Nil)
-                                        id = killer;
-                                }
-                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
-                            }
-                        }
+                    if (health.LeftLegHealth + health.RightLegHealth > 0)
                         break;
+
+                    if (!_config.HealthSystemSettings.Restrictions.DieWhenLegsHealthIsZero)
+                        break;
+                    
+                    comp.allowDamage = true;
+                    CSteamID id = CSteamID.Nil;
+                    if (EDeathCause.ZOMBIE != cause)
+                    {
+                        if (killer != CSteamID.Nil)
+                            id = killer;
                     }
+
+                    player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
+                    break;
+                }
                 // RIGHT LEG
                 case ELimb.RIGHT_LEG:
                 case ELimb.RIGHT_FOOT:
+                {
+                    if (HealthHelper.CanBleed(health.RightLegHealth, totalDamage))
+                        player.Bleeding = true;
+
+                    health.SetRightLegHealth(health.RightLegHealth - totalDamage);
+
+                    if (health.RightLegHealth + health.RightLegHealth > 0)
+                        break;
+                    
+                    if (!_config.HealthSystemSettings.Restrictions.DieWhenLegsHealthIsZero)
+                        break;
+                    
+                    comp.allowDamage = true;
+                    CSteamID id = CSteamID.Nil;
+                    if (EDeathCause.ZOMBIE != cause)
                     {
-                        if (HealthHelper.CanBleed(health.RightLegHealth, totalDamage))
+                        if (killer != CSteamID.Nil)
+                            id = killer;
+                    }
+
+                    player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
+                    break;
+                }
+                default:
+                {
+                    if (cause == EDeathCause.BONES)
+                    {
+                        if (HealthHelper.CanBleed(health.LeftLegHealth, totalDamage) ||
+                            HealthHelper.CanBleed(health.RightLegHealth, totalDamage))
                             player.Bleeding = true;
 
-                        if (health.RightLegHealth - totalDamage > 0)
-                            health.RightLegHealth -= totalDamage;
-                        else
-                            health.RightLegHealth = 0;
+                        health.SetRightLegHealth(health.RightLegHealth - totalDamage);
+                        health.SetLeftLegHealth(health.LeftLegHealth - totalDamage);
 
-                        if (health.RightLegHealth + health.RightLegHealth == 0)
-                        {
-                            if (_config.HealthSystemSettings.DieWhenLegsHealthIsZero)
-                            {
-                                comp.allowDamage = true;
-                                CSteamID id = CSteamID.Nil;
-                                if (EDeathCause.ZOMBIE != cause)
-                                {
-                                    if (killer != CSteamID.Nil)
-                                        id = killer;
-                                }
-                                player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
-                            }
-                        }
-                        break;
+                        if (health.LeftLegHealth + health.RightLegHealth > 0)
+                            return;
+                        if (!_config.HealthSystemSettings.Restrictions.DieWhenLegsHealthIsZero)
+                            return;
+                        comp.allowDamage = true;
+                        CSteamID id = CSteamID.Nil;
+                        if (killer != CSteamID.Nil)
+                            id = killer;
+                        player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill _);
+                        return;
                     }
-                default:
+                    
+                    if (HealthHelper.CanBleed(health.BodyHealth, totalDamage))
+                        player.Bleeding = true;
+
+                    health.SetBodyHealth(health.BodyHealth - totalDamage);
+
+                    if (health.BodyHealth > 0)
+                        break;
+
+                    if (_config.HealthSystemSettings.Combat.CanBeInjured && !health.IsInjured)
                     {
-                        switch (cause)
+                        int chanc = MathHelper.Next(1, 100);
+                        if (_config.HealthSystemSettings.Combat.InjuredChance >= chanc)
                         {
-                            case EDeathCause.BONES:
-                                {
-                                    if (HealthHelper.CanBleed(health.LeftLegHealth, totalDamage) || HealthHelper.CanBleed(health.RightLegHealth, totalDamage))
-                                        player.Bleeding = true;
-
-                                    if (health.RightLegHealth - totalDamage > 0)
-                                        health.RightLegHealth -= totalDamage;
-                                    else
-                                        health.RightLegHealth = 0;
-
-                                    if (health.RightLegHealth + health.RightLegHealth == 0)
-                                    {
-                                        if (_config.HealthSystemSettings.DieWhenLegsHealthIsZero)
-                                        {
-                                            comp.allowDamage = true;
-                                            CSteamID id = CSteamID.Nil;
-                                            if (killer != CSteamID.Nil)
-                                                id = killer;
-                                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out _);
-                                        }
-                                    }
-
-                                    if (health.LeftLegHealth - totalDamage > 0)
-                                        health.LeftLegHealth -= totalDamage;
-                                    else
-                                        health.LeftLegHealth = 0;
-
-                                    if (health.LeftLegHealth + health.RightLegHealth == 0)
-                                    {
-                                        if (_config.HealthSystemSettings.DieWhenLegsHealthIsZero)
-                                        {
-                                            comp.allowDamage = true;
-                                            CSteamID id = CSteamID.Nil;
-                                            if (killer != CSteamID.Nil)
-                                                id = killer;
-                                            player.Player.life.askDamage(100, ragdoll, cause, limb, id, out EPlayerKill _);
-                                        }
-                                    }
-                                    break;
-                                }
-                            case EDeathCause.INFECTION:
-                            case EDeathCause.BREATH:
-                                {
-
-                                    break;
-                                }
+                            HealthHelper.SetPlayerDowned(player);
+                            return;
                         }
-                        break;
                     }
+
+                    if (!_config.HealthSystemSettings.Restrictions.DieWhenBodyHealthIsZero)
+                        break;
+                    
+                    comp.allowDamage = true;
+                    CSteamID killerId = CSteamID.Nil;
+                    if (EDeathCause.ZOMBIE != cause)
+                    {
+                        if (killer != CSteamID.Nil)
+                            killerId = killer;
+                    }
+
+                    player.Player.life.askDamage(100, ragdoll, cause, limb, killerId, out _);
+                    break;
+                }
             }
         }
     }

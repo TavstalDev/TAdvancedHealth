@@ -28,7 +28,6 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         
         private static void OnPlayerJoin(UnturnedPlayer player)
         {
-            string methodName = "OnPlayerJoin";
             try
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
@@ -106,13 +105,12 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.Error($"Unexpected error occured in {methodName}.", ex);
+                AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(OnPlayerJoin)}.", ex);
             }
         }
         
         private static void OnPlayerLeave(UnturnedPlayer player)
         {
-            string methodName = "OnPlayerLeave";
             try
             {
                 player.Player.equipment.onEquipRequested -= PlayerInventoryHandler.OnPlayerEquipRequested;
@@ -130,7 +128,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.Error($"Unexpected error occured in {methodName}.", ex);
+                AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(OnPlayerLeave)}.", ex);
             }
         }
     }
