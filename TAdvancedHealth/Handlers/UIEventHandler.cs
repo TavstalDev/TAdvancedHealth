@@ -5,7 +5,6 @@ using Steamworks;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
-using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Extensions;
 
 namespace Tavstal.TAdvancedHealth.Handlers
@@ -31,7 +30,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                 AdvancedHealthComponent comp = uPlayer.GetComponent<AdvancedHealthComponent>();
                 if (buttonName == "bt_suicide" || buttonName == "bt_suicide2")
                 {
-                    HealthData? health = HealthManager.Get(uPlayer.CSteamID.m_SteamID);
+                    HealthData? health = comp.HealthData;
                     if (health == null)
                         return;
                     
@@ -53,7 +52,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.Error($"Error in {methodName}.", ex);
+                AdvancedHealth.Logger.Error($"Unexpected error occured in {methodName}.", ex);
             }
         }
     }

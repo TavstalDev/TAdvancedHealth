@@ -1,8 +1,8 @@
 using System;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
+using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Database;
-using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Extensions;
 
 namespace Tavstal.TAdvancedHealth.Handlers
@@ -29,7 +29,8 @@ namespace Tavstal.TAdvancedHealth.Handlers
             try
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(p);
-                HealthData? healthData = HealthManager.Get(player.CSteamID.m_SteamID);
+                var comp = player.GetComponent<AdvancedHealthComponent>();
+                HealthData? healthData = comp.HealthData;
                 if (healthData == null)
                     return;
                 
@@ -63,7 +64,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.Error($"Error in {methodName}.", ex);
+                AdvancedHealth.Logger.Error($"Unexpected error occured in {methodName}.", ex);
             }
         }
         
@@ -73,7 +74,8 @@ namespace Tavstal.TAdvancedHealth.Handlers
             try
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(p);
-                HealthData? healthData = HealthManager.Get(player.CSteamID.m_SteamID);
+                var comp = player.GetComponent<AdvancedHealthComponent>();
+                HealthData? healthData = comp.HealthData;
                 if (healthData == null)
                     return;
                 
@@ -97,7 +99,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.Error($"Error in {methodName}.", ex);
+                AdvancedHealth.Logger.Error($"Unexpected error occured in {methodName}.", ex);
             }
         }
     }

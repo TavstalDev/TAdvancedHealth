@@ -3,12 +3,10 @@ using SDG.Unturned;
 using System;
 using System.Collections.Generic;
 using System.Text;
-using System.Threading.Tasks;
 using Tavstal.TAdvancedHealth.Handlers;
-using Tavstal.TAdvancedHealth.Models.Database;
+using Tavstal.TAdvancedHealth.Handlers.Player;
 using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Extensions;
-using Tavstal.TLibrary.Helpers.Unturned;
 using Tavstal.TLibrary.Models.Logging;
 using Tavstal.TLibrary.Models.Plugin;
 
@@ -65,7 +63,13 @@ namespace Tavstal.TAdvancedHealth
         {
             DatabaseManager = new DatabaseManager(Config);
 
-            UnturnedEventHandler.Attach();
+            PlayerConnectionHandler.Attach();
+            PlayerInventoryHandler.Attach();
+            PlayerLifeHandler.Attach();
+            PlayerMovementHandler.Attach();
+            PlayerStatHandler.Attach();
+            UIEventHandler.Attach();
+            VehicleEventHandler.Attach();
             HealthSystemEventHandler.Attach();
             _hasFullMoon = LightingManager.isFullMoon;
 
@@ -80,7 +84,14 @@ namespace Tavstal.TAdvancedHealth
         /// </summary>
         public override void OnUnLoad()
         {
-            UnturnedEventHandler.Detach();
+            
+            PlayerConnectionHandler.Detach();
+            PlayerInventoryHandler.Detach();
+            PlayerLifeHandler.Detach();
+            PlayerMovementHandler.Detach();
+            PlayerStatHandler.Detach();
+            UIEventHandler.Detach();
+            VehicleEventHandler.Detach();
             HealthSystemEventHandler.Detach();
             HarmonyPatcher.UnpatchAll();
             
@@ -117,14 +128,14 @@ namespace Tavstal.TAdvancedHealth
                 if (_hasFullMoon != LightingManager.isFullMoon)
                 {
                     _hasFullMoon = LightingManager.isFullMoon;
-                    UnturnedEventHandler.OnMoonUpdated(LightingManager.isFullMoon);
+                    PlayerStatHandler.OnMoonUpdated(LightingManager.isFullMoon);
                 }
 
                 _nextUpdate = DateTime.Now.AddSeconds(5);
             }
             catch (Exception ex)
             {
-                Logger.Error($"Error in {methodName}.", ex);
+                Logger.Error($"Unexpected error occured in {methodName}.", ex);
             }
         }
 
