@@ -5,12 +5,12 @@ using Steamworks;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TAdvancedHealth.Utils.Helpers;
 using Tavstal.TLibrary.Extensions;
+using Tavstal.TLibrary.Threading;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -26,7 +26,7 @@ namespace Tavstal.TAdvancedHealth.Components
         public EDragState dragState = EDragState.None;
         [FormerlySerializedAs("DragPartnerId")] 
         public CSteamID dragPartnerId = CSteamID.Nil;
-        public HealthData HealthData {  get; set; }
+        public Health? HealthData {  get; set; }
 
         public Dictionary<ushort, DateTime> LastDefibliratorUses { get; set; } = new Dictionary<ushort, DateTime>();
         private DateTime _nextHeadHealDate;
@@ -44,12 +44,59 @@ namespace Tavstal.TAdvancedHealth.Components
         [FormerlySerializedAs("States")] 
         public List<EPlayerState> states = new List<EPlayerState>();
 
-        /// <summary>
-        /// Tries to add the specified player state asynchronously.
-        /// </summary>
-        /// <param name="state">The player state to add.</param>
-        /// <returns>A task representing the asynchronous operation. True if the state was added successfully; otherwise, false.</returns>
-        public async Task TryAddStateAsync(EPlayerState state)
+        protected override void Load()
+        {
+            BackgroundThreadDispatcher.Run(async () =>
+            {
+                try
+                {
+                    HealthData = await AdvancedHealth.DatabaseManager.HealthData.GetAsync(Player.Id);
+                    if (HealthData == null)
+                    {
+                        var cshSettings = AdvancedHealth.Instance.Config.HealthSystemSettings;
+                        HUDStyle style = AdvancedHealth.Instance.Config.HUDStyles.FirstOrDefault(x => x.Enabled) ??
+                                          AdvancedHealth.Instance.Config.HUDStyles[0];
+
+                        HealthData = new HealthData
+                        {
+                            PlayerId = Player.Id,
+                            BaseHealth = cshSettings.BaseHealth,
+                            HeadHealth = cshSettings.HeadHealth,
+                            BodyHealth = cshSettings.BodyHealth,
+                            LeftArmHealth = cshSettings.LeftArmHealth,
+                            RightArmHealth = cshSettings.RightArmHealth,
+                            LeftLegHealth = cshSettings.LeftLegHealth,
+                            RightLegHealth = cshSettings.RightLegHealth,
+                            DeathDate = DateTime.Now,
+                            IsInjured = false,
+                            IsHUDEnabled = true,
+                            HUDEffectID = style.EffectID
+                        };
+                    }
+                }
+                catch (Exception ex)
+                {
+                    AdvancedHealth.Logger.Error("Failed to get player health data.", ex);
+                }
+            });
+        }
+
+        protected override void Unload()
+        {
+            BackgroundThreadDispatcher.Run(async () =>
+            {
+                try
+                {
+                    HealthData = await AdvancedHealth.DatabaseManager.HealthData.GetAsync(Player.Id);
+                }
+                catch (Exception ex)
+                {
+                    AdvancedHealth.Logger.Error("Failed to get player health data.", ex);
+                }
+            });
+        }
+
+        public void TryAddState(EPlayerState state)
         {
             try
             {
@@ -97,12 +144,6 @@ namespace Tavstal.TAdvancedHealth.Components
             }
         }
 
-        /// <summary>
-        /// Tries to remove the specified player state asynchronously.
-        /// </summary>
-        /// <param name="state">The player state to remove.</param>
-        /// <param name="shouldUpdate">A boolean indicating whether to update after removing the state. Default is true.</param>
-        /// <returns>A task representing the asynchronous operation. True if the state was removed successfully; otherwise, false.</returns>
         public void TryRemoveState(EPlayerState state, bool shouldUpdate = true)
         {
             try
@@ -119,13 +160,12 @@ namespace Tavstal.TAdvancedHealth.Components
                 AdvancedHealth.Logger.Error("Failed to remove state.", ex);
             }
         }
-
-        /// <summary>
-        /// Asynchronously refreshes the user interface (UI) to reflect the current player state.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
+        
         private void RefreshStateUI()
         {
+            if (HealthData == null)
+                return;
+            
             short effectID = (short)HealthData.HUDEffectID;
 
             for (int i = 0; i < 12; i++)
@@ -152,15 +192,13 @@ namespace Tavstal.TAdvancedHealth.Components
             }
         }
 
-        /// <summary>
-        /// Asynchronously drags the specified target Unturned player.
-        /// </summary>
-        /// <param name="target">The Unturned player to be dragged.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
         public void Drag(UnturnedPlayer target)
         {
             AdvancedHealthComponent targetComp = target.GetComponent<AdvancedHealthComponent>();
-            if (targetComp.HealthData.IsInjured || !HealthData.IsInjured || targetComp.dragState != EDragState.None || dragState != EDragState.None)
+            var targetHealth = targetComp.HealthData;
+            if (targetHealth == null)
+                return;
+            if (targetHealth.IsInjured || !targetHealth.IsInjured || targetComp.dragState != EDragState.None || dragState != EDragState.None)
                 return;
 
             dragPartnerId = target.CSteamID;
@@ -168,11 +206,7 @@ namespace Tavstal.TAdvancedHealth.Components
             dragState = EDragState.Dragger;
             targetComp.dragState = EDragState.Dragged;
         }
-
-        /// <summary>
-        /// Stops dragging the player.
-        /// </summary>
-        /// <param name="receivedFromPartner">A boolean indicating whether the command to stop dragging was received from a partner. Default is false.</param>
+        
         public void UnDrag(bool receivedFromPartner = false)
         {
             dragState = EDragState.None;
@@ -188,12 +222,7 @@ namespace Tavstal.TAdvancedHealth.Components
                 return;
             partnerComp.UnDrag(true);
         }
-
-        /// <summary>
-        /// Asynchronously revives the player.
-        /// </summary>
-        /// <param name="receivedFromPartner">A boolean indicating whether the revival command was received from a partner. Default is false.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
+        
         public void Revive(bool receivedFromPartner = false)
         {
             var chsettings = AdvancedHealth.Instance.Config.HealthSystemSettings;
@@ -203,14 +232,18 @@ namespace Tavstal.TAdvancedHealth.Components
             Player.Player.movement.sendPluginJumpMultiplier(1f);
             allowDamage = false;
             hasHeavyBleeding = false;
-            HealthData.BaseHealth = chsettings.BaseHealth;
-            HealthData.HeadHealth = chsettings.HeadHealth;
-            HealthData.BodyHealth = chsettings.BodyHealth;
-            HealthData.LeftArmHealth = chsettings.LeftArmHealth;
-            HealthData.RightArmHealth = chsettings.RightArmHealth;
-            HealthData.LeftLegHealth = chsettings.LeftLegHealth;
-            HealthData.RightLegHealth = chsettings.RightLegHealth;
-            HealthData.IsInjured = false;
+
+            if (HealthData != null)
+            {
+                HealthData.BaseHealth = chsettings.BaseHealth;
+                HealthData.HeadHealth = chsettings.HeadHealth;
+                HealthData.BodyHealth = chsettings.BodyHealth;
+                HealthData.LeftArmHealth = chsettings.LeftArmHealth;
+                HealthData.RightArmHealth = chsettings.RightArmHealth;
+                HealthData.LeftLegHealth = chsettings.LeftLegHealth;
+                HealthData.RightLegHealth = chsettings.RightLegHealth;
+                HealthData.IsInjured = false;
+            }
 
             Player.Broken = false;
             Player.Bleeding = false;
@@ -222,12 +255,7 @@ namespace Tavstal.TAdvancedHealth.Components
             EffectManager.sendUIEffectVisibility((short)effectId, TranspConnection, true, "RevivePanel", false);
             Player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
         }
-
-        /// <summary>
-        /// Asynchronously initiates the bleeding out process for the player.
-        /// </summary>
-        /// <param name="receivedFromPartner">A boolean indicating whether the command to bleed out was received from a partner. Default is false.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
+        
         public void BleedOut(bool receivedFromPartner = false)
         {
             allowDamage = true;
@@ -237,8 +265,11 @@ namespace Tavstal.TAdvancedHealth.Components
                 Player.Player.movement.sendPluginSpeedMultiplier(chsettings.DefaultWalkSpeed);
             Player.Player.movement.sendPluginJumpMultiplier(1f);
 
-            HealthData.IsInjured = false;
-            HealthData.DeathDate = DateTime.Now;
+            if (HealthData != null)
+            {
+                HealthData.IsInjured = false;
+                HealthData.DeathDate = DateTime.Now;
+            }
 
             EffectManager.sendUIEffectVisibility((short)effectId, TranspConnection, true, "RevivePanel", false);
             Player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
@@ -246,62 +277,48 @@ namespace Tavstal.TAdvancedHealth.Components
     
         private void Update()
         {
-            // TODO: Replace this with cache
-            Task.Run(async () =>
+            if (dragState == EDragState.Dragger && dragPartnerId != CSteamID.Nil)
             {
-                HealthData = await AdvancedHealth.DatabaseManager.GetPlayerHealthAsync(Player.Id);
+                UnturnedPlayer partner = UnturnedPlayer.FromCSteamID(dragPartnerId);
 
-                #region Injured
+                if (partner != null)
+                    if (Vector3.Distance(partner.Position, Player.Position) > 3)
+                        partner.Player.teleportToPlayer(Player.Player);
+            }
+            
+            if (HealthData == null)
+                return;
+            
+            #region Injured
+            if (HealthData.IsInjured)
+            {
+                Player.Bleeding = false;
 
-                if (HealthData.IsInjured)
+                int secs = (int)(HealthData.DeathDate - DateTime.Now).TotalSeconds;
+                EffectManager.sendUIEffectText((short)effectId, TranspConnection, true, "tb_message",
+                    AdvancedHealth.Instance.Localize("ui_bleeding", secs.ToString()));
+                if (HealthData.DeathDate < DateTime.Now)
                 {
-                    Player.Bleeding = false;
-
-                    int secs = (int)(HealthData.DeathDate - DateTime.Now).TotalSeconds;
-                    EffectManager.sendUIEffectText((short)effectId, TranspConnection, true, "tb_message",
-                        AdvancedHealth.Instance.Localize("ui_bleeding", secs.ToString()));
-                    if (HealthData.DeathDate < DateTime.Now)
-                    {
-                        await BleedOut();
-                        return;
-                    }
+                    BleedOut();
+                    return;
                 }
-
-                #endregion
-
-                #region Dragging
-
-                if (dragState == EDragState.Dragger && dragPartnerId != CSteamID.Nil)
-                {
-                    UnturnedPlayer partner = UnturnedPlayer.FromCSteamID(dragPartnerId);
-
-                    if (partner != null)
-                        if (Vector3.Distance(partner.Position, Player.Position) > 3)
-                            partner.Player.teleportToPlayer(Player.Player);
-                }
-
-                #endregion
-
-                #region Regeneration
-
-                bool shouldUpdateHealth = false;
+            }
+            #endregion
+            
+            #region Regeneration
+            
                 bool canRegenerate =
                     Player.Player.life.food >= AdvancedHealth.Instance.Config.HealthSystemSettings.HealthRegenMinFood &&
                     Player.Player.life.water >=
                     AdvancedHealth.Instance.Config.HealthSystemSettings.HealthRegenMinWater &&
                     Player.Player.life.virus >= AdvancedHealth.Instance.Config.HealthSystemSettings.HealthRegenMinVirus;
-                EDatabaseEvent databaseEvent = EDatabaseEvent.None;
 
                 // Head
                 if (_nextHeadHealDate <= DateTime.Now)
                 {
                     if (HealthData.HeadHealth + 1 <= AdvancedHealth.Instance.Config.HealthSystemSettings.HeadHealth &&
                         canRegenerate)
-                    {
                         HealthData.HeadHealth += 1;
-                        shouldUpdateHealth = true;
-                        databaseEvent = EDatabaseEvent.Head;
-                    }
 
                     _nextHeadHealDate =
                         DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.HeadRegenTicks);
@@ -312,14 +329,7 @@ namespace Tavstal.TAdvancedHealth.Components
                 {
                     if (HealthData.BodyHealth + 1 <= AdvancedHealth.Instance.Config.HealthSystemSettings.BodyHealth &&
                         canRegenerate)
-                    {
                         HealthData.BodyHealth += 1;
-                        shouldUpdateHealth = true;
-                        if (databaseEvent == EDatabaseEvent.None)
-                            databaseEvent = EDatabaseEvent.Body;
-                        else
-                            databaseEvent |= EDatabaseEvent.Body;
-                    }
 
                     _nextBodyHealDate =
                         DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.BodyRegenTicks);
@@ -332,25 +342,11 @@ namespace Tavstal.TAdvancedHealth.Components
                     {
                         if (HealthData.LeftArmHealth + 1 <=
                             AdvancedHealth.Instance.Config.HealthSystemSettings.LeftArmHealth)
-                        {
                             HealthData.LeftArmHealth += 1;
-                            shouldUpdateHealth = true;
-                            if (databaseEvent == EDatabaseEvent.None)
-                                databaseEvent = EDatabaseEvent.LeftARM;
-                            else
-                                databaseEvent |= EDatabaseEvent.LeftARM;
-                        }
 
                         if (HealthData.RightArmHealth + 1 <=
                             AdvancedHealth.Instance.Config.HealthSystemSettings.RightArmHealth)
-                        {
                             HealthData.RightArmHealth += 1;
-                            shouldUpdateHealth = true;
-                            if (databaseEvent == EDatabaseEvent.None)
-                                databaseEvent = EDatabaseEvent.RightARM;
-                            else
-                                databaseEvent |= EDatabaseEvent.RightARM;
-                        }
                     }
 
                     _nextArmHealDate =
@@ -364,36 +360,17 @@ namespace Tavstal.TAdvancedHealth.Components
                     {
                         if (HealthData.LeftLegHealth + 1 <=
                             AdvancedHealth.Instance.Config.HealthSystemSettings.LeftLegHealth)
-                        {
                             HealthData.LeftLegHealth += 1;
-                            shouldUpdateHealth = true;
-                            if (databaseEvent == EDatabaseEvent.None)
-                                databaseEvent = EDatabaseEvent.LeftLeg;
-                            else
-                                databaseEvent |= EDatabaseEvent.LeftLeg;
-                        }
 
                         if (HealthData.RightLegHealth + 1 <=
                             AdvancedHealth.Instance.Config.HealthSystemSettings.RightLegHealth)
-                        {
                             HealthData.RightLegHealth += 1;
-                            shouldUpdateHealth = true;
-                            if (databaseEvent == EDatabaseEvent.None)
-                                databaseEvent = EDatabaseEvent.RightLeg;
-                            else
-                                databaseEvent |= EDatabaseEvent.RightLeg;
-                        }
                     }
 
                     _nextLegHealDate =
                         DateTime.Now.AddSeconds(AdvancedHealth.Instance.Config.HealthSystemSettings.LegRegenTicks);
                 }
-
-                if (shouldUpdateHealth)
-                    await AdvancedHealth.DatabaseManager.UpdateHealthAsync(Player.Id, HealthData, databaseEvent);
-
-                #endregion
-            });
+            #endregion
         }
     }
 }

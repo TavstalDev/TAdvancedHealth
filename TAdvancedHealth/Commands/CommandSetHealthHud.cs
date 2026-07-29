@@ -51,7 +51,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                 {
                     UEffectHelper.AskEffectClearByID(oldId, player.SteamPlayer().transportConnection);
                     EffectManager.sendUIEffect(style.EffectID, (short)style.EffectID, player.SteamPlayer().transportConnection, true);
-                    await EffectHelper.UpdateWholeHealthUIAsync(player);
+                    await EffectHelper.UpdateWholeHealthUI(player);
                 }
             }
             else if (args[0].ToLower() == "list")

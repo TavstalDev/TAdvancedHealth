@@ -21,7 +21,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
         /// <remarks>
         /// Subscribe to this event to be notified when a base's health changes.
         /// </remarks>
-        public static event BaseHealthUpdated OnBaseHealthUpdated;
+        public static event BaseHealthUpdated? OnBaseHealthUpdated;
 
         /// <summary>
         /// Internally invokes the <see cref="OnBaseHealthUpdated"/> event.
@@ -50,7 +50,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
         /// <remarks>
         /// Subscribe to this event to be notified when a head's health changes.
         /// </remarks>
-        public static event HeadHealthUpdated OnHeadHealthUpdated;
+        public static event HeadHealthUpdated? OnHeadHealthUpdated;
 
         /// <summary>
         /// Internally invokes the <see cref="OnHeadHealthUpdated"/> event.
@@ -79,7 +79,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
         /// <remarks>
         /// Subscribe to this event to be notified when a body's health changes.
         /// </remarks>
-        public static event BodyHealthUpdated OnBodyHealthUpdated;
+        public static event BodyHealthUpdated? OnBodyHealthUpdated;
 
         /// <summary>
         /// Internally invokes the <see cref="OnBodyHealthUpdated"/> event.
@@ -108,7 +108,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
         /// <remarks>
         /// Subscribe to this event to be notified when a right arm's health changes.
         /// </remarks>
-        public static event RightArmHealthUpdated OnRightArmHealthUpdated;
+        public static event RightArmHealthUpdated? OnRightArmHealthUpdated;
 
         /// <summary>
         /// Internally invokes the <see cref="OnRightArmHealthUpdated"/> event.
@@ -138,7 +138,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
         /// <remarks>
         /// Subscribe to this event to be notified when a left arm's health changes.
         /// </remarks>
-        public static event LeftArmHealthUpdated OnLeftArmHealthUpdated;
+        public static event LeftArmHealthUpdated? OnLeftArmHealthUpdated;
 
         /// <summary>
         /// Internally invokes the <see cref="OnLeftArmHealthUpdated"/> event.
@@ -168,7 +168,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
         /// <remarks>
         /// Subscribe to this event to be notified when a right leg's health changes.
         /// </remarks>
-        public static event RightLegHealthUpdated OnRightLegHealthUpdated;
+        public static event RightLegHealthUpdated? OnRightLegHealthUpdated;
 
         /// <summary>
         /// Internally invokes the <see cref="OnRightLegHealthUpdated"/> event.
@@ -197,7 +197,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
         /// <remarks>
         /// Subscribe to this event to be notified when a left leg's health changes.
         /// </remarks>
-        public static event LeftLegHealthUpdated OnLeftLegHealthUpdated;
+        public static event LeftLegHealthUpdated? OnLeftLegHealthUpdated;
 
         /// <summary>
         /// Internally invokes the <see cref="OnLeftLegHealthUpdated"/> event.
@@ -227,7 +227,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Managers
         /// <remarks>
         /// Subscribe to this event to be notified when an entity's injured state changes, including injury status and bleeding information.
         /// </remarks>
-        public static event InjuredStateUpdated OnInjuredStateUpdated;
+        public static event InjuredStateUpdated? OnInjuredStateUpdated;
 
         /// <summary>
         /// Internally invokes the <see cref="OnInjuredStateUpdated"/> event.

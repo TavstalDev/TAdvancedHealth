@@ -2,31 +2,21 @@
 using Rocket.Unturned.Player;
 using SDG.Unturned;
 using System;
-using System.Threading.Tasks;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Database;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
-using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Helpers.Unturned;
 using UnityEngine;
 
 namespace Tavstal.TAdvancedHealth.Utils.Helpers
 {
-    /// <summary>
-    /// A static class providing helper methods related to health management.
-    /// </summary>
     public static class HealthHelper
     {
         // ReSharper disable once InconsistentNaming
         private static AdvancedHealthConfig _config => AdvancedHealth.Instance.Config;
-
-        /// <summary>
-        /// Asynchronously sets the specified player as downed in the game.
-        /// </summary>
-        /// <param name="player">The Unturned player to be set as downed.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
+        
         public static void SetPlayerDowned(UnturnedPlayer player)
         {
             string methodName = "SetPlayerDownedAsync";
@@ -34,8 +24,11 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
             {
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 var transCon = player.SteamPlayer().transportConnection;
-                HealthData? healthData = HealthManager.Get(player.CSteamID.m_SteamID);
-                if (healthData == null || !healthData.IsInjured)
+                HealthData? healthData = comp.HealthData;
+                if (healthData == null)
+                    return;
+                
+                if (!healthData.IsInjured)
                     return;
 
                 if (player.Dead)
@@ -85,16 +78,10 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.Error($"Error in {methodName}.", ex);
+                AdvancedHealth.Logger.Error($"Unexpected error occured in {methodName}.", ex);
             }
         }
-
-        /// <summary>
-        /// Determines whether an entity with the given healthData can bleed after receiving the specified amount of damage.
-        /// </summary>
-        /// <param name="health">The current healthData of the entity.</param>
-        /// <param name="damage">The amount of damage the entity is about to receive.</param>
-        /// <returns>True if the entity can bleed after taking the damage; otherwise, false.</returns>
+        
         public static bool CanBleed(float health, float damage)
         {
             bool can = false;
@@ -107,12 +94,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
 
             return can;
         }
-
-        /// <summary>
-        /// Retrieves the status icon associated with the specified player state.
-        /// </summary>
-        /// <param name="state">The player state for which to retrieve the status icon.</param>
-        /// <returns>The status icon corresponding to the specified player state.</returns>
+        
         public static StatusIcon? GetStatusIcon(EPlayerState state) =>
             _config.HealthSystemSettings.StatusIcons.Find(x => x.Status == state);
     }

@@ -6,7 +6,6 @@ using HarmonyLib;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Database;
-using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Helpers.General;
 using Tavstal.TLibrary.Helpers.Unturned;
 using UnityEngine;
@@ -18,10 +17,7 @@ namespace Tavstal.TAdvancedHealth.Harmony
     [HarmonyPatch(typeof(UseableMelee), "fire", new Type[] { })]
     public static class UseableMeleeHarmony
     {
-        // ReSharper disable once InconsistentNaming
         private static AdvancedHealthConfig _config => AdvancedHealth.Instance.Config;
-        // ReSharper disable once InconsistentNaming
-        private static DatabaseManager _database => AdvancedHealth.DatabaseManager;
 
         [HarmonyPostfix]
         // ReSharper disable once InconsistentNaming
@@ -57,7 +53,7 @@ namespace Tavstal.TAdvancedHealth.Harmony
             UnturnedPlayer targetPlayer = UnturnedPlayer.FromPlayer(targetBasePlayer);
             AdvancedHealthComponent targetComp = targetPlayer.GetComponent<AdvancedHealthComponent>();
 
-            HealthData? targetHealth = HealthManager.Get(targetPlayer.CSteamID.m_SteamID);
+            HealthData? targetHealth = targetComp.HealthData;
             if (targetHealth is { IsInjured: false })
             {
                 AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "error_defiblirator_not_injured");

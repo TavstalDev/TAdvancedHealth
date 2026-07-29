@@ -41,7 +41,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                 });
                 health.IsHUDEnabled = true;
                 EffectManager.sendUIEffect(health.HUDEffectID, (short)health.HUDEffectID, player.SteamPlayer().transportConnection, true);
-                await EffectHelper.UpdateWholeHealthUIAsync(player);
+                await EffectHelper.UpdateWholeHealthUI(player);
             }
             else
             {
