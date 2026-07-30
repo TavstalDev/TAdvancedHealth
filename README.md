@@ -54,24 +54,10 @@ A custom tarkov like health system with database support.
 </details>
 
 <details>
-<summary>/sethealthhud list <page> | [name]</summary>
-<b>Description:</b> Checks the cost of a specific item.
-<br>
-<b>Permission(s):</b> tadvancedhealth.commands.sethealthhud
-</details>
-
-<details>
 <summary>/sethospitalbed <hospitalname></summary>
 <b>Description:</b> Sets a respawn point
 <br>
 <b>Permission(s):</b> tadvancedhealth.commands.sethospitalbed
-</details>
-
-<details>
-<summary>/togglehealthhud</summary>
-<b>Description:</b> Toggles the custom hud.
-<br>
-<b>Permission(s):</b> tadvancedhealth.commands.togglehud
 </details>
 
 ## Building from Source

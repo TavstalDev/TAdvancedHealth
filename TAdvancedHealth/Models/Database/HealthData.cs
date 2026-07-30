@@ -25,10 +25,6 @@ namespace Tavstal.TAdvancedHealth.Models.Database
         [SqlMember]
         public bool IsInjured { get; set; }
         [SqlMember]
-        public bool IsHUDEnabled { get; set; }
-        [SqlMember]
-        public ushort HUDEffectID { get; set; }
-        [SqlMember]
         public DateTime DeathDate { get; set; }
 
         public HealthData()
@@ -36,7 +32,7 @@ namespace Tavstal.TAdvancedHealth.Models.Database
             PlayerId = string.Empty;
         }
 
-        public HealthData(string playerId, float baseHealth, float headHealth, float bodyHealth, float rightArmHealth, float leftArmHealth, float rightLegHealth, float leftLegHealth, bool isInjured, bool isHUDEnabled, ushort hudEffectID, DateTime deathDate)
+        public HealthData(string playerId, float baseHealth, float headHealth, float bodyHealth, float rightArmHealth, float leftArmHealth, float rightLegHealth, float leftLegHealth, bool isInjured, DateTime deathDate)
         {
             PlayerId = playerId;
             BaseHealth = baseHealth;
@@ -47,14 +43,12 @@ namespace Tavstal.TAdvancedHealth.Models.Database
             RightLegHealth = rightLegHealth;
             LeftLegHealth = leftLegHealth;
             IsInjured = isInjured;
-            IsHUDEnabled = isHUDEnabled;
-            HUDEffectID = hudEffectID;
             DeathDate = deathDate;
         }
 
         public void EnsureValueCap()
         {
-            if (AdvancedHealth.Instance.Config.HealthSystemSettings.EnableTarkovLikeHealth)
+            if (AdvancedHealth.Instance.Config.HealthSystemSettings.EnableLimbHealthSystem)
             {
                 HeadHealth = MathHelper.Clamp(HeadHealth, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.HeadHealth);
                 BodyHealth = MathHelper.Clamp(BodyHealth, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.BodyHealth);
