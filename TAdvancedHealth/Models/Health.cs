@@ -25,10 +25,6 @@ namespace Tavstal.TAdvancedHealth.Models
 
         public bool IsInjured { get; private set; }
 
-        public bool IsHUDEnabled { get; private set; }
-
-        public ushort HUDEffectID { get; private set; }
-
         public DateTime DeathDate { get; private set; } = DateTime.Now;
 
         public Health(string playerId)
@@ -48,11 +44,9 @@ namespace Tavstal.TAdvancedHealth.Models
             LeftLegHealth = data.LeftLegHealth;
             IsInjured = data.IsInjured;
             DeathDate = data.DeathDate;
-            IsHUDEnabled = data.IsHUDEnabled;
-            HUDEffectID = data.HUDEffectID;
         }
 
-        public Health(string playerId, float baseHealth, float headHealth, float bodyHealth, float rightArmHealth, float leftArmHealth, float rightLegHealth, float leftLegHealth, bool isInjured, bool isHUDEnabled, ushort hudEffectID)
+        public Health(string playerId, float baseHealth, float headHealth, float bodyHealth, float rightArmHealth, float leftArmHealth, float rightLegHealth, float leftLegHealth, bool isInjured)
         {
             PlayerId = playerId;
             BaseHealth = baseHealth;
@@ -63,12 +57,12 @@ namespace Tavstal.TAdvancedHealth.Models
             RightLegHealth = rightLegHealth;
             LeftLegHealth = leftLegHealth;
             IsInjured = isInjured;
-            IsHUDEnabled = isHUDEnabled;
-            HUDEffectID = hudEffectID;
         }
 
         public void SetBaseHealth(float newValue)
         {
+            if (AdvancedHealth.Instance.Config.HealthSystemSettings.EnableLimbHealthSystem)
+                return;
             if (Mathf.Approximately(BaseHealth, newValue) && BaseHealth > 0.0f)
                 return;
             BaseHealth = Mathf.Clamp(newValue, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.BaseHealth);
@@ -77,6 +71,11 @@ namespace Tavstal.TAdvancedHealth.Models
 
         public void SetHeadHealth(float newValue)
         {
+            if (!AdvancedHealth.Instance.Config.HealthSystemSettings.EnableLimbHealthSystem)
+            {
+                SetBaseHealth(newValue);
+                return;
+            }
             if (Mathf.Approximately(HeadHealth, newValue) && HeadHealth > 0.0f)
                 return;
             HeadHealth = Mathf.Clamp(newValue, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.HeadHealth);
@@ -85,6 +84,11 @@ namespace Tavstal.TAdvancedHealth.Models
 
         public void SetBodyHealth(float newValue)
         {
+            if (!AdvancedHealth.Instance.Config.HealthSystemSettings.EnableLimbHealthSystem)
+            {
+                SetBaseHealth(newValue);
+                return;
+            }
             if (Mathf.Approximately(BodyHealth, newValue) && BodyHealth > 0.0f)
                 return;
             BodyHealth = Mathf.Clamp(newValue, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.BodyHealth);
@@ -93,6 +97,11 @@ namespace Tavstal.TAdvancedHealth.Models
 
         public void SetRightArmHealth(float newValue)
         {
+            if (!AdvancedHealth.Instance.Config.HealthSystemSettings.EnableLimbHealthSystem)
+            {
+                SetBaseHealth(newValue);
+                return;
+            }
             if (Mathf.Approximately(RightArmHealth, newValue) && RightArmHealth > 0.0f)
                 return;
             RightArmHealth = Mathf.Clamp(newValue, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.RightArmHealth);
@@ -101,6 +110,11 @@ namespace Tavstal.TAdvancedHealth.Models
 
         public void SetLeftArmHealth(float newValue)
         {
+            if (!AdvancedHealth.Instance.Config.HealthSystemSettings.EnableLimbHealthSystem)
+            {
+                SetBaseHealth(newValue);
+                return;
+            }
             if (Mathf.Approximately(LeftArmHealth, newValue) && LeftArmHealth > 0.0f)
                 return;
             LeftArmHealth = Mathf.Clamp(newValue, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.LeftArmHealth);
@@ -109,6 +123,11 @@ namespace Tavstal.TAdvancedHealth.Models
 
         public void SetRightLegHealth(float newValue)
         {
+            if (!AdvancedHealth.Instance.Config.HealthSystemSettings.EnableLimbHealthSystem)
+            {
+                SetBaseHealth(newValue);
+                return;
+            }
             if (Mathf.Approximately(RightLegHealth, newValue) && RightLegHealth > 0.0f)
                 return;
             RightLegHealth = Mathf.Clamp(newValue, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.RightLegHealth);
@@ -117,6 +136,11 @@ namespace Tavstal.TAdvancedHealth.Models
 
         public void SetLeftLegHealth(float newValue)
         {
+            if (!AdvancedHealth.Instance.Config.HealthSystemSettings.EnableLimbHealthSystem)
+            {
+                SetBaseHealth(newValue);
+                return;
+            }
             if (Mathf.Approximately(LeftLegHealth, newValue) && LeftLegHealth > 0.0f)
                 return;
             LeftLegHealth = Mathf.Clamp(newValue, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.LeftLegHealth);
@@ -132,12 +156,6 @@ namespace Tavstal.TAdvancedHealth.Models
             EventManager.FCallInjuredStateUpdated(PlayerId, isInjured, DeathDate);
         }
 
-        public void SetHUDEnabled(bool isHUDEnabled, ushort hudId)
-        {
-            IsHUDEnabled = isHUDEnabled;
-            HUDEffectID = hudId;
-        }
-
         public HealthData ToHealthData() => new HealthData
         {
             PlayerId = this.PlayerId,
@@ -149,8 +167,7 @@ namespace Tavstal.TAdvancedHealth.Models
             RightLegHealth = this.RightLegHealth,
             LeftLegHealth = this.LeftLegHealth,
             IsInjured = this.IsInjured,
-            DeathDate = this.DeathDate,
-            HUDEffectID = this.HUDEffectID,
+            DeathDate = this.DeathDate
         };
     }
 }

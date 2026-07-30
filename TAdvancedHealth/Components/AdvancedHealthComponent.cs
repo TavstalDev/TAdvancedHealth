@@ -12,19 +12,15 @@ using Tavstal.TAdvancedHealth.Utils.Helpers;
 using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Threading;
 using UnityEngine;
-using UnityEngine.Serialization;
 
 namespace Tavstal.TAdvancedHealth.Components
 {
     public class AdvancedHealthComponent : UnturnedPlayerComponent
     {
         public ITransportConnection TranspConnection => Player.SteamPlayer().transportConnection;
-        [FormerlySerializedAs("HasHeavyBleeding")] 
         public bool hasHeavyBleeding;
         public readonly ProgressBarDatas ProgressBarData = new ProgressBarDatas();
-        [FormerlySerializedAs("DragState")] 
         public EDragState dragState = EDragState.None;
-        [FormerlySerializedAs("DragPartnerId")] 
         public CSteamID dragPartnerId = CSteamID.Nil;
         public Health? HealthData {  get; set; }
 
@@ -34,14 +30,10 @@ namespace Tavstal.TAdvancedHealth.Components
         private DateTime _nextArmHealDate;
         private DateTime _nextLegHealDate;
 
-
-        [FormerlySerializedAs("AllowDamage")] 
+        
         public bool allowDamage;
-        [FormerlySerializedAs("LastEquipedItem")] 
         public ushort lastEquipedItem;
-        [FormerlySerializedAs("EffectID")] 
-        public ushort effectId;
-        [FormerlySerializedAs("States")] 
+        public EPlayerTemperature currentTemperature;
         public List<EPlayerState> states = new List<EPlayerState>();
 
         protected override void Load()
@@ -58,12 +50,9 @@ namespace Tavstal.TAdvancedHealth.Components
                     }
                     
                     var cshSettings = AdvancedHealth.Instance.Config.HealthSystemSettings;
-                    HUDStyle style = AdvancedHealth.Instance.Config.HUDStyles.FirstOrDefault(x => x.Enable) ??
-                                     AdvancedHealth.Instance.Config.HUDStyles[0];
-
                     HealthData = new Health(Player.Id, cshSettings.BaseHealth, cshSettings.HeadHealth, cshSettings.BodyHealth,
                         cshSettings.RightArmHealth, cshSettings.LeftArmHealth, cshSettings.RightLegHealth, cshSettings.LeftLegHealth,
-                        false, true, style.EffectID);
+                        false);
                 }
                 catch (Exception ex)
                 {
@@ -90,46 +79,15 @@ namespace Tavstal.TAdvancedHealth.Components
             });
         }
 
-        public void TryAddState(EPlayerState state)
+        public void TryAddState(EPlayerState state, bool shouldUpdate = true)
         {
             try
             {
                 if (!states.Contains(state))
                 {
-                    var config = AdvancedHealth.Instance.Config;
-
-                    if (state == EPlayerState.NoneTemperature)
-                    {
-                        StatusIcon? icon2 = HealthHelper.GetStatusIcon(EPlayerState.Warm);
-                        if (icon2 != null)
-                        {
-                            List<StatusIcon> icons = config.HealthSystemSettings.StatusIcons.FindAll(x => x.GroupIndex == icon2.GroupIndex && x.Status != state);
-                            foreach (StatusIcon ic in icons)
-                                TryRemoveState(ic.Status, false);
-                            RefreshStateUI();
-                        }
-                        return;
-                    }
-
-                    StatusIcon? icon = HealthHelper.GetStatusIcon(state);
-
-                    if (icon != null)
-                    {
-                        if (icon.GroupIndex == -1)
-                        {
-                            states.Add(state);
-                            RefreshStateUI();
-                        }
-                        else
-                        {
-                            List<StatusIcon> icons = config.HealthSystemSettings.StatusIcons.FindAll(x => x.GroupIndex == icon.GroupIndex && x.Status != state);
-                            foreach (StatusIcon ic in icons)
-                                TryRemoveState(ic.Status, false);
-
-                            states.Add(state);
-                            RefreshStateUI();
-                        }
-                    }
+                    states.Add(state);
+                    if (shouldUpdate)
+                        RefreshStateUI();
                 }
             }
             catch (Exception e)
@@ -160,29 +118,16 @@ namespace Tavstal.TAdvancedHealth.Components
             if (HealthData == null)
                 return;
             
-            short effectID = (short)HealthData.HUDEffectID;
-
-            for (int i = 0; i < 12; i++)
+            short effectID = (short)AdvancedHealth.Instance.Config.EffectId;
+            for (int i = 1; i < 18; i++)
             {
-                int localuiname = i + 1;
-
-                if (states.Count - 1 >= i)
+                EPlayerState state = (EPlayerState)i;
+                if (!states.Contains(state))
                 {
-                    EPlayerState value = states.ElementAt(i);
-                    StatusIcon? icon = HealthHelper.GetStatusIcon(value);
-                    if (icon == null)
-                        continue;
-
-                    EffectManager.sendUIEffectImageURL(effectID, TranspConnection, true, "Status#" + localuiname + "_img", icon.IconUrl);
-                    AdvancedHealth.Instance.InvokeAction(0.1f, () => {
-                        if (states.Count >= localuiname)
-                            EffectManager.sendUIEffectVisibility(effectID, TranspConnection, true, "Status#" + localuiname, true);
-                    });
+                    EffectManager.sendUIEffectVisibility(effectID, TranspConnection, true, $"Status#{i}", false);
+                    continue;
                 }
-                else
-                {
-                    EffectManager.sendUIEffectVisibility(effectID, TranspConnection, true, "Status#" + localuiname, false);
-                }
+                EffectManager.sendUIEffectVisibility(effectID, TranspConnection, true, $"Status#{i}", true);
             }
         }
 
@@ -246,7 +191,7 @@ namespace Tavstal.TAdvancedHealth.Components
             Player.Infection = 0;
             Player.Heal(100);
 
-            EffectManager.sendUIEffectVisibility((short)effectId, TranspConnection, true, "RevivePanel", false);
+            EffectManager.sendUIEffectVisibility((short)AdvancedHealth.Instance.Config.EffectId, TranspConnection, true, "RevivePanel", false);
             Player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
         }
         
@@ -261,7 +206,7 @@ namespace Tavstal.TAdvancedHealth.Components
 
             HealthData?.SetInjured(false);
 
-            EffectManager.sendUIEffectVisibility((short)effectId, TranspConnection, true, "RevivePanel", false);
+            EffectManager.sendUIEffectVisibility((short)AdvancedHealth.Instance.Config.EffectId, TranspConnection, true, "RevivePanel", false);
             Player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
         }
 
@@ -286,7 +231,7 @@ namespace Tavstal.TAdvancedHealth.Components
                 Player.Bleeding = false;
 
                 int secs = (int)(HealthData.DeathDate - DateTime.Now).TotalSeconds;
-                EffectManager.sendUIEffectText((short)effectId, TranspConnection, true, "tb_message",
+                EffectManager.sendUIEffectText((short)AdvancedHealth.Instance.Config.EffectId, TranspConnection, true, "tb_message",
                     AdvancedHealth.Instance.Localize("ui_bleeding", secs.ToString()));
                 if (HealthData.DeathDate < DateTime.Now)
                 {

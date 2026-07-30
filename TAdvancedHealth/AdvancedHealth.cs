@@ -97,8 +97,7 @@ namespace Tavstal.TAdvancedHealth
             foreach (SteamPlayer steamPlayer in Provider.clients)
             {
                 UnturnedPlayer uPlayer = UnturnedPlayer.FromSteamPlayer(steamPlayer);
-                foreach (var hudStyle in Config.HUDStyles)
-                    EffectManager.askEffectClearByID(hudStyle.EffectID, steamPlayer.transportConnection);
+                EffectManager.askEffectClearByID(Config.EffectId, steamPlayer.transportConnection);
 
                 uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowFood, true);
                 uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowHealth, true);

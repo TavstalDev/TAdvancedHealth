@@ -10,6 +10,8 @@ namespace Tavstal.TAdvancedHealth.Handlers
 {
     public static class UIEventHandler
     {
+        private static AdvancedHealthConfig _config => AdvancedHealth.Instance.Config;
+        
         internal static void Attach()
         {
             EffectManager.onEffectButtonClicked += OnButtonClickded;
@@ -44,7 +46,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
                             comp.UnDrag();
 
                         uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
-                        EffectManager.sendUIEffectVisibility((short)comp.effectId, comp.TranspConnection, true, "RevivePanel", false);
+                        EffectManager.sendUIEffectVisibility((short)_config.EffectId, comp.TranspConnection, true, "RevivePanel", false);
                     }
                 }
             }

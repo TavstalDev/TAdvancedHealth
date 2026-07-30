@@ -25,31 +25,47 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                if (gesture == UnturnedPlayerEvents.PlayerGesture.SurrenderStart)
+                switch (gesture)
                 {
-                    PlayerLook look = player.Player.look;
-
-                    SDG.Unturned.Player? victimPlayer = null;
-                    if (Physics.Raycast(new Ray(look.aim.position, look.aim.forward), out RaycastHit hit, 2f, RayMasks.PLAYER))
+                    case UnturnedPlayerEvents.PlayerGesture.SurrenderStart:
                     {
-                        var victimPlayer2 = hit.transform.GetComponent<SDG.Unturned.Player>();
-                        if (victimPlayer2 != null && Vector3.Distance(victimPlayer2.transform.position, player.Position) <= 5f)
-                            victimPlayer = victimPlayer2;
-                    }
+                        PlayerLook look = player.Player.look;
 
-                    if (victimPlayer != null)
+                        SDG.Unturned.Player? victimPlayer = null;
+                        if (Physics.Raycast(new Ray(look.aim.position, look.aim.forward), out RaycastHit hit, 2f, RayMasks.PLAYER))
+                        {
+                            var victimPlayer2 = hit.transform.GetComponent<SDG.Unturned.Player>();
+                            if (victimPlayer2 != null && Vector3.Distance(victimPlayer2.transform.position, player.Position) <= 5f)
+                                victimPlayer = victimPlayer2;
+                        }
+
+                        if (victimPlayer != null)
+                        {
+                            UnturnedPlayer targetPlayer = UnturnedPlayer.FromPlayer(victimPlayer);
+                            AdvancedHealthComponent playerComp = player.GetComponent<AdvancedHealthComponent>();
+                            playerComp.Drag(targetPlayer);
+                        }
+                        break;
+                    }
+                    case UnturnedPlayerEvents.PlayerGesture.SurrenderStop:
                     {
-                        UnturnedPlayer targetPlayer = UnturnedPlayer.FromPlayer(victimPlayer);
-                        AdvancedHealthComponent playerComp = player.GetComponent<AdvancedHealthComponent>();
-                        playerComp.Drag(targetPlayer);
+                        AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                        if (comp.dragState == EDragState.Dragger)
+                            comp.UnDrag();
+                        break;
                     }
-                }
-                else if (gesture == UnturnedPlayerEvents.PlayerGesture.SurrenderStop)
-                {
-                    AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-
-                    if (comp.dragState == EDragState.Dragger)
-                        comp.UnDrag();
+                    case UnturnedPlayerEvents.PlayerGesture.Arrest_Start:
+                    {
+                        AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                        comp.TryAddState(EPlayerState.HANDCUFFED);
+                        break;
+                    }
+                    case UnturnedPlayerEvents.PlayerGesture.Arrest_Stop:
+                    {
+                        AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                        comp.TryRemoveState(EPlayerState.HANDCUFFED);
+                        break;
+                    }
                 }
             }
             catch (Exception ex)

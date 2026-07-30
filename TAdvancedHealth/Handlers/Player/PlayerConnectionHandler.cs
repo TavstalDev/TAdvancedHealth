@@ -34,9 +34,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 var health = comp.HealthData;
                 if (health == null)
                     return;
-
-                comp.effectId = health.HUDEffectID;
-
+                
                 #region Set ProgressBarData
 
                 comp.ProgressBarData.LastHealthHead = health.HeadHealth;
@@ -68,7 +66,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
 
 
                 if (LightingManager.isFullMoon)
-                    comp.TryAddState(EPlayerState.FullMoon);
+                    comp.TryAddState(EPlayerState.FULL_MOON);
 
                 #endregion
 
@@ -88,19 +86,15 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
 
                 #region HideHealth HUD
 
-                if (health.IsHUDEnabled)
-                {
-                    UEffectHelper.SendUIEffect(comp.effectId, (short)comp.effectId, comp.TranspConnection, true);
-                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowFood, false);
-                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowHealth, false);
-                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowOxygen, false);
-                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStamina, false);
-                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowVirus, false);
-                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowWater, false);
-                    player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStatusIcons, false);
-                    EffectHelper.UpdateWholeHealthUI(player);
-                }
-
+                UEffectHelper.SendUIEffect(_config.EffectId, (short)_config.EffectId, comp.TranspConnection, true);
+                player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowFood, false);
+                player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowHealth, false);
+                player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowOxygen, false);
+                player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStamina, false);
+                player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowVirus, false);
+                player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowWater, false);
+                player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStatusIcons, false);
+                EffectHelper.UpdateWholeHealthUI(player);
                 #endregion
             }
             catch (Exception ex)

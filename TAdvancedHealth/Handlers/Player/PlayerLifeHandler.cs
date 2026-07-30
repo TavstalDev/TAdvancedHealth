@@ -47,7 +47,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 if (comp.dragState != EDragState.None)
                     comp.UnDrag();
 
-                EffectManager.sendUIEffectVisibility((short)comp.effectId, comp.TranspConnection, true, "RevivePanel", false);
+                EffectManager.sendUIEffectVisibility((short)_config.EffectId, comp.TranspConnection, true, "RevivePanel", false);
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
             }
             catch (Exception ex)
@@ -66,7 +66,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     comp.UnDrag();
 
 
-                EffectManager.sendUIEffectVisibility((short)comp.effectId, comp.TranspConnection, true, "RevivePanel", false);
+                EffectManager.sendUIEffectVisibility((short)_config.EffectId, comp.TranspConnection, true, "RevivePanel", false);
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
 
                 AdvancedHealth.Instance.InvokeAction(0.1f, () =>

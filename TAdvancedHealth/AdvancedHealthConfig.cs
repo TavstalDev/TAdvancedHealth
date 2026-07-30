@@ -27,17 +27,16 @@ namespace Tavstal.TAdvancedHealth
         [YamlMember(Order = 7, Description = "Core health system configuration")]
         public HealthSystemSettings HealthSystemSettings { get; set; } = new  HealthSystemSettings();
         
-        [YamlMember(Order = 8, Description = "List of available HUD style presets")]
-        public List<HUDStyle> HUDStyles { get; set; } = new List<HUDStyle>();
-        
-        [YamlMember(Order = 9, Description = "List of medical items and their healing values")]
+        [YamlMember(Order = 8, Description = "List of medical items and their healing values")]
         public List<Medicine> Medicines { get; set; } = new List<Medicine>();
         
-        [YamlMember(Order = 10, Description = "Item types/IDs restricted to one-handed use")]
+        [YamlMember(Order = 9, Description = "Item types/IDs restricted to one-handed use")]
         public RestrictedItems OneHandedItems { get; set; } = new RestrictedItems();
         
-        [YamlMember(Order = 11, Description = "Item types/IDs restricted to two-handed use")] 
+        [YamlMember(Order = 10, Description = "Item types/IDs restricted to two-handed use")] 
         public RestrictedItems TwoHandedItems { get; set; } = new RestrictedItems();
+
+        [YamlIgnore] public readonly ushort EffectId = 8807;
 
         public override void LoadDefaults()
         {
@@ -75,7 +74,7 @@ namespace Tavstal.TAdvancedHealth
             };
             HealthSystemSettings = new HealthSystemSettings
             {
-                EnableTarkovLikeHealth = true,
+                EnableLimbHealthSystem = true,
                 PainEffectID = 0,
                 BaseHealth = 100.0f,
                 BodyHealth = 70.0f,
@@ -131,145 +130,7 @@ namespace Tavstal.TAdvancedHealth
                     DefaultWalkSpeed = 1.0f,
                     WalkSpeedWithOneBrokenLeg = 0.5f,
                     WalkSpeedWithBrokenLegs = 0.5f
-                },
-                StatusIcons = new List<StatusIcon>
-                {
-                    new StatusIcon
-                    {
-                        Status = EPlayerState.Acid,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_acid.png",
-                        GroupIndex = 1
-                    },
-                    new StatusIcon
-                    {
-                        Status = EPlayerState.Bleeding,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_bleeding.png",
-                        GroupIndex = -1
-                    },
-                    new StatusIcon
-                    {
-                        Status = EPlayerState.BrokenBone,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_brokenbone.png",
-                        GroupIndex = -1
-                    },
-                    new StatusIcon
-                    {
-                        Status = EPlayerState.Burning,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_temperature_hot.png",
-                        GroupIndex = 1
-                    },
-                    new StatusIcon
-                    {
-                        Status = EPlayerState.Cold,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_temperature_down.png",
-                        GroupIndex = 1
-                    },
-                    new StatusIcon
-                    {
-                        Status = EPlayerState.Covered,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_temperature_shelter.png",
-                        GroupIndex = 1
-                    },
-                    new StatusIcon
-                    {
-                        Status = EPlayerState.DeadZone,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_deadzone.png",
-                        GroupIndex = 2
-                    },
-                    new StatusIcon
-                    {
-                        Status = EPlayerState.Freezing,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_temperature_cold.png",
-                        GroupIndex = 1
-                    },
-                    new StatusIcon
-                    {
-                        Status = EPlayerState.Handcuffed,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_handcuffed.png",
-                        GroupIndex = -1
-                    },
-                    new StatusIcon
-                    {
-                        Status = EPlayerState.NoFood,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_food.png",
-                        GroupIndex = -1
-                    },
-                    new StatusIcon
-                    {
-                        Status = EPlayerState.NoWater,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_water.png",
-                        GroupIndex = -1
-                    },
-                    new StatusIcon
-                    {
-                        Status = EPlayerState.NoOxygen,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_lunge.png",
-                        GroupIndex = -1
-                    },
-                    new StatusIcon
-                    {
-                        Status = EPlayerState.NoVirus,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_radiation.png",
-                        GroupIndex = -1
-                    },
-                    new StatusIcon
-                    {
-                        Status = EPlayerState.SafeZone,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_safezone.png",
-                        GroupIndex = 2
-
-                    },
-                    new StatusIcon
-                    {
-                        Status = EPlayerState.Warm,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_temperature_up.png",
-                        GroupIndex = 1
-                    },
-                    new StatusIcon
-                    {
-                        Status = EPlayerState.FullMoon,
-                        IconUrl = "https://raw.githubusercontent.com/TavstalDev/TAdvancedHealth/refs/heads/master/assets/icon_fullmoon.png",
-                        GroupIndex = -1
-                    }
                 }
-            };
-            HUDStyles = new List<HUDStyle>()
-            {
-                new HUDStyle()
-                {
-                    Enable = true,
-                    Name = "Square",
-                    Aliases = new List<string> { "S" },
-                    EffectID = 8807
-                },
-                new HUDStyle()
-                {
-                    Enable = true,
-                    Name = "Circular",
-                    Aliases = new List<string> { "C" },
-                    EffectID = 8808
-                },
-                new HUDStyle()
-                {
-                    Enable = true,
-                    Name = "Square Single Health",
-                    Aliases = new List<string> { "SSH" },
-                    EffectID = 8809
-                },
-                new HUDStyle()
-                {
-                    Enable = true,
-                    Name = "Circular Single Health",
-                    Aliases = new List<string> { "CSH" },
-                    EffectID = 8810
-                },
-                new HUDStyle()
-                {
-                    Enable = true,
-                    Name = "Tarkov Like",
-                    Aliases = new List<string> { "TL" },
-                    EffectID = 8811
-                },
             };
             Medicines = new List<Medicine>
             {

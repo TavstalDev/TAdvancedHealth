@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Tavstal.TAdvancedHealth.Models.Config.HealthSystem;
+﻿using Tavstal.TAdvancedHealth.Models.Config.HealthSystem;
 using YamlDotNet.Serialization;
 
 namespace Tavstal.TAdvancedHealth.Models.Config
@@ -10,7 +9,7 @@ namespace Tavstal.TAdvancedHealth.Models.Config
         public ushort PainEffectID { get; set; }
         
         [YamlMember(Order = 1, Description = "Enables per-limb health system")]
-        public bool EnableTarkovLikeHealth { get; set; }
+        public bool EnableLimbHealthSystem { get; set; }
         
         [YamlMember(Order = 2, Description = "Base health when Tarkov-like health is disabled")]
         public float BaseHealth { get; set; }
@@ -30,21 +29,18 @@ namespace Tavstal.TAdvancedHealth.Models.Config
         [YamlMember(Order = 7, Description = "Health regeneration tick settings")]
         public RegenSettings Regen { get; set; } = new RegenSettings();
 
-        [YamlMember(Order = 8, Description = "Status effect icon configurations")]
-        public List<StatusIcon> StatusIcons { get; set; } = new List<StatusIcon>();
-
         [YamlIgnore]
         public float HeadHealth
         {
             get
             {
-                if (EnableTarkovLikeHealth)
+                if (EnableLimbHealthSystem)
                     return LimbHealth.Head;
                 return BaseHealth;
             }
             set
             {
-                if (EnableTarkovLikeHealth)
+                if (EnableLimbHealthSystem)
                     LimbHealth.Head = value;
             }
         }
@@ -54,13 +50,13 @@ namespace Tavstal.TAdvancedHealth.Models.Config
         {
             get
             {
-                if (EnableTarkovLikeHealth)
+                if (EnableLimbHealthSystem)
                     return LimbHealth.Body;
                 return BaseHealth;
             }
             set
             {
-                if (EnableTarkovLikeHealth)
+                if (EnableLimbHealthSystem)
                     LimbHealth.Body = value;
             }
         }
@@ -70,13 +66,13 @@ namespace Tavstal.TAdvancedHealth.Models.Config
         {
             get
             {
-                if (EnableTarkovLikeHealth)
+                if (EnableLimbHealthSystem)
                     return LimbHealth.RightArm;
                 return BaseHealth;
             }
             set
             {
-                if (EnableTarkovLikeHealth)
+                if (EnableLimbHealthSystem)
                     LimbHealth.RightArm = value;
             }
         }
@@ -86,13 +82,13 @@ namespace Tavstal.TAdvancedHealth.Models.Config
         {
             get
             {
-                if (EnableTarkovLikeHealth)
+                if (EnableLimbHealthSystem)
                     return LimbHealth.RightLeg;
                 return BaseHealth;
             }
             set
             {
-                if (EnableTarkovLikeHealth)
+                if (EnableLimbHealthSystem)
                     LimbHealth.RightLeg = value;
             }
         }
@@ -102,13 +98,13 @@ namespace Tavstal.TAdvancedHealth.Models.Config
         {
             get
             {
-                if (EnableTarkovLikeHealth)
+                if (EnableLimbHealthSystem)
                     return LimbHealth.LeftArm;
                 return BaseHealth;
             }
             set
             {
-                if (EnableTarkovLikeHealth)
+                if (EnableLimbHealthSystem)
                     LimbHealth.LeftArm = value;
             }
         }
@@ -118,13 +114,13 @@ namespace Tavstal.TAdvancedHealth.Models.Config
         {
             get
             {
-                if (EnableTarkovLikeHealth)
+                if (EnableLimbHealthSystem)
                     return LimbHealth.LeftLeg;
                 return BaseHealth;
             }
             set
             {
-                if (EnableTarkovLikeHealth)
+                if (EnableLimbHealthSystem)
                     LimbHealth.LeftLeg = value;
             }
         }
