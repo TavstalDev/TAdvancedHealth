@@ -420,6 +420,10 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                 var healthData = comp.HealthData;
                 if (healthData == null)
                     return;
+
+                var transCon = player.SteamPlayer().transportConnection;
+                EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true, "LimbHealth", _config.HealthSystemSettings.EnableLimbHealthSystem);
+                EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true, "BaseHealth", !_config.HealthSystemSettings.EnableLimbHealthSystem);
                 
                 UpdateHealthUI(player);
                 comp.ProgressBarData.LastHealthHead = healthData.HeadHealth;
