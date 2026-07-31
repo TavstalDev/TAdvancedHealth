@@ -60,6 +60,7 @@ namespace Tavstal.TAdvancedHealth
         /// </summary>
         public override void OnLoad()
         {
+            Level.onPostLevelLoaded += OnPostLevelLoaded;
             DatabaseManager = new DatabaseManager(Config);
 
             PlayerConnectionHandler.Attach();
@@ -78,12 +79,20 @@ namespace Tavstal.TAdvancedHealth
             Logger.Info("# TAdvancedHealth has been loaded.");
         }
 
+        private void OnPostLevelLoaded(int level)
+        {
+            if (!DatabaseManager.IsAuthenticationFailed)
+                return;
+            Logger.Warning($"# Unloading {GetPluginName()} due to database authentication error.");
+            this.UnloadPlugin();
+        }
+
         /// <summary>
         /// Called when the plugin is unloaded.
         /// </summary>
         public override void OnUnLoad()
         {
-            
+            Level.onPostLevelLoaded -= OnPostLevelLoaded;
             PlayerConnectionHandler.Detach();
             PlayerInventoryHandler.Detach();
             PlayerLifeHandler.Detach();
@@ -116,7 +125,6 @@ namespace Tavstal.TAdvancedHealth
         /// </summary>
         private void Update()
         {
-            string methodName = "Update()";
             try
             {
                 if (_nextUpdate > DateTime.Now)
@@ -133,7 +141,7 @@ namespace Tavstal.TAdvancedHealth
             }
             catch (Exception ex)
             {
-                Logger.Error($"Unexpected error occured in {methodName}.", ex);
+                Logger.Error($"Unexpected error occured in {nameof(Update)}.", ex);
             }
         }
 
