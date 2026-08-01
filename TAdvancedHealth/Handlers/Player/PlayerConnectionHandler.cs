@@ -39,41 +39,6 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 if (health == null)
                     return;
                 
-                #region Set ProgressBarData
-
-                comp.ProgressbarData.Head.Value = health.HeadHealth;
-                comp.ProgressbarData.Body.Value = health.BodyHealth;
-                comp.ProgressbarData.LeftArm.Value = health.LeftArmHealth;
-                comp.ProgressbarData.LeftLeg.Value = health.LeftLegHealth;
-                comp.ProgressbarData.RightArm.Value = health.RightArmHealth;
-                comp.ProgressbarData.RightLeg.Value = health.RightLegHealth;
-                comp.ProgressbarData.Food.Value = player.Player.life.food;
-                comp.ProgressbarData.Water.Value = player.Player.life.water;
-                comp.ProgressbarData.Virus.Value = player.Player.life.virus;
-                comp.ProgressbarData.Oxygen.Value = player.Player.life.oxygen;
-                comp.ProgressbarData.Stamina.Value = player.Player.life.stamina;
-
-                #endregion
-
-                #region Update States
-
-                PlayerStatHandler.OnPlayerFoodUpdate(player, player.Player.life.food);
-                PlayerStatHandler.OnPlayerWaterUpdate(player, player.Player.life.water);
-                PlayerStatHandler.OnPlayerVirusUpdate(player, player.Player.life.virus);
-                PlayerStatHandler.OnPlayerOxygenUpdate(player, player.Player.life.oxygen);
-                PlayerStatHandler.OnPlayerStaminaUpdate(player, player.Player.life.stamina);
-                PlayerStatHandler.OnPlayerBleedingUpdate(player, player.Bleeding);
-                PlayerStatHandler.OnPlayerBrokenUpdate(player, player.Broken);
-                PlayerStatHandler.OnPlayerSafezoneUpdated(player, player.Player.movement.isSafe);
-                PlayerStatHandler.OnPlayerDeadzoneUpdated(player, player.Player.movement.isRadiated);
-                PlayerStatHandler.OnPlayerTemperatureUpdate(player, player.Player.life.temperature);
-
-
-                if (LightingManager.isFullMoon)
-                    comp.TryAddState(EPlayerState.FULL_MOON);
-
-                #endregion
-
                 #region Attach Events
 
                 player.Player.equipment.onEquipRequested += PlayerInventoryHandler.OnPlayerEquipRequested;
@@ -90,7 +55,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
 
                 #endregion
 
-                #region HideHealth HUD
+                #region Hide default HUD and show the custom one
 
                 UEffectHelper.SendUIEffect(_config.EffectId, (short)_config.EffectId, comp.TranspConnection, true);
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowFood, false);
@@ -101,6 +66,19 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowWater, false);
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStatusIcons, false);
                 EffectHelper.UpdateWholeHealthUI(player);
+                
+                #region Update States
+                
+                PlayerStatHandler.OnPlayerBleedingUpdate(player, player.Bleeding);
+                PlayerStatHandler.OnPlayerBrokenUpdate(player, player.Broken);
+                PlayerStatHandler.OnPlayerSafezoneUpdated(player, player.Player.movement.isSafe);
+                PlayerStatHandler.OnPlayerDeadzoneUpdated(player, player.Player.movement.isRadiated);
+                PlayerStatHandler.OnPlayerTemperatureUpdate(player, player.Player.life.temperature);
+                
+                if (LightingManager.isFullMoon)
+                    comp.TryAddState(EPlayerState.FULL_MOON);
+
+                #endregion
                 #endregion
             }
             catch (Exception ex)
