@@ -1,8 +1,10 @@
 using System;
+using System.Collections.Generic;
 using Rocket.Unturned;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
 using Tavstal.TAdvancedHealth.Components;
+using Tavstal.TAdvancedHealth.Models;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TAdvancedHealth.Utils.Helpers;
 using Tavstal.TLibrary.Extensions;
@@ -13,6 +15,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
     public static class PlayerConnectionHandler
     {
         private static AdvancedHealthConfig _config => AdvancedHealth.Instance.Config;
+        private static readonly Dictionary<string, PlayerStatSubscriptions> _playerStats = new  Dictionary<string, PlayerStatSubscriptions>();
         
         internal static void Attach()
         {
@@ -75,12 +78,14 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 player.Player.equipment.onEquipRequested += PlayerInventoryHandler.OnPlayerEquipRequested;
                 player.Player.equipment.onDequipRequested += PlayerInventoryHandler.OnPlayerDequipRequested;
                 player.Player.life.onHurt += PlayerLifeHandler.OnPlayerLifeDamaged;
-                player.Player.life.onOxygenUpdated += b => PlayerStatHandler.OnPlayerOxygenUpdate(player, b);
-                player.Player.life.onTemperatureUpdated +=
-                    newTemperature => PlayerStatHandler.OnPlayerTemperatureUpdate(player, newTemperature);
-                player.Player.movement.onSafetyUpdated += isSafe => PlayerStatHandler.OnPlayerSafezoneUpdated(player, isSafe);
-                player.Player.movement.onRadiationUpdated += isRadio => PlayerStatHandler.OnPlayerDeadzoneUpdated(player, isRadio);
-                player.Player.life.onVirusUpdated += virus => PlayerStatHandler.OnPlayerVirusUpdate(player, virus);
+
+                var statSubscriptions = new PlayerStatSubscriptions(player);
+                _playerStats.Add(player.Id, statSubscriptions);
+                player.Player.life.onOxygenUpdated += statSubscriptions.OxygenCallback;
+                player.Player.life.onTemperatureUpdated += statSubscriptions.TemperatureCallback;
+                player.Player.movement.onSafetyUpdated += statSubscriptions.SafetyCallback;
+                player.Player.movement.onRadiationUpdated += statSubscriptions.RadiationCallback;
+                player.Player.life.onVirusUpdated += statSubscriptions.VirusCallback;
 
                 #endregion
 
@@ -110,11 +115,16 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 player.Player.equipment.onEquipRequested -= PlayerInventoryHandler.OnPlayerEquipRequested;
                 player.Player.equipment.onDequipRequested -= PlayerInventoryHandler.OnPlayerDequipRequested;
                 player.Player.life.onHurt -= PlayerLifeHandler.OnPlayerLifeDamaged;
-                player.Player.life.onOxygenUpdated -= b => PlayerStatHandler.OnPlayerOxygenUpdate(player, b);
-                player.Player.life.onTemperatureUpdated -= newTemperature => PlayerStatHandler.OnPlayerTemperatureUpdate(player, newTemperature);
-                player.Player.movement.onSafetyUpdated -= isSafe => PlayerStatHandler.OnPlayerSafezoneUpdated(player, isSafe);
-                player.Player.movement.onRadiationUpdated -= isRadio => PlayerStatHandler.OnPlayerDeadzoneUpdated(player, isRadio);
-                player.Player.life.onVirusUpdated -= virus => PlayerStatHandler.OnPlayerVirusUpdate(player, virus);
+                
+                if (_playerStats.TryGetValue(player.Id, out PlayerStatSubscriptions statSubscriptions))
+                {
+                    player.Player.life.onOxygenUpdated -= statSubscriptions.OxygenCallback;
+                    player.Player.life.onTemperatureUpdated -= statSubscriptions.TemperatureCallback;
+                    player.Player.movement.onSafetyUpdated -= statSubscriptions.SafetyCallback;
+                    player.Player.movement.onRadiationUpdated -= statSubscriptions.RadiationCallback;
+                    player.Player.life.onVirusUpdated -= statSubscriptions.VirusCallback;
+                    _playerStats.Remove(player.Id);
+                }
 
                 AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
                 if (comp.dragState != EDragState.None)
