@@ -62,11 +62,15 @@
     <Analyzer Include="/home/tavstal/.vscode/extensions/visualstudiotoolsforunity.vstuc-1.2.2/Analyzers/Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets/Editor/Assembly-CSharp-Editor/Tools/CommentEditor.cs" />
     <Compile Include="Assets/Editor/Assembly-CSharp-Editor/Tools/BundleToolModified.cs" />
     <Compile Include="Assets/Editor/UniversalRenameTool/Editor/RenameMenuItems.cs" />
     <Compile Include="Assets/Editor/UniversalRenameTool/Scripts/SceneFindTool.cs" />
     <Compile Include="Assets/Editor/UniversalRenameTool/Scripts/Workers/INameWorker.cs" />
+    <Compile Include="Assets/Editor/Assembly-CSharp-Editor/Tools/MasterBundleTool.cs" />
+    <Compile Include="Assets/Editor/Assembly-CSharp-Editor/Tools/OneShotAudioDefinitionEditor.cs" />
     <Compile Include="Assets/Editor/UniversalRenameTool/Scripts/Workers/SimpleNameWorker.cs" />
+    <Compile Include="Assets/Editor/Assembly-CSharp-Editor/Tools/EditorAssetBundleHelper.cs" />
     <Compile Include="Assets/Editor/UniversalRenameTool/Editor/FindMode.cs" />
     <Compile Include="Assets/Editor/UniversalRenameTool/Editor/ProjectFindTool.cs" />
     <Compile Include="Assets/Editor/Assembly-CSharp-Editor/Tools/Tavstal/CustomRenameTool.cs" />
@@ -79,10 +83,6 @@
     <Compile Include="Assets/Editor/UniversalRenameTool/Editor/Utilities.cs" />
     <Compile Include="Assets/Editor/UniversalRenameTool/Editor/RenameTool.cs" />
     <Compile Include="Assets/Editor/Assembly-CSharp-Editor/Tools/Tavstal/ERenameType.cs" />
-    <Compile Include="Assets/Editor/Assembly-CSharp-Editor/Tools/MasterBundleTool.cs" />
-    <Compile Include="Assets/Editor/Assembly-CSharp-Editor/Tools/OneShotAudioDefinitionEditor.cs" />
-    <Compile Include="Assets/Editor/Assembly-CSharp-Editor/Tools/CommentEditor.cs" />
-    <Compile Include="Assets/Editor/Assembly-CSharp-Editor/Tools/EditorAssetBundleHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
