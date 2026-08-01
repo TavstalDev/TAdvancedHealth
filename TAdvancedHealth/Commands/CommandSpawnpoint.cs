@@ -18,6 +18,8 @@ namespace Tavstal.TAdvancedHealth.Commands
         public List<string> Aliases => new List<string>();
         public List<string> Permissions => new List<string> { "tadvancedhealth.commands.sethospitalbed" };
 
+        // TODO: Refactor this command
+        
         public void Execute(IRocketPlayer caller, string[] args)
         {
             UnturnedPlayer player = (UnturnedPlayer)caller;
