@@ -27,346 +27,133 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                 
                 var transCon = player.SteamPlayer().transportConnection;
                 string childName;
+
+                bool isLimb = false;
+                List<string> progressBars;
                 switch (type)
                 {
                     case EProgressBar.SimpleHealth:
                     {
                         childName = "Health_PB_Value#{index}";
-                        if (comp.ProgressBarData.VisibleSimpleHealth.Count > 0)
-                        {
-                            foreach (string s in comp.ProgressBarData.VisibleSimpleHealth)
-                            {
-                                EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true, s, false);
-                            }
-
-                            comp.ProgressBarData.VisibleSimpleHealth = new List<string>();
-                        }
-
-                        EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                            childName.Replace("{index}", lastPercent.ToString()), false);
-                        comp.ProgressBarData.VisibleSimpleHealth.Add(childName.Replace("{index}", percent.ToString()));
-                        EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                            childName.Replace("{index}", percent.ToString()), true);
-
+                        progressBars = comp.ProgressBarData.VisibleSimpleHealth;
                         break;
                     }
                     case EProgressBar.Food:
                     {
                         childName = "Food_PB_Value#{index}";
-                        if (comp.ProgressBarData.VisibleFood.Count > 0)
-                        {
-                            foreach (string s in comp.ProgressBarData.VisibleFood)
-                            {
-                                EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true, s, false);
-                            }
-
-                            comp.ProgressBarData.VisibleFood = new List<string>();
-                        }
-
-                        comp.ProgressBarData.VisibleFood.Add(childName.Replace("{index}", percent.ToString()));
-                        EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                            childName.Replace("{index}", percent.ToString()), true);
-
+                        progressBars = comp.ProgressBarData.VisibleFood;
                         break;
                     }
                     case EProgressBar.Water:
                     {
                         childName = "Water_PB_Value#{index}";
-                        if (comp.ProgressBarData.VisibleWater.Count > 0)
-                        {
-                            foreach (string s in comp.ProgressBarData.VisibleWater)
-                            {
-                                EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true, s, false);
-                            }
-
-                            comp.ProgressBarData.VisibleWater = new List<string>();
-                        }
-
-                        comp.ProgressBarData.VisibleWater.Add(childName.Replace("{index}", percent.ToString()));
-                        EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                            childName.Replace("{index}", percent.ToString()), true);
-
+                        progressBars = comp.ProgressBarData.VisibleWater;
                         break;
                     }
                     case EProgressBar.Radiation:
                     {
                         childName = "Radiation_PB_Value#{index}";
-                        if (comp.ProgressBarData.VisibleVirus.Count > 0)
-                        {
-                            foreach (string s in comp.ProgressBarData.VisibleVirus)
-                            {
-                                EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true, s, false);
-                            }
-
-                            comp.ProgressBarData.VisibleVirus = new List<string>();
-                        }
-
-                        comp.ProgressBarData.VisibleVirus.Add(childName.Replace("{index}", percent.ToString()));
-                        EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                            childName.Replace("{index}", percent.ToString()), true);
-
+                        progressBars = comp.ProgressBarData.VisibleVirus;
                         break;
                     }
                     case EProgressBar.Oxygen:
                     {
                         childName = "Oxygen_PB_Value#{index}";
-                        if (comp.ProgressBarData.VisibleOxygen.Count > 0)
-                        {
-                            foreach (string s in comp.ProgressBarData.VisibleOxygen)
-                            {
-                                EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true, s, false);
-                            }
-
-                            comp.ProgressBarData.VisibleOxygen = new List<string>();
-                        }
-
-                        comp.ProgressBarData.VisibleOxygen.Add(childName.Replace("{index}", percent.ToString()));
-                        EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                            childName.Replace("{index}", percent.ToString()), true);
-
+                        progressBars = comp.ProgressBarData.VisibleOxygen;
                         break;
                     }
                     case EProgressBar.Stamina:
                     {
                         childName = "Stamina_PB_Value#{index}";
-                        if (comp.ProgressBarData.VisibleStamina.Count > 0)
-                        {
-                            foreach (string s in comp.ProgressBarData.VisibleStamina)
-                            {
-                                EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true, s, false);
-                            }
-
-                            comp.ProgressBarData.VisibleStamina = new List<string>();
-                        }
-
-                        comp.ProgressBarData.VisibleStamina.Add(childName.Replace("{index}", percent.ToString()));
-                        EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                            childName.Replace("{index}", percent.ToString()), true);
-
+                        progressBars = comp.ProgressBarData.VisibleStamina;
                         break;
                     }
                     case EProgressBar.HeadHealth:
                     {
                         childName = "Head_PB_Value#{index}";
-                        if (comp.ProgressBarData.VisibleHead.Count > 0)
-                        {
-                            foreach (string s in comp.ProgressBarData.VisibleHead)
-                                EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true, s, false);
-                            comp.ProgressBarData.VisibleHead.Clear();
-                        }
-                        
-                        if (percent >= 75)
-                        {
-                            comp.ProgressBarData.VisibleHead.Add(childName.Replace("{index}", "75"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "75"), true);
-                        }
-                        else if (percent >= 50)
-                        {
-                            comp.ProgressBarData.VisibleHead.Add(childName.Replace("{index}", "50"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "50"), true);
-                        }
-                        else if (percent >= 25)
-                        {
-                            comp.ProgressBarData.VisibleHead.Add(childName.Replace("{index}", "25"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "25"), true);
-                        }
-                        else
-                        {
-                            comp.ProgressBarData.VisibleHead.Add(childName.Replace("{index}", "0"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "0"), true);
-                        }
+                        isLimb = true;
+                        progressBars = comp.ProgressBarData.VisibleHead;
                         break;
                     }
                     case EProgressBar.BodyHealth:
                     {
                         childName = "Body_PB_Value#{index}";
-                        if (comp.ProgressBarData.VisibleBody.Count > 0)
-                        {
-                            foreach (string s in comp.ProgressBarData.VisibleBody)
-                                EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true, s, false);
-                            comp.ProgressBarData.VisibleBody.Clear();
-                        }
-                        
-                        if (percent >= 75)
-                        {
-                            comp.ProgressBarData.VisibleBody.Add(childName.Replace("{index}", "75"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "75"), true);
-                        }
-                        else if (percent >= 50)
-                        {
-                            comp.ProgressBarData.VisibleBody.Add(childName.Replace("{index}", "50"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "50"), true);
-                        }
-                        else if (percent >= 25)
-                        {
-                            comp.ProgressBarData.VisibleBody.Add(childName.Replace("{index}", "25"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "25"), true);
-                        }
-                        else
-                        {
-                            comp.ProgressBarData.VisibleBody.Add(childName.Replace("{index}", "0"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "0"), true);
-                        }
+                        isLimb = true;
+                        progressBars = comp.ProgressBarData.VisibleBody;
                         break;
                     }
                     case EProgressBar.LeftArmHealth:
                     {
                         childName = "LeftArm_PB_Value#{index}";
-                        if (comp.ProgressBarData.VisibleLeftArm.Count > 0)
-                        {
-                            foreach (string s in comp.ProgressBarData.VisibleLeftArm)
-                                EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true, s, false);
-                            comp.ProgressBarData.VisibleLeftArm.Clear();
-                        }
-                        
-                        if (percent >= 75)
-                        {
-                            comp.ProgressBarData.VisibleLeftArm.Add(childName.Replace("{index}", "75"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "75"), true);
-                        }
-                        else if (percent >= 50)
-                        {
-                            comp.ProgressBarData.VisibleLeftArm.Add(childName.Replace("{index}", "50"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "50"), true);
-                        }
-                        else if (percent >= 25)
-                        {
-                            comp.ProgressBarData.VisibleLeftArm.Add(childName.Replace("{index}", "25"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "25"), true);
-                        }
-                        else
-                        {
-                            comp.ProgressBarData.VisibleLeftArm.Add(childName.Replace("{index}", "0"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "0"), true);
-                        }
+                        isLimb = true;
+                        progressBars = comp.ProgressBarData.VisibleLeftArm;
                         break;
                     }
                     case EProgressBar.LeftLegHealth:
                     {
                         childName = "LeftLeg_PB_Value#{index}";
-                        if (comp.ProgressBarData.VisibleLeftLeg.Count > 0)
-                        {
-                            foreach (string s in comp.ProgressBarData.VisibleLeftLeg)
-                                EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true, s, false);
-                            comp.ProgressBarData.VisibleLeftLeg.Clear();
-                        }
-                        
-                        if (percent >= 75)
-                        {
-                            comp.ProgressBarData.VisibleLeftLeg.Add(childName.Replace("{index}", "75"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "75"), true);
-                        }
-                        else if (percent >= 50)
-                        {
-                            comp.ProgressBarData.VisibleLeftLeg.Add(childName.Replace("{index}", "50"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "50"), true);
-                        }
-                        else if (percent >= 25)
-                        {
-                            comp.ProgressBarData.VisibleLeftLeg.Add(childName.Replace("{index}", "25"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "25"), true);
-                        }
-                        else
-                        {
-                            comp.ProgressBarData.VisibleLeftLeg.Add(childName.Replace("{index}", "0"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "0"), true);
-                        }
+                        isLimb = true;
+                        progressBars = comp.ProgressBarData.VisibleLeftLeg;
                         break;
                     }
                     case EProgressBar.RightArmHealth:
                     {
                         childName = "RightArm_PB_Value#{index}";
-                        if (comp.ProgressBarData.VisibleRightArm.Count > 0)
-                        {
-                            foreach (string s in comp.ProgressBarData.VisibleRightArm)
-                                EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true, s, false);
-                            comp.ProgressBarData.VisibleRightArm.Clear();
-                        }
-                        
-                        if (percent >= 75)
-                        {
-                            comp.ProgressBarData.VisibleRightArm.Add(childName.Replace("{index}", "75"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "75"), true);
-                        }
-                        else if (percent >= 50)
-                        {
-                            comp.ProgressBarData.VisibleRightArm.Add(childName.Replace("{index}", "50"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "50"), true);
-                        }
-                        else if (percent >= 25)
-                        {
-                            comp.ProgressBarData.VisibleRightArm.Add(childName.Replace("{index}", "25"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "25"), true);
-                        }
-                        else
-                        {
-                            comp.ProgressBarData.VisibleRightArm.Add(childName.Replace("{index}", "0"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "0"), true);
-                        }
+                        isLimb = true;
+                        progressBars = comp.ProgressBarData.VisibleRightArm;
                         break;
                     }
                     case EProgressBar.RightLegHealth:
                     {
                         childName = "RightLeg_PB_Value#{index}";
-                        if (comp.ProgressBarData.VisibleRightLeg.Count > 0)
-                        {
-                            foreach (string s in comp.ProgressBarData.VisibleRightLeg)
-                                EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true, s, false);
-                            comp.ProgressBarData.VisibleRightLeg.Clear();
-                        }
-                        
-                        if (percent >= 75)
-                        {
-                            comp.ProgressBarData.VisibleRightLeg.Add(childName.Replace("{index}", "75"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "75"), true);
-                        }
-                        else if (percent >= 50)
-                        {
-                            comp.ProgressBarData.VisibleRightLeg.Add(childName.Replace("{index}", "50"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "50"), true);
-                        }
-                        else if (percent >= 25)
-                        {
-                            comp.ProgressBarData.VisibleRightLeg.Add(childName.Replace("{index}", "25"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "25"), true);
-                        }
-                        else
-                        {
-                            comp.ProgressBarData.VisibleRightLeg.Add(childName.Replace("{index}", "0"));
-                            EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
-                                childName.Replace("{index}", "0"), true);
-                        }
+                        isLimb = true;
+                        progressBars = comp.ProgressBarData.VisibleRightLeg;
                         break;
                     }
                     default:
                         throw new Exception("How did we get here ?");
                 }
 
+                if (progressBars.Count > 0)
+                {
+                    foreach (string s in progressBars)
+                        EffectManager.sendUIEffectVisibility(key, transCon, true, s, false);
+                    progressBars.Clear();
+                }
+                
+                if (isLimb)
+                {
+                    if (percent >= 75)
+                    {
+                        progressBars.Add(childName.Replace("{index}", "75"));
+                        EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
+                            childName.Replace("{index}", "75"), true);
+                    }
+                    else if (percent >= 50)
+                    {
+                        progressBars.Add(childName.Replace("{index}", "50"));
+                        EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
+                            childName.Replace("{index}", "50"), true);
+                    }
+                    else if (percent >= 25)
+                    {
+                        progressBars.Add(childName.Replace("{index}", "25"));
+                        EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
+                            childName.Replace("{index}", "25"), true);
+                    }
+                    else
+                    {
+                        progressBars.Add(childName.Replace("{index}", "0"));
+                        EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true,
+                            childName.Replace("{index}", "0"), true);
+                    }
+                    return;
+                }
+
+                string currentPercentUiName = childName.Replace("{index}", percent.ToString());
+                progressBars.Add(currentPercentUiName);
                 EffectManager.sendUIEffectVisibility(key, transCon, reliable, childName.Replace("{index}", lastPercent.ToString()), false);
-                EffectManager.sendUIEffectVisibility(key, transCon, reliable, childName.Replace("{index}", percent.ToString()), true);
+                EffectManager.sendUIEffectVisibility(key, transCon, true, currentPercentUiName, true);
             }
             catch (Exception ex)
             {
