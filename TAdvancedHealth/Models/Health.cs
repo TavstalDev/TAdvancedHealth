@@ -66,7 +66,7 @@ namespace Tavstal.TAdvancedHealth.Models
             if (Mathf.Approximately(BaseHealth, newValue) && BaseHealth > 0.0f)
                 return;
             BaseHealth = Mathf.Clamp(newValue, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.BaseHealth);
-            EventManager.FCallBaseHealthUpdated(PlayerId, newValue);
+            EventManager.FCallBaseHealthUpdated(PlayerId, BaseHealth);
         }
 
         public void SetHeadHealth(float newValue)
@@ -79,7 +79,7 @@ namespace Tavstal.TAdvancedHealth.Models
             if (Mathf.Approximately(HeadHealth, newValue) && HeadHealth > 0.0f)
                 return;
             HeadHealth = Mathf.Clamp(newValue, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.HeadHealth);
-            EventManager.FCallHeadHealthUpdated(PlayerId, newValue);
+            EventManager.FCallHeadHealthUpdated(PlayerId, HeadHealth);
         }
 
         public void SetBodyHealth(float newValue)
@@ -92,7 +92,7 @@ namespace Tavstal.TAdvancedHealth.Models
             if (Mathf.Approximately(BodyHealth, newValue) && BodyHealth > 0.0f)
                 return;
             BodyHealth = Mathf.Clamp(newValue, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.BodyHealth);
-            EventManager.FCallBodyHealthUpdated(PlayerId, newValue);
+            EventManager.FCallBodyHealthUpdated(PlayerId, BodyHealth);
         }
 
         public void SetRightArmHealth(float newValue)
@@ -105,7 +105,7 @@ namespace Tavstal.TAdvancedHealth.Models
             if (Mathf.Approximately(RightArmHealth, newValue) && RightArmHealth > 0.0f)
                 return;
             RightArmHealth = Mathf.Clamp(newValue, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.RightArmHealth);
-            EventManager.FCallRightArmHealthUpdated(PlayerId, newValue);
+            EventManager.FCallRightArmHealthUpdated(PlayerId, RightArmHealth);
         }
 
         public void SetLeftArmHealth(float newValue)
@@ -118,7 +118,7 @@ namespace Tavstal.TAdvancedHealth.Models
             if (Mathf.Approximately(LeftArmHealth, newValue) && LeftArmHealth > 0.0f)
                 return;
             LeftArmHealth = Mathf.Clamp(newValue, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.LeftArmHealth);
-            EventManager.FCallLeftArmHealthUpdated(PlayerId, newValue);
+            EventManager.FCallLeftArmHealthUpdated(PlayerId, LeftArmHealth);
         }
 
         public void SetRightLegHealth(float newValue)
@@ -131,7 +131,7 @@ namespace Tavstal.TAdvancedHealth.Models
             if (Mathf.Approximately(RightLegHealth, newValue) && RightLegHealth > 0.0f)
                 return;
             RightLegHealth = Mathf.Clamp(newValue, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.RightLegHealth);
-            EventManager.FCallRightLegHealthUpdated(PlayerId, newValue);
+            EventManager.FCallRightLegHealthUpdated(PlayerId, RightLegHealth);
         }
 
         public void SetLeftLegHealth(float newValue)
@@ -144,7 +144,7 @@ namespace Tavstal.TAdvancedHealth.Models
             if (Mathf.Approximately(LeftLegHealth, newValue) && LeftLegHealth > 0.0f)
                 return;
             LeftLegHealth = Mathf.Clamp(newValue, 0, AdvancedHealth.Instance.Config.HealthSystemSettings.LeftLegHealth);
-            EventManager.FCallLeftLegHealthUpdated(PlayerId, newValue);
+            EventManager.FCallLeftLegHealthUpdated(PlayerId, LeftLegHealth);
         }
 
         public void SetInjured(bool isInjured)
