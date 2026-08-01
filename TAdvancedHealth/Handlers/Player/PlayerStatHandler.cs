@@ -321,10 +321,8 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
 
                 if (health.LeftLegHealth == 0 || health.RightLegHealth == 0)
                 {
-                    if (!_config.HealthSystemSettings.Movement.CanWalkWithOneBrokenLeg)
-                        player.Player.stance.checkStance(EPlayerStance.PRONE, true);
-                    else if (!_config.HealthSystemSettings.Movement.CanWalkWithBrokenLegs && health.LeftLegHealth == 0 &&
-                             health.RightLegHealth == 0)
+                    if (!_config.HealthSystemSettings.Movement.CanWalkWithOneBrokenLeg || !_config.HealthSystemSettings.Movement.CanWalkWithBrokenLegs && health.LeftLegHealth == 0 &&
+                        health.RightLegHealth == 0)
                         player.Player.stance.checkStance(EPlayerStance.PRONE, true);
                 }
             }

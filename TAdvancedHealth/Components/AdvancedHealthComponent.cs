@@ -83,12 +83,15 @@ namespace Tavstal.TAdvancedHealth.Components
         {
             try
             {
-                if (!states.Contains(state))
-                {
-                    states.Add(state);
-                    if (shouldUpdate)
-                        RefreshStateUI();
-                }
+                if (state == EPlayerState.TEMPERATURE_NONE)
+                    return;
+
+                if (states.Contains(state))
+                    return;
+                
+                states.Add(state);
+                if (shouldUpdate)
+                    RefreshStateUI();
             }
             catch (Exception e)
             {
@@ -100,12 +103,12 @@ namespace Tavstal.TAdvancedHealth.Components
         {
             try
             {
-                if (states.Contains(state))
-                {
-                    states.RemoveAt(states.FindIndex(x => x == state));
-                    if (shouldUpdate)
-                        RefreshStateUI();
-                }
+                if (!states.Contains(state))
+                    return;
+                
+                states.RemoveAt(states.FindIndex(x => x == state));
+                if (shouldUpdate)
+                    RefreshStateUI();
             }
             catch (Exception ex)
             {

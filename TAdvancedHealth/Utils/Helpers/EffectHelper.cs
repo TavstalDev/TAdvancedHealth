@@ -458,6 +458,8 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                     return EPlayerState.TEMPERATURE_UP;
                 case EPlayerTemperature.BURNING:
                     return EPlayerState.TEMPERATURE_BURNING;
+                case EPlayerTemperature.NONE:
+                    return EPlayerState.TEMPERATURE_NONE;
                 case EPlayerTemperature.COVERED:
                     return EPlayerState.TEMPERATURE_COVER;
                 case  EPlayerTemperature.ACID:

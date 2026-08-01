@@ -15,6 +15,7 @@
         TEMPERATURE_UP = 11,
         TEMPERATURE_COVER = 12,
         TEMPERATURE_BURNING = 13,
+        TEMPERATURE_NONE = 0,
         FULL_MOON = 14,
         PVP_ZONE = 15,
         HANDCUFFED = 16,
