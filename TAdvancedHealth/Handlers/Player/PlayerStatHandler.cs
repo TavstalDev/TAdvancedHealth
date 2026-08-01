@@ -5,6 +5,7 @@ using SDG.Unturned;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TAdvancedHealth.Utils.Helpers;
+using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Helpers.General;
 using Tavstal.TLibrary.Helpers.Unturned;
@@ -43,12 +44,12 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
                 var health = comp.HealthData;
                 if (health == null)
                     return;
                 
-                EffectHelper.SendUIEffectProgressBar((short)_config.EffectId, player.CSteamID, true, EProgressBar.SimpleHealth, (int)(Math.Round(health.BaseHealth, 2) / _config.HealthSystemSettings.BaseHealth * 100), 0);
+                EffectHelper.SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.SimpleHealth, (int)(Math.Round(health.BaseHealth, 2) / _config.HealthSystemSettings.BaseHealth * 100), 0);
             }
             catch (Exception ex)
             {
@@ -60,13 +61,13 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
                 var health = comp.HealthData;
                 if (health == null)
                     return;
                 
-                EffectHelper.SendUIEffectProgressBar((short)_config.EffectId, player.CSteamID, true, EProgressBar.Food, player.Player.life.food, (int)comp.ProgressBarData.LastFood);
-                comp.ProgressBarData.LastFood = value;
+                EffectHelper.SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Food, player.Player.life.food, (int)comp.ProgressbarData.Food.Value);
+                comp.ProgressbarData.Food.Value = value;
 
                 if (value <= 0)
                     comp.TryAddState(EPlayerState.NO_FOOD);
@@ -83,10 +84,10 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                EffectHelper.SendUIEffectProgressBar((short)_config.EffectId, player.CSteamID, true, EProgressBar.Stamina,
-                    player.Player.life.stamina, (int)comp.ProgressBarData.LastStamina);
-                comp.ProgressBarData.LastStamina = value;
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
+                EffectHelper.SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Stamina,
+                    player.Player.life.stamina, (int)comp.ProgressbarData.Stamina.Value);
+                comp.ProgressbarData.Stamina.Value = value;
             }
             catch (Exception ex)
             {
@@ -98,9 +99,9 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                EffectHelper.SendUIEffectProgressBar((short)_config.EffectId, player.CSteamID, true, EProgressBar.Water, player.Player.life.water, (int)comp.ProgressBarData.LastWater);
-                comp.ProgressBarData.LastWater = value;
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
+                EffectHelper.SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Water, player.Player.life.water, (int)comp.ProgressbarData.Water.Value);
+                comp.ProgressbarData.Water.Value = value;
 
                 if (value <= 0)
                     comp.TryAddState(EPlayerState.NO_WATER);
@@ -117,9 +118,9 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                EffectHelper.SendUIEffectProgressBar((short)_config.EffectId, player.CSteamID, true, EProgressBar.Radiation, player.Player.life.virus, (int)comp.ProgressBarData.LastVirus);
-                comp.ProgressBarData.LastVirus = value;
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
+                EffectHelper.SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Radiation, player.Player.life.virus, (int)comp.ProgressbarData.Virus.Value);
+                comp.ProgressbarData.Virus.Value = value;
 
                 if (value <= 0)
                     comp.TryAddState(EPlayerState.NO_VIRUS);
@@ -137,9 +138,9 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
-                EffectHelper.SendUIEffectProgressBar((short)_config.EffectId, player.CSteamID, true, EProgressBar.Oxygen, player.Player.life.oxygen, (int)comp.ProgressBarData.LastOxygen);
-                comp.ProgressBarData.LastOxygen = value;
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
+                EffectHelper.SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Oxygen, player.Player.life.oxygen, (int)comp.ProgressbarData.Oxygen.Value);
+                comp.ProgressbarData.Oxygen.Value = value;
 
                 if (value <= 0)
                     comp.TryAddState(EPlayerState.NO_OXYGEN);
@@ -157,7 +158,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
                 if (!state)
                 {
                     comp.hasHeavyBleeding = false;
@@ -186,7 +187,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
                 if (!state)
                 {
                     comp.TryRemoveState(EPlayerState.BROKEN_BONES);
@@ -242,7 +243,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 foreach (SteamPlayer steamPlayer in Provider.clients)
                 {
                     UnturnedPlayer player = UnturnedPlayer.FromSteamPlayer(steamPlayer);
-                    AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                    AdvancedHealthComponent comp = ComponentManager.Get(player);
 
                     if (isFullMoon)
                         comp.TryAddState(EPlayerState.FULL_MOON);
@@ -260,7 +261,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
                 if (isActive)
                     comp.TryAddState(EPlayerState.DEATH_ZONE);
                 else
@@ -276,7 +277,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
                 if (isActive)
                     comp.TryAddState(EPlayerState.SAFE_ZONE);
                 else
@@ -292,7 +293,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
                 comp.TryRemoveState(EffectHelper.GetPlayerState(comp.currentTemperature), false);
                 comp.TryAddState(EffectHelper.GetPlayerState(newTemperature));
                 comp.currentTemperature = newTemperature;
@@ -308,7 +309,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                var comp = player.GetComponent<AdvancedHealthComponent>();
+                var comp = ComponentManager.Get(player);
                 var health = comp.HealthData;
                 if (health == null)
                     return;

@@ -4,11 +4,9 @@ using SDG.Unturned;
 using Steamworks;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Tavstal.TAdvancedHealth.Models;
-using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
-using Tavstal.TAdvancedHealth.Utils.Helpers;
+using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Threading;
 using UnityEngine;
@@ -18,11 +16,11 @@ namespace Tavstal.TAdvancedHealth.Components
     public class AdvancedHealthComponent : UnturnedPlayerComponent
     {
         public ITransportConnection TranspConnection => Player.SteamPlayer().transportConnection;
-        public bool hasHeavyBleeding;
-        public readonly ProgressBarDatas ProgressBarData = new ProgressBarDatas();
-        public EDragState dragState = EDragState.None;
-        public CSteamID dragPartnerId = CSteamID.Nil;
-        public Health? HealthData {  get; set; }
+        public ProgressbarData ProgressbarData { get; } = new ProgressbarData();
+        public Health? HealthData { get; private set; }
+        public bool hasHeavyBleeding { get; set; }
+        public EDragState dragState { get; set; } = EDragState.None;
+        public CSteamID dragPartnerId { get; set; } = CSteamID.Nil;
 
         public Dictionary<ushort, DateTime> LastDefibliratorUses { get; set; } = new Dictionary<ushort, DateTime>();
         private DateTime _nextHeadHealDate;
@@ -136,7 +134,7 @@ namespace Tavstal.TAdvancedHealth.Components
 
         public void Drag(UnturnedPlayer target)
         {
-            AdvancedHealthComponent targetComp = target.GetComponent<AdvancedHealthComponent>();
+            AdvancedHealthComponent targetComp = ComponentManager.Get(target);
             var targetHealth = targetComp.HealthData;
             if (targetHealth == null)
                 return;
@@ -159,7 +157,7 @@ namespace Tavstal.TAdvancedHealth.Components
             UnturnedPlayer partner = UnturnedPlayer.FromCSteamID(dragPartnerId);
             if (partner == null)
                 return;
-            AdvancedHealthComponent partnerComp = partner.GetComponent<AdvancedHealthComponent>();
+            AdvancedHealthComponent partnerComp = ComponentManager.Get(partner);
             if (partnerComp == null)
                 return;
             partnerComp.UnDrag(true);
@@ -246,6 +244,9 @@ namespace Tavstal.TAdvancedHealth.Components
             #endregion
 
             #region Regeneration
+            
+            if (Player.Dead)
+                return;
 
             bool canRegenerate =
                 Player.Player.life.food >= AdvancedHealth.Instance.Config.HealthSystemSettings.Regen.HealthRegenMinFood &&

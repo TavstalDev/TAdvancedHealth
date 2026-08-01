@@ -7,6 +7,7 @@ using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TAdvancedHealth.Utils.Helpers;
+using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Helpers.Unturned;
 
@@ -33,24 +34,24 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
                 var health = comp.HealthData;
                 if (health == null)
                     return;
                 
                 #region Set ProgressBarData
 
-                comp.ProgressBarData.LastHealthHead = health.HeadHealth;
-                comp.ProgressBarData.LastHealthBody = health.BodyHealth;
-                comp.ProgressBarData.LastHealthLeftArm = health.LeftArmHealth;
-                comp.ProgressBarData.LastHealthLeftLeg = health.LeftLegHealth;
-                comp.ProgressBarData.LastHealthRightArm = health.RightArmHealth;
-                comp.ProgressBarData.LastHealthRightLeg = health.RightLegHealth;
-                comp.ProgressBarData.LastFood = player.Player.life.food;
-                comp.ProgressBarData.LastWater = player.Player.life.water;
-                comp.ProgressBarData.LastVirus = player.Player.life.virus;
-                comp.ProgressBarData.LastOxygen = player.Player.life.oxygen;
-                comp.ProgressBarData.LastStamina = player.Player.life.stamina;
+                comp.ProgressbarData.Head.Value = health.HeadHealth;
+                comp.ProgressbarData.Body.Value = health.BodyHealth;
+                comp.ProgressbarData.LeftArm.Value = health.LeftArmHealth;
+                comp.ProgressbarData.LeftLeg.Value = health.LeftLegHealth;
+                comp.ProgressbarData.RightArm.Value = health.RightArmHealth;
+                comp.ProgressbarData.RightLeg.Value = health.RightLegHealth;
+                comp.ProgressbarData.Food.Value = player.Player.life.food;
+                comp.ProgressbarData.Water.Value = player.Player.life.water;
+                comp.ProgressbarData.Virus.Value = player.Player.life.virus;
+                comp.ProgressbarData.Oxygen.Value = player.Player.life.oxygen;
+                comp.ProgressbarData.Stamina.Value = player.Player.life.stamina;
 
                 #endregion
 
@@ -126,9 +127,11 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     _playerStats.Remove(player.Id);
                 }
 
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
                 if (comp.dragState != EDragState.None)
                     comp.UnDrag();
+                
+                ComponentManager.Invalidate(player.Id);
             }
             catch (Exception ex)
             {
