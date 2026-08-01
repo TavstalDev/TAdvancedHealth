@@ -4,21 +4,21 @@ namespace Tavstal.TAdvancedHealth.Models.Config
 {
     public class Medicine
     {
-        [YamlMember(Order = 0, Description = "Item ID of the medicine")]
+        [YamlMember(Order = 0)]
         public ushort ItemID { get; set; }
-        [YamlMember(Order = 1, Description = "Health restored to the head")]
+        [YamlMember(Order = 1)]
         public float HeadHp { get; set; }
-        [YamlMember(Order = 2, Description = "Health restored to the body")]
+        [YamlMember(Order = 2)]
         public float BodyHp { get; set; }
-        [YamlMember(Order = 3, Description = "Health restored to the right arm")]
+        [YamlMember(Order = 3)]
         public float RightArmHp { get; set; }
-        [YamlMember(Order = 4, Description = "Health restored to the left arm")]
+        [YamlMember(Order = 4)]
         public float LeftArmHp { get; set; }
-        [YamlMember(Order = 5, Description = "Health restored to the right leg")]
+        [YamlMember(Order = 5)]
         public float RightLegHp { get; set; }
-        [YamlMember(Order = 6, Description = "Health restored to the left leg")]
+        [YamlMember(Order = 6)]
         public float LeftLegHp { get; set; }
-        [YamlMember(Order = 7, Description = "Removes the pain effect on use")]
+        [YamlMember(Order = 7)]
         public bool CuresPain { get; set; }
 
         public Medicine() { }
