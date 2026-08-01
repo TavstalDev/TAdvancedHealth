@@ -23,7 +23,8 @@ A custom tarkov like health system with database support.
 ### Requirements
 - Unturned 3.24.x or later
 - [RocketMod](https://rocketmod.net/) installed on the server
-- [Workshop](https://steamcommunity.com/sharedfiles/filedetails/?id=2067970311)
+- [Workshop (4.2.0)](https://steamcommunity.com/sharedfiles/filedetails/?id=2067970311)
+- [Workshop (4.3.0+)](https://steamcommunity.com/sharedfiles/filedetails/?id=3775218290)
 
 ### Installation
 
