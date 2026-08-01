@@ -3,6 +3,7 @@ using Rocket.Unturned.Player;
 using System;
 using System.Collections.Generic;
 using Tavstal.TAdvancedHealth.Components;
+using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Helpers.Unturned;
 using Tavstal.TLibrary.Models.Commands;
@@ -38,7 +39,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                         targetPlayer = UnturnedPlayer.FromName(args[0]);
                         if (targetPlayer == null)
                         {
-                            AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "error_playet_not_found", AdvancedHealth.Instance.Config.General.MessageIcon);
+                            AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_error_player_not_found", AdvancedHealth.Instance.Config.General.MessageIcon);
                             return true;
                         }
 
@@ -51,7 +52,7 @@ namespace Tavstal.TAdvancedHealth.Commands
                         newHealth = Convert.ToSingle(args[1]);
                     }
 
-                    AdvancedHealthComponent targetComp = targetPlayer.GetComponent<AdvancedHealthComponent>();
+                    AdvancedHealthComponent targetComp = ComponentManager.Get(targetPlayer);
                     var health = targetComp.HealthData;
                     if (health == null)
                         return true;
@@ -72,9 +73,9 @@ namespace Tavstal.TAdvancedHealth.Commands
                                 }
                                 
                                 health.SetHeadHealth(newHealth);
-                                AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_succcess_sethealth", AdvancedHealth.Instance.Config.General.MessageIcon, targetPlayer.CharacterName, AdvancedHealth.Instance.Localize("head"), newHealth);
+                                AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_sethealth_success", AdvancedHealth.Instance.Config.General.MessageIcon, targetPlayer.CharacterName, AdvancedHealth.Instance.Localize("limb_head"), newHealth);
                                 if (!targetPlayer.Equals(callerPlayer))
-                                    AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_other", AdvancedHealth.Instance.Config.General.MessageIcon, callerPlayer.CharacterName, AdvancedHealth.Instance.Localize("head"), newHealth);
+                                    AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_success_other", AdvancedHealth.Instance.Config.General.MessageIcon, callerPlayer.CharacterName, AdvancedHealth.Instance.Localize("limb_head"), newHealth);
                                 break;
                             }
                         case "body":
@@ -91,9 +92,9 @@ namespace Tavstal.TAdvancedHealth.Commands
                                 }
                                 
                                 health.SetBodyHealth(newHealth);
-                                AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_succcess_sethealth", AdvancedHealth.Instance.Config.General.MessageIcon, targetPlayer.CharacterName, AdvancedHealth.Instance.Localize("body"), newHealth);
+                                AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_sethealth_success", AdvancedHealth.Instance.Config.General.MessageIcon, targetPlayer.CharacterName, AdvancedHealth.Instance.Localize("limb_body"), newHealth);
                                 if (!targetPlayer.Equals(callerPlayer))
-                                    AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_other", AdvancedHealth.Instance.Config.General.MessageIcon, callerPlayer.CharacterName, AdvancedHealth.Instance.Localize("body"), newHealth);
+                                    AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_success_other", AdvancedHealth.Instance.Config.General.MessageIcon, callerPlayer.CharacterName, AdvancedHealth.Instance.Localize("limb_body"), newHealth);
                                 break;
                             }
                         case "rightarm":
@@ -111,9 +112,9 @@ namespace Tavstal.TAdvancedHealth.Commands
                                 }
                                 
                                 health.SetRightArmHealth(newHealth);
-                                AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_succcess_sethealth", AdvancedHealth.Instance.Config.General.MessageIcon, targetPlayer.CharacterName, AdvancedHealth.Instance.Localize("rightarm"), newHealth);
+                                AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_sethealth_success", AdvancedHealth.Instance.Config.General.MessageIcon, targetPlayer.CharacterName, AdvancedHealth.Instance.Localize("limb_right_arm"), newHealth);
                                 if (!targetPlayer.Equals(callerPlayer))
-                                    AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_other", AdvancedHealth.Instance.Config.General.MessageIcon, callerPlayer.CharacterName, AdvancedHealth.Instance.Localize("rightarm"), newHealth);
+                                    AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_success_other", AdvancedHealth.Instance.Config.General.MessageIcon, callerPlayer.CharacterName, AdvancedHealth.Instance.Localize("limb_right_arm"), newHealth);
                                 break;
                             }
                         case "leftarm":
@@ -131,9 +132,9 @@ namespace Tavstal.TAdvancedHealth.Commands
                                 }
                                 
                                 health.SetLeftArmHealth(newHealth);
-                                AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_succcess_sethealth", AdvancedHealth.Instance.Config.General.MessageIcon, targetPlayer.CharacterName, AdvancedHealth.Instance.Localize("leftarm"), newHealth);
+                                AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_sethealth_success", AdvancedHealth.Instance.Config.General.MessageIcon, targetPlayer.CharacterName, AdvancedHealth.Instance.Localize("limb_left_arm"), newHealth);
                                 if (!targetPlayer.Equals(callerPlayer))
-                                    AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_other", AdvancedHealth.Instance.Config.General.MessageIcon, callerPlayer.CharacterName, AdvancedHealth.Instance.Localize("leftarm"), newHealth);
+                                    AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_success_other", AdvancedHealth.Instance.Config.General.MessageIcon, callerPlayer.CharacterName, AdvancedHealth.Instance.Localize("limb_left_arm"), newHealth);
                                 break;
                             }
                         case "leftleg":
@@ -151,9 +152,9 @@ namespace Tavstal.TAdvancedHealth.Commands
                                 }
                                 
                                 health.SetLeftLegHealth(newHealth);
-                                AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_succcess_sethealth", AdvancedHealth.Instance.Config.General.MessageIcon, targetPlayer.CharacterName, AdvancedHealth.Instance.Localize("leftleg"), newHealth);
+                                AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_sethealth_success", AdvancedHealth.Instance.Config.General.MessageIcon, targetPlayer.CharacterName, AdvancedHealth.Instance.Localize("limb_left_leg"), newHealth);
                                 if (!targetPlayer.Equals(callerPlayer))
-                                    AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_other", AdvancedHealth.Instance.Config.General.MessageIcon, callerPlayer.CharacterName, AdvancedHealth.Instance.Localize("leftleg"), newHealth);
+                                    AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_success_other", AdvancedHealth.Instance.Config.General.MessageIcon, callerPlayer.CharacterName, AdvancedHealth.Instance.Localize("limb_left_leg"), newHealth);
                                 break;
                             }
                         case "rightleg":
@@ -171,9 +172,9 @@ namespace Tavstal.TAdvancedHealth.Commands
                                 }
                                 
                                 health.SetRightLegHealth(newHealth);
-                                AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_succcess_sethealth", AdvancedHealth.Instance.Config.General.MessageIcon, targetPlayer.CharacterName, AdvancedHealth.Instance.Localize("rightleg"), newHealth);
+                                AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_sethealth_success", AdvancedHealth.Instance.Config.General.MessageIcon, targetPlayer.CharacterName, AdvancedHealth.Instance.Localize("limb_right_leg"), newHealth);
                                 if (!targetPlayer.Equals(callerPlayer))
-                                    AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_other", AdvancedHealth.Instance.Config.General.MessageIcon, callerPlayer.CharacterName, AdvancedHealth.Instance.Localize("rightleg"), newHealth);
+                                    AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(), "command_sethealth_success_other", AdvancedHealth.Instance.Config.General.MessageIcon, callerPlayer.CharacterName, AdvancedHealth.Instance.Localize("limb_right_leg"), newHealth);
                                 break;
                             }
                     }

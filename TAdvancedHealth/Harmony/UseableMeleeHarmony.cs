@@ -33,7 +33,7 @@ namespace Tavstal.TAdvancedHealth.Harmony
             if (userComp.LastDefibliratorUses.TryGetValue(useableMelee.equippedMeleeAsset.id, out DateTime time))
                 if (time > DateTime.Now)
                 {
-                    AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "error_defiblirator_cooldown", (time - DateTime.Now).TotalSeconds.ToString("0.00"));
+                    AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "defibrillator_error_cooldown", (time - DateTime.Now).TotalSeconds.ToString("0.00"));
                     return;
                 }
                 else
@@ -46,7 +46,7 @@ namespace Tavstal.TAdvancedHealth.Harmony
 
             if (targetBasePlayer != null)
             {
-                AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "error_defiblirator_no_player");
+                AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "defibrillator_error_too_far");
                 return;
             }
 
@@ -56,7 +56,7 @@ namespace Tavstal.TAdvancedHealth.Harmony
             var targetHealth = targetComp.HealthData;
             if (targetHealth is { IsInjured: false })
             {
-                AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "error_defiblirator_not_injured");
+                AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "defibrillator_error_healthy");
                 return;
             }
 
@@ -64,14 +64,14 @@ namespace Tavstal.TAdvancedHealth.Harmony
             if (chance != 0 && chance <= defibrillator.ReviveChance)
             { 
                 targetComp.Revive();
-                AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "success_defiblirator_revive",
+                AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "defibrillator_revive",
                     targetPlayer.CharacterName);
                 AdvancedHealth.Instance.SendChatMessage(targetPlayer.SteamPlayer(),
-                    "success_defiblirator_revive_other", userPlayer.CharacterName);
+                    "defibrillator_revive_other", userPlayer.CharacterName);
             }
             else
             {
-                AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "error_defiblirator_revive_fail",
+                AdvancedHealth.Instance.SendChatMessage(userPlayer.SteamPlayer(), "defibrillator_error_fail",
                     targetPlayer.CharacterName);
             }
 

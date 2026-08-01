@@ -150,41 +150,43 @@ namespace Tavstal.TAdvancedHealth
         public override Dictionary<string, string> DefaultLocalization =>
             new Dictionary<string, string>
             {
-                // TODO, check translations
-               { "prefix", "&e[TAH] " },
-               { "error_healtbar_disabled", "&aYou should enable the custom healthbar to use this command." },
-               { "error_command_sethealthhud_args", "&aUsage: /sethealthhud list <page> | [name]" },
-               { "error_command_sethealthhud_list_args", "&aUsage: /sethealthhud list <page>" },
+                // GENERAL
+                
+               { "prefix", "&e[TAdvHealth] " },
+               
+               // COMMANDS
+               
+               { "command_error_player_not_found", "&6Player not found." },
                { "command_cure_success","&aYou have successfully healed {0}"},
-               { "command_succcess_sethealth", "&aYou have successfully set the health of your {0} to {1}" },
-               { "command_succcess_sethealth_other", "&aYou have successfully changed the health of {0}'s {1} to {2}" },
-               { "command_sethealth_other", "&a{0} changed the health of your {1} to {2}" },
-               { "command_sethealthhud_list_element", "&aStyle name: {0}" },
-               { "command_sethealthhud_list_next", "&aNext page: {0}" },
-               { "command_sethealthhud_list_end", "&aYou have reached the end of the styles" },
-               { "error_command_sethealthhud_style_invalid", "&aThe {0} style does not exist." },
-               { "success_revive_other","&a{0} healed you"},
-               { "error_revive_failed","&6Failed to cure someone because you turned away"},
-               { "error_defiblirator_cooldown","&6This defiblirator is on cooldown for {0} second(s)."},
-               { "error_playet_not_found", "&6Player not found" },
-               { "revive_start_other", "&6Reviving {0} in {1} secs" },
-               { "player_injured", "&6[Injured]: {0} needs a medic! (It has been marked on the map)" },
-               { "success_defiblirator_revive", "&6You have successfully revived {0}." },
-               { "success_defiblirator_revive_other", "&6You have been successfully revived by {0}." },
-               { "error_defiblirator_revive_fail", "&6Failed to revive {0}." },
-               { "error_defiblirator_no_player", "&6You need to be closer to a player." },
-               { "error_defiblirator_not_injured", "&6This player is not injured." },
-               { "success_command_hospital_added", "&aThe hospital bed has been successfully added." },
-               { "error_hospital_not_found", "&cHospital was not found."  },
-               { "ui_revive_progress", "You will revive <color=green>{0}</color> in <color=yellow>{1}</color> seconds" },
-               { "ui_bleeding", "You will bleed in <color=red>{0}</color> seconds" },
-               { "ui_revive_start_other", "<color=green>{0}</color> has began to revive you" },
-               { "head", "head" },
-               { "body", "body" },
-               { "rightarm", "rightarm" },
-               { "leftarm", "leftarm" },
-               { "rightleg", "rightleg" },
-               { "leftleg", "leftleg" }
+               { "command_sethealth_success", "&aYou have successfully set the health of {0}'s {1} to {2}" },
+               { "command_sethealth_success_other", "&a{0} changed the health of your {1} to {2}" },
+               { "command_hospital_error_not_found", "&cHospital was not found."},
+               { "command_hospital_added", "&aThe hospital bed has been successfully added."},
+               
+               // Defibrillator
+               
+               { "defibrillator_error_cooldown", "&6This defibrillator is on cooldown for {0} second(s)." },
+               { "defibrillator_error_fail", "&6Failed to revive {0}" },
+               { "defibrillator_error_too_far", "&6You are too far from that player." },
+               { "defibrillator_error_healthy", "&6The targeted player is healthy." },
+               { "defibrillator_revive", "&6You have successfully revived {0}." }, 
+               { "defibrillator_revive_other", "&6You have been successfully revived by {0}." }, 
+               { "defibrillator_alert", "&6[Injured]: {0} needs a medic! (Their location has been marked on the map)" },
+               
+               // UI
+
+               { "ui_bleeding_title", "Unconscious" },
+               { "ui_bleeding_message", "You will bleed out in <color=#e74c3c>{0}</color> seconds" },
+               { "ui_bleeding_suicide", "GIVE UP" },
+
+               // Limbs
+               
+               { "limb_head", "head" },
+               { "limb_body", "body" },
+               { "limb_left_arm", "left arm" },
+               { "limb_left_leg", "left leg" },
+               { "limb_right_arm", "right arm" },
+               { "limb_right_leg", "right leg" },
             };
     }
 }

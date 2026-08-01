@@ -2,6 +2,7 @@
 using Rocket.Unturned.Player;
 using System.Collections.Generic;
 using Tavstal.TAdvancedHealth.Components;
+using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Helpers.Unturned;
 using Tavstal.TLibrary.Models.Commands;
 using Tavstal.TLibrary.Models.Plugin;
@@ -26,7 +27,7 @@ namespace Tavstal.TAdvancedHealth.Commands
             UnturnedPlayer callerPlayer = (UnturnedPlayer)caller;
             if (args.Length == 0)
             {
-                AdvancedHealthComponent comp = callerPlayer.GetComponent<AdvancedHealthComponent>();
+                AdvancedHealthComponent comp = ComponentManager.Get(callerPlayer);
                 comp.Revive();
                 AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_cure_success", AdvancedHealth.Instance.Config.General.MessageIcon, callerPlayer.CharacterName);
                 return true;
@@ -37,11 +38,11 @@ namespace Tavstal.TAdvancedHealth.Commands
                 UnturnedPlayer targetPlayer = UnturnedPlayer.FromName(args[0]);
                 if (targetPlayer == null)
                 {
-                    AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "error_playet_not_found", AdvancedHealth.Instance.Config.General.MessageIcon);
+                    AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_error_player_not_found", AdvancedHealth.Instance.Config.General.MessageIcon);
                     return true;
                 }
 
-                AdvancedHealthComponent targetComp = targetPlayer.GetComponent<AdvancedHealthComponent>();
+                AdvancedHealthComponent targetComp = ComponentManager.Get(targetPlayer);
                 targetComp.Revive();
 
                 AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_cure_success", AdvancedHealth.Instance.Config.General.MessageIcon, targetPlayer.CharacterName);

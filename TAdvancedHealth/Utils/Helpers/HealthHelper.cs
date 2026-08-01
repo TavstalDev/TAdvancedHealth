@@ -56,9 +56,14 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                 player.Player.stance.checkStance(EPlayerStance.PRONE, true);
                 player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, true);
 
-                EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true, "bt_suicide", true);
-                EffectManager.sendUIEffectText((short)_config.EffectId, transCon, true, "tb_message",
-                    AdvancedHealth.Instance.Localize("ui_bleeding",
+                EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true, "bt_revive_suicide", true);
+                EffectManager.sendUIEffectText((short)_config.EffectId, transCon, true, "tb_suicide",
+                    AdvancedHealth.Instance.Localize("ui_bleeding_suicide",
+                        (int)(healthData.DeathDate - DateTime.Now).TotalSeconds));
+                EffectManager.sendUIEffectText((short)_config.EffectId, transCon, true, "tb_revive_message",
+                    AdvancedHealth.Instance.Localize("ui_bleeding_title"));
+                EffectManager.sendUIEffectText((short)_config.EffectId, transCon, true, "tb_revive_message",
+                    AdvancedHealth.Instance.Localize("ui_bleeding_message",
                         (int)(healthData.DeathDate - DateTime.Now).TotalSeconds));
                 EffectManager.sendUIEffectVisibility((short)_config.EffectId, transCon, true, "RevivePanel", true);
                 foreach (SteamPlayer sp in Provider.clients)
@@ -69,7 +74,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                     {
                         var teleportLocation = new Vector3(player.Position.x, player.Position.y, player.Position.z);
                         tmpPlayer.Player.quests.sendSetMarker(true, teleportLocation);
-                        AdvancedHealth.Instance.SendChatMessage(sp, "player_injured", player.CharacterName);
+                        AdvancedHealth.Instance.SendChatMessage(sp, "defibrillator_alert", player.CharacterName);
                     }
                 }
             }

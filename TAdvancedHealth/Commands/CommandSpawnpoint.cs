@@ -32,14 +32,14 @@ namespace Tavstal.TAdvancedHealth.Commands
                     x.Name.ToLower() == args[0].ToLower());
             if (hospital == null)
             {
-                AdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "error_hospital_not_found", AdvancedHealth.Instance.Config.General.MessageIcon);
+                AdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "command_hospital_error_not_found", AdvancedHealth.Instance.Config.General.MessageIcon);
                 return;
             }
 
             hospital.Position ??= new List<SerializableVector3>();
             hospital.Position.Add(new SerializableVector3(player.Position));
             AdvancedHealth.Instance.Config.Save();
-            AdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "success_command_hospital_added", AdvancedHealth.Instance.Config.General.MessageIcon);
+            AdvancedHealth.Instance.SendChatMessage(player.SteamPlayer(), "command_hospital_added", AdvancedHealth.Instance.Config.General.MessageIcon);
         }
     }
 }

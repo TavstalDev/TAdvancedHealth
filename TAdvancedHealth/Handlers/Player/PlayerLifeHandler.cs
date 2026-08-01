@@ -145,7 +145,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                                 {
                                     if (value > DateTime.Now)
                                     {
-                                        Helper.SendChatMessage(killerPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "error_defiblirator_cooldown", (value - DateTime.Now).TotalSeconds.ToString("0.00")));
+                                        Helper.SendChatMessage(killerPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "defibrillator_error_cooldown", (value - DateTime.Now).TotalSeconds.ToString("0.00")));
                                         return;
                                     }
                                     killerComp.LastDefibliratorUses.Remove(defibrillator.ItemID);
