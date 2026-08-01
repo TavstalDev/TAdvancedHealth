@@ -5,6 +5,7 @@ using System;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
+using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Helpers.Unturned;
 using UnityEngine;
@@ -19,7 +20,7 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
         {
             try
             {
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
                 var transCon = player.SteamPlayer().transportConnection;
                 var healthData = comp.HealthData;
                 if (healthData == null)

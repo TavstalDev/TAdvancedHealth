@@ -4,6 +4,7 @@ using Rocket.Unturned.Player;
 using SDG.Unturned;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Config;
+using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Extensions;
 
 namespace Tavstal.TAdvancedHealth.Handlers.Player
@@ -27,7 +28,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             try
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(equipment.player);
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
                 bool isMedicine = false;
                 if (_config.Medicines.FirstOrDefault(x => x.ItemID == jar.item.id) != null)
                 {
@@ -89,7 +90,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             try
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(equipment.player);
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
                 comp.lastEquipedItem = 0;
             }
             catch (Exception ex)
@@ -104,7 +105,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(instigatingPlayer);
 
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
                 if (comp.lastEquipedItem == 0)
                     return;
                 

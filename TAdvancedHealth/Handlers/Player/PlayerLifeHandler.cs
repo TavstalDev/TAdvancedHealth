@@ -12,6 +12,7 @@ using Tavstal.TAdvancedHealth.Models;
 using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TAdvancedHealth.Utils.Helpers;
+using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Helpers.General;
 using Tavstal.TLibrary.Helpers.Unturned;
@@ -41,7 +42,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
 
                 EffectHelper.UpdateWholeHealthUI(player);
                 if (comp.dragState != EDragState.None)
@@ -60,7 +61,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
                 comp.Revive();
                 if (comp.dragState != EDragState.None)
                     comp.UnDrag();
@@ -120,8 +121,8 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             try
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(parameters.player);
-                AdvancedHealthComponent cp = player.GetComponent<AdvancedHealthComponent>();
-                var health = cp.HealthData;
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
+                var health = comp.HealthData;
                 if (health == null)
                     return;
                 var healthSettings = _config.HealthSystemSettings;
@@ -134,7 +135,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     UnturnedPlayer killerPlayer = UnturnedPlayer.FromCSteamID(parameters.killer);
                     if (killerPlayer != null && _config.DefibrillatorSettings.Enabled)
                     {
-                        AdvancedHealthComponent killerComp = killerPlayer.GetComponent<AdvancedHealthComponent>();
+                        AdvancedHealthComponent killerComp = killerPlayer.
                         if (!_config.DefibrillatorSettings.EnablePermission || (_config.DefibrillatorSettings.EnablePermission && killerPlayer.HasPermission(_config.DefibrillatorSettings.PermissionForUseDefiblirator)))
                         {
                             Defibrillator defibrillator = _config.DefibrillatorSettings.DefibrillatorItems.Find(x => x.ItemID == killerPlayer.Player.equipment.ItemID);
@@ -215,13 +216,13 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                         parameters.damage = 10.0f;
                         player.Broken = true;
                         break;
-                    case EDeathCause.BLEEDING when health.IsInjured && !cp.allowDamage:
+                    case EDeathCause.BLEEDING when health.IsInjured && !comp.allowDamage:
                         parameters.damage = 0;
                         player.Bleeding = false;
                         break;
                     case EDeathCause.BLEEDING:
                     {
-                        parameters.damage = cp.hasHeavyBleeding ? healthSettings.Combat.HeavyBleedingDamage : healthSettings.Combat.BleedingDamage;
+                        parameters.damage = comp.hasHeavyBleeding ? healthSettings.Combat.HeavyBleedingDamage : healthSettings.Combat.BleedingDamage;
                         player.Bleeding = true;
                         break;
                     }
@@ -231,7 +232,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                         break;
                 }
 
-                cp.allowDamage = false;
+                comp.allowDamage = false;
 
                 if (parameters.respectArmor)
                 {
@@ -260,7 +261,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             try
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(p);
-                AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+                AdvancedHealthComponent comp = ComponentManager.Get(player);
 
                 player.Player.life.askHeal(100, false, false);
                 var health = comp.HealthData;
@@ -309,7 +310,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         
         private static void HandleIncomingDamage(UnturnedPlayer player, Health health, CSteamID killer, float totalDamage, ELimb limb, EDeathCause cause, Vector3 ragdoll)
         {
-            AdvancedHealthComponent comp = player.GetComponent<AdvancedHealthComponent>();
+            AdvancedHealthComponent comp = ComponentManager.Get(player);
             switch (limb)
             {
                 // HEAD

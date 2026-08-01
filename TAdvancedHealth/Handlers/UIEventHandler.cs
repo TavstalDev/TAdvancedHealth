@@ -4,6 +4,7 @@ using SDG.Unturned;
 using Steamworks;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
+using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Extensions;
 
 namespace Tavstal.TAdvancedHealth.Handlers
@@ -27,7 +28,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
             try
             {
                 UnturnedPlayer uPlayer = UnturnedPlayer.FromPlayer(player);
-                AdvancedHealthComponent comp = uPlayer.GetComponent<AdvancedHealthComponent>();
+                AdvancedHealthComponent comp = ComponentManager.Get(uPlayer);
                 if (buttonName == "bt_suicide" || buttonName == "bt_suicide2")
                 {
                     var health = comp.HealthData;
