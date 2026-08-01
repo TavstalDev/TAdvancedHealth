@@ -149,7 +149,6 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
 
                 string currentPercentUiName = childName.Replace("{index}", percent.ToString());
                 progressbar.InterfaceValue = currentPercentUiName;
-                EffectManager.sendUIEffectVisibility(key, transCon, reliable, childName.Replace("{index}", lastPercent.ToString()), false);
                 EffectManager.sendUIEffectVisibility(key, transCon, reliable, currentPercentUiName, true);
             }
             catch (Exception ex)
@@ -218,11 +217,11 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
                 comp.ProgressbarData.RightArm.Value = healthData.RightArmHealth;
                 comp.ProgressbarData.RightLeg.Value = healthData.RightLegHealth;
                 //Stats
-                SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Food, player.Player.life.food, player.Player.life.food);
-                SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Stamina, player.Player.life.stamina, player.Player.life.stamina);
-                SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Water, player.Player.life.water, player.Player.life.water);
-                SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Radiation, player.Player.life.virus, player.Player.life.virus);
-                SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Oxygen, player.Player.life.oxygen, player.Player.life.oxygen);
+                SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Food, player.Player.life.food, 0);
+                SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Stamina, player.Player.life.stamina, 0);
+                SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Water, player.Player.life.water, 0);
+                SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Radiation, player.Player.life.virus, 0);
+                SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Oxygen, player.Player.life.oxygen, 0);
 
             }
             catch (Exception ex)
