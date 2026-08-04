@@ -20,24 +20,27 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         
         internal static void Attach()
         {
-            U.Events.OnPlayerConnected += OnPlayerJoin;
+            //U.Events.OnPlayerConnected += OnPlayerJoin;
             U.Events.OnPlayerDisconnected += OnPlayerLeave;
         }
 
         internal static void Detach()
         {
-            U.Events.OnPlayerConnected -= OnPlayerJoin;
+            //U.Events.OnPlayerConnected -= OnPlayerJoin;
             U.Events.OnPlayerDisconnected -= OnPlayerLeave;
         }
         
-        private static void OnPlayerJoin(UnturnedPlayer player)
+        internal static void OnPlayerJoin(UnturnedPlayer player)
         {
             try
             {
                 AdvancedHealthComponent comp = ComponentManager.Get(player);
                 var health = comp.HealthData;
                 if (health == null)
+                {
+                    AdvancedHealth.Logger.Error($"Failed to retrieve health data for player {player.DisplayName} ({player.Id}).");
                     return;
+                }
                 
                 #region Attach Events
 

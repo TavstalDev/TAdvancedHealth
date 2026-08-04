@@ -4,6 +4,7 @@ using SDG.Unturned;
 using Steamworks;
 using System;
 using System.Collections.Generic;
+using Tavstal.TAdvancedHealth.Handlers.Player;
 using Tavstal.TAdvancedHealth.Models;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TAdvancedHealth.Utils.Managers;
@@ -46,15 +47,28 @@ namespace Tavstal.TAdvancedHealth.Components
                         HealthData = new Health(healthData);
                         return;
                     }
-                    
+
                     var cshSettings = AdvancedHealth.Instance.Config.HealthSystemSettings;
-                    HealthData = new Health(Player.Id, cshSettings.BaseHealth, cshSettings.HeadHealth, cshSettings.BodyHealth,
-                        cshSettings.RightArmHealth, cshSettings.LeftArmHealth, cshSettings.RightLegHealth, cshSettings.LeftLegHealth,
+                    HealthData = new Health(Player.Id, cshSettings.BaseHealth, cshSettings.HeadHealth,
+                        cshSettings.BodyHealth,
+                        cshSettings.RightArmHealth, cshSettings.LeftArmHealth, cshSettings.RightLegHealth,
+                        cshSettings.LeftLegHealth,
                         false);
                 }
                 catch (Exception ex)
                 {
                     AdvancedHealth.Logger.Error("Failed to get player health data.", ex);
+                }
+                finally
+                {
+                    if (HealthData != null)
+                    {
+                        await MainThreadDispatcher.RunAsync(() => PlayerConnectionHandler.OnPlayerJoin(Player));
+                    }
+                    else
+                    {
+                        Player.Kick("Failed to load health data. Please try again later.");
+                    }
                 }
             });
         }
