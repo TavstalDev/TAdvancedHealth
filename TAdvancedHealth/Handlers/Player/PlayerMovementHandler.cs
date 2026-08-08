@@ -43,28 +43,30 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                         if (victimPlayer != null)
                         {
                             UnturnedPlayer targetPlayer = UnturnedPlayer.FromPlayer(victimPlayer);
-                            AdvancedHealthComponent targetComp = ComponentManager.Get(targetPlayer);
-                            targetComp.Drag(targetPlayer);
+                            AdvancedHealthComponent? targetComp = ComponentManager.Get(targetPlayer);
+                            targetComp?.Drag(targetPlayer);
                         }
                         break;
                     }
                     case UnturnedPlayerEvents.PlayerGesture.SurrenderStop:
                     {
-                        AdvancedHealthComponent comp = ComponentManager.Get(player);
+                        AdvancedHealthComponent? comp = ComponentManager.Get(player);
+                        if (comp == null)
+                            break;
                         if (comp.dragState == EDragState.Dragger)
                             comp.UnDrag();
                         break;
                     }
                     case UnturnedPlayerEvents.PlayerGesture.Arrest_Start:
                     {
-                        AdvancedHealthComponent comp = ComponentManager.Get(player);
-                        comp.TryAddState(EPlayerState.HANDCUFFED);
+                        AdvancedHealthComponent? comp = ComponentManager.Get(player);
+                        comp?.TryAddState(EPlayerState.HANDCUFFED);
                         break;
                     }
                     case UnturnedPlayerEvents.PlayerGesture.Arrest_Stop:
                     {
-                        AdvancedHealthComponent comp = ComponentManager.Get(player);
-                        comp.TryRemoveState(EPlayerState.HANDCUFFED);
+                        AdvancedHealthComponent? comp = ComponentManager.Get(player);
+                        comp?.TryRemoveState(EPlayerState.HANDCUFFED);
                         break;
                     }
                 }

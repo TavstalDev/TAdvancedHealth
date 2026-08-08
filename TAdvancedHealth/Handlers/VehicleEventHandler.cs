@@ -1,7 +1,6 @@
 using System;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
-using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Extensions;
 
@@ -29,6 +28,9 @@ namespace Tavstal.TAdvancedHealth.Handlers
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(p);
                 var comp = ComponentManager.Get(player);
+                if (comp == null)
+                    return;
+                
                 var healthData = comp.HealthData;
                 if (healthData == null)
                     return;
@@ -73,6 +75,9 @@ namespace Tavstal.TAdvancedHealth.Handlers
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(p);
                 var comp = ComponentManager.Get(player);
+                if (comp == null)
+                    return;
+                
                 var healthData = comp.HealthData;
                 if (healthData == null)
                     return;

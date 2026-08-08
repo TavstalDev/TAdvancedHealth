@@ -28,7 +28,10 @@ namespace Tavstal.TAdvancedHealth.Handlers
             try
             {
                 UnturnedPlayer uPlayer = UnturnedPlayer.FromPlayer(player);
-                AdvancedHealthComponent comp = ComponentManager.Get(uPlayer);
+                AdvancedHealthComponent? comp = ComponentManager.Get(uPlayer);
+                if (comp == null)
+                    return;
+                
                 if (buttonName == "bt_revive_suicide")
                 {
                     var health = comp.HealthData;

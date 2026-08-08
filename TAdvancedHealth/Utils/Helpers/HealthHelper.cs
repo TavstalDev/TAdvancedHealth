@@ -3,8 +3,6 @@ using Rocket.Unturned.Player;
 using SDG.Unturned;
 using System;
 using Tavstal.TAdvancedHealth.Components;
-using Tavstal.TAdvancedHealth.Models.Config;
-using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Helpers.Unturned;
@@ -20,7 +18,10 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
         {
             try
             {
-                AdvancedHealthComponent comp = ComponentManager.Get(player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
+                if (comp == null)
+                    return;
+                
                 var transCon = player.SteamPlayer().transportConnection;
                 var healthData = comp.HealthData;
                 if (healthData == null)

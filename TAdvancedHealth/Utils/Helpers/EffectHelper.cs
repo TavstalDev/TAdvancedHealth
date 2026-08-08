@@ -23,6 +23,9 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
             try
             {
                 var comp = ComponentManager.Get(player);
+                if (comp == null)
+                    return;
+                
                 var healthData = comp.HealthData;
                 if (healthData == null)
                     return;
@@ -161,7 +164,10 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
         {
             try
             {
-                AdvancedHealthComponent comp = ComponentManager.Get(player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
+                if (comp == null)
+                    return;
+                
                 var healthData = comp.HealthData;
                 if (healthData == null)
                     return;
@@ -199,7 +205,10 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
         {
             try
             {
-                AdvancedHealthComponent comp = ComponentManager.Get(player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
+                if (comp == null)
+                    return;
+                
                 var healthData = comp.HealthData;
                 if (healthData == null)
                     return;

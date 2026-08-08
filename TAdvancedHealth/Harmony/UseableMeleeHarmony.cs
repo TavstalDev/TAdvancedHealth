@@ -29,7 +29,10 @@ namespace Tavstal.TAdvancedHealth.Harmony
             if (!_config.DefibrillatorSettings.Enable || (_config.DefibrillatorSettings.Enable && !userPlayer.HasPermission(_config.DefibrillatorSettings.Permission)) || defibrillator == null)
                 return;
 
-            AdvancedHealthComponent userComp = ComponentManager.Get(userPlayer);
+            AdvancedHealthComponent? userComp = ComponentManager.Get(userPlayer);
+            if (userComp == null)
+                return;
+            
             if (userComp.LastDefibliratorUses.TryGetValue(useableMelee.equippedMeleeAsset.id, out DateTime time))
                 if (time > DateTime.Now)
                 {
@@ -51,7 +54,9 @@ namespace Tavstal.TAdvancedHealth.Harmony
             }
 
             UnturnedPlayer targetPlayer = UnturnedPlayer.FromPlayer(targetBasePlayer);
-            AdvancedHealthComponent targetComp = ComponentManager.Get(targetPlayer);
+            AdvancedHealthComponent? targetComp = ComponentManager.Get(targetPlayer);
+            if  (targetComp == null)
+                return;
 
             var targetHealth = targetComp.HealthData;
             if (targetHealth is { IsInjured: false })

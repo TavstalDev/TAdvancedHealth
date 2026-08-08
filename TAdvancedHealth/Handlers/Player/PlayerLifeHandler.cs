@@ -42,7 +42,9 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                AdvancedHealthComponent comp = ComponentManager.Get(player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
+                if (comp == null)
+                    return;
 
                 EffectHelper.UpdateWholeHealthUI(player);
                 if (comp.dragState != EDragState.None)
@@ -61,7 +63,10 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                AdvancedHealthComponent comp = ComponentManager.Get(player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
+                if (comp == null)
+                    return;
+                
                 comp.Revive();
                 if (comp.dragState != EDragState.None)
                     comp.UnDrag();
@@ -121,7 +126,10 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             try
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(parameters.player);
-                AdvancedHealthComponent comp = ComponentManager.Get(player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
+                if (comp == null)
+                    return;
+                
                 var health = comp.HealthData;
                 if (health == null)
                     return;
@@ -261,7 +269,9 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             try
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(p);
-                AdvancedHealthComponent comp = ComponentManager.Get(player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
+                if (comp == null)
+                    return;
 
                 player.Player.life.askHeal(100, false, false);
                 var health = comp.HealthData;
@@ -310,7 +320,10 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         
         private static void HandleIncomingDamage(UnturnedPlayer player, Health health, CSteamID killer, float totalDamage, ELimb limb, EDeathCause cause, Vector3 ragdoll)
         {
-            AdvancedHealthComponent comp = ComponentManager.Get(player);
+            AdvancedHealthComponent? comp = ComponentManager.Get(player);
+            if (comp == null)
+                return;
+            
             switch (limb)
             {
                 // HEAD

@@ -28,7 +28,10 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             try
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(equipment.player);
-                AdvancedHealthComponent comp = ComponentManager.Get(player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
+                if (comp == null)
+                    return;
+                
                 bool isMedicine = false;
                 if (_config.Medicines.FirstOrDefault(x => x.ItemID == jar.item.id) != null)
                 {
@@ -90,7 +93,9 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             try
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(equipment.player);
-                AdvancedHealthComponent comp = ComponentManager.Get(player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
+                if (comp == null)
+                    return;
                 comp.lastEquipedItem = 0;
             }
             catch (Exception ex)
@@ -104,8 +109,10 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             try
             {
                 UnturnedPlayer player = UnturnedPlayer.FromPlayer(instigatingPlayer);
-
-                AdvancedHealthComponent comp = ComponentManager.Get(player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
+                if (comp == null)
+                    return;
+                
                 if (comp.lastEquipedItem == 0)
                     return;
                 

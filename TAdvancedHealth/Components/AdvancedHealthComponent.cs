@@ -148,7 +148,10 @@ namespace Tavstal.TAdvancedHealth.Components
 
         public void Drag(UnturnedPlayer target)
         {
-            AdvancedHealthComponent targetComp = ComponentManager.Get(target);
+            AdvancedHealthComponent? targetComp = ComponentManager.Get(target);
+            if (targetComp == null)
+                return;
+            
             var targetHealth = targetComp.HealthData;
             if (targetHealth == null)
                 return;
@@ -171,7 +174,7 @@ namespace Tavstal.TAdvancedHealth.Components
             UnturnedPlayer partner = UnturnedPlayer.FromCSteamID(dragPartnerId);
             if (partner == null)
                 return;
-            AdvancedHealthComponent partnerComp = ComponentManager.Get(partner);
+            AdvancedHealthComponent? partnerComp = ComponentManager.Get(partner);
             if (partnerComp == null)
                 return;
             partnerComp.UnDrag(true);

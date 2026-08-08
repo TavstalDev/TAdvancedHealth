@@ -27,8 +27,8 @@ namespace Tavstal.TAdvancedHealth.Commands
             UnturnedPlayer callerPlayer = (UnturnedPlayer)caller;
             if (args.Length == 0)
             {
-                AdvancedHealthComponent comp = ComponentManager.Get(callerPlayer);
-                comp.Revive();
+                AdvancedHealthComponent? comp = ComponentManager.Get(callerPlayer);
+                comp?.Revive();
                 AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_cure_success", AdvancedHealth.Instance.Config.General.MessageIcon, callerPlayer.CharacterName);
                 return true;
             }
@@ -42,8 +42,8 @@ namespace Tavstal.TAdvancedHealth.Commands
                     return true;
                 }
 
-                AdvancedHealthComponent targetComp = ComponentManager.Get(targetPlayer);
-                targetComp.Revive();
+                AdvancedHealthComponent? targetComp = ComponentManager.Get(targetPlayer);
+                targetComp?.Revive();
 
                 AdvancedHealth.Instance.SendChatMessage(callerPlayer.SteamPlayer(), "command_cure_success", AdvancedHealth.Instance.Config.General.MessageIcon, targetPlayer.CharacterName);
                 return true;

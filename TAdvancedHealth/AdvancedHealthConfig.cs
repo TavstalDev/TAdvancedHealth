@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Models.Config.HealthSystem;
 using Tavstal.TAdvancedHealth.Models.Database;
-using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TLibrary.Models.Config;
 using YamlDotNet.Serialization;
 // ReSharper disable ClassNeverInstantiated.Global

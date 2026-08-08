@@ -34,7 +34,10 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                AdvancedHealthComponent comp = ComponentManager.Get(player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
+                if (comp == null)
+                    return;
+                
                 var health = comp.HealthData;
                 if (health == null)
                 {
@@ -108,8 +111,8 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     _playerStats.Remove(player.Id);
                 }
 
-                AdvancedHealthComponent comp = ComponentManager.Get(player);
-                if (comp.dragState != EDragState.None)
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
+                if (comp != null && comp.dragState != EDragState.None)
                     comp.UnDrag();
                 
                 ComponentManager.Invalidate(player.Id);

@@ -52,7 +52,10 @@ namespace Tavstal.TAdvancedHealth.Commands
                         newHealth = Convert.ToSingle(args[1]);
                     }
 
-                    AdvancedHealthComponent targetComp = ComponentManager.Get(targetPlayer);
+                    AdvancedHealthComponent? targetComp = ComponentManager.Get(targetPlayer);
+                    if (targetComp == null)
+                        return true;
+                    
                     var health = targetComp.HealthData;
                     if (health == null)
                         return true;
