@@ -7,6 +7,7 @@ using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TAdvancedHealth.Utils.Helpers;
 using Tavstal.TAdvancedHealth.Utils.Managers;
+// ReSharper disable UnusedMember.Global
 
 namespace Tavstal.TAdvancedHealth.Handlers
 {
@@ -15,6 +16,7 @@ namespace Tavstal.TAdvancedHealth.Handlers
     /// </summary>
     public static class HealthSystemEventHandler
     {
+        // TODO: Create API for events.
         private static AdvancedHealthConfig _config => AdvancedHealth.Instance.Config;
 
         /// <summary>

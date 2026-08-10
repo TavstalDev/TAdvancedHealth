@@ -63,7 +63,7 @@ namespace Tavstal.TAdvancedHealth.Components
                 {
                     if (HealthData != null)
                     {
-                        await MainThreadDispatcher.RunAsync(() => PlayerConnectionHandler.OnPlayerJoin(Player));
+                        await MainThreadDispatcher.RunAsync(() => PlayerConnectionListener.OnPlayerJoin(Player));
                     }
                     else
                     {

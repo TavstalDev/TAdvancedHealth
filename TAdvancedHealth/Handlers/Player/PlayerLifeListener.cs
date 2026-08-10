@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using Rocket.API;
 using Rocket.API.Serialisation;
-using Rocket.Unturned.Events;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
 using Steamworks;
+using Tavstal.RocketFlow.Attributes;
+using Tavstal.RocketFlow.Core;
+using Tavstal.RocketFlow.Events.Damage;
+using Tavstal.RocketFlow.Events.Player.Life;
 using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Models;
 using Tavstal.TAdvancedHealth.Models.Config;
@@ -17,53 +20,42 @@ using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Helpers.General;
 using Tavstal.TLibrary.Helpers.Unturned;
 using UnityEngine;
+// ReSharper disable UnusedMember.Local
 
 namespace Tavstal.TAdvancedHealth.Handlers.Player
 {
-    public static class PlayerLifeHandler
+    public class PlayerLifeListener : EventListener
     {
         private static AdvancedHealthConfig _config => AdvancedHealth.Instance.Config;
         
-        internal static void Attach()
-        {
-            UnturnedPlayerEvents.OnPlayerRevive += OnPlayerRevived;
-            DamageTool.damagePlayerRequested += OnPlayerDamaged;
-            UnturnedPlayerEvents.OnPlayerDeath += OnPlayerDeath;
-        }
-
-        internal static void Detach()
-        {
-            UnturnedPlayerEvents.OnPlayerRevive -= OnPlayerRevived;
-            DamageTool.damagePlayerRequested -= OnPlayerDamaged;
-            UnturnedPlayerEvents.OnPlayerDeath -= OnPlayerDeath;
-        }
-        
-        private static void OnPlayerDeath(UnturnedPlayer player, EDeathCause cause, ELimb limb, CSteamID murderer)
+        [EventHandler]
+        private void OnDeath(PlayerDeathEvent e)
         {
             try
             {
-                AdvancedHealthComponent? comp = ComponentManager.Get(player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(e.Player);
                 if (comp == null)
                     return;
 
-                EffectHelper.UpdateWholeHealthUI(player);
+                EffectHelper.UpdateWholeHealthUI(e.Player);
                 if (comp.dragState != EDragState.None)
                     comp.UnDrag();
 
                 EffectManager.sendUIEffectVisibility((short)_config.EffectId, comp.TranspConnection, true, "RevivePanel", false);
-                player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
+                e.Player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(OnPlayerDeath)}.", ex);
+                AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(OnDeath)}.", ex);
             }
         }
         
-        internal static void OnPlayerRevived(UnturnedPlayer player, Vector3 position, byte angle)
+        [EventHandler]
+        private void OnRevived(PlayerReviveEvent e)
         {
             try
             {
-                AdvancedHealthComponent? comp = ComponentManager.Get(player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(e.Player);
                 if (comp == null)
                     return;
                 
@@ -73,7 +65,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
 
 
                 EffectManager.sendUIEffectVisibility((short)_config.EffectId, comp.TranspConnection, true, "RevivePanel", false);
-                player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
+                e.Player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
 
                 AdvancedHealth.Instance.InvokeAction(0.1f, () =>
                 {
@@ -88,21 +80,22 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                             {
                                 i = MathHelper.Next(0, h.Position.Count - 1);
                                 Vector3 p = h.Position.ElementAt(i).GetVector3();
-                                player.Teleport(p, player.Rotation);
+                                e.Player.Teleport(p, e.Player.Rotation);
                             }
                         }
                         else
                         {
-                            Hospital? hospital = _config.HospitalSettings.Hospitals.FirstOrDefault(x => player.HasPermission(x.Permission.ToLower()));
+                            Hospital? hospital = _config.HospitalSettings.Hospitals.FirstOrDefault(x => e.Player.HasPermission(x.Permission.ToLower()));
                             if (hospital is { Position: { } })
                             {
                                 int index = MathHelper.Next(0, hospital.Position.Count - 1);
                                 Vector3 hPosition = hospital.Position.ElementAt(index).GetVector3();
-                                player.Teleport(hPosition, player.Rotation);
+                                e.Player.Teleport(hPosition, e.Player.Rotation);
                             }
                         }
                     }
 
+                    /* TODO
                     PlayerStatHandler.OnPlayerFoodUpdate(player, player.Player.life.food);
                     PlayerStatHandler.OnPlayerWaterUpdate(player, player.Player.life.water);
                     PlayerStatHandler.OnPlayerVirusUpdate(player, player.Player.life.virus);
@@ -110,23 +103,27 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     PlayerStatHandler.OnPlayerStaminaUpdate(player, player.Player.life.stamina);
                     PlayerStatHandler.OnPlayerBleedingUpdate(player, player.Bleeding);
                     PlayerStatHandler.OnPlayerBrokenUpdate(player, player.Broken);
-                    PlayerStatHandler.OnPlayerSafezoneUpdated(player, player.Player.movement.isSafe);
+                    PlayerStatHandler.OnSafezoneUpdated(player, player.Player.movement.isSafe);
                     PlayerStatHandler.OnPlayerDeadzoneUpdated(player, player.Player.movement.isRadiated);
-                    PlayerStatHandler.OnPlayerTemperatureUpdate(player, player.Player.life.temperature);
+                    PlayerStatHandler.OnPlayerTemperatureUpdate(player, player.Player.life.temperature);*/
                 });
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(OnPlayerRevived)}.", ex);
+                AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(OnRevived)}.", ex);
             }
         }
         
-         private static void OnPlayerDamaged(ref DamagePlayerParameters parameters, ref bool shouldAllow)
+        [EventHandler(priority: EEventPriority.LOWEST)]
+        private void OnDamaged(PlayerDamageEvent e)
         {
             try
             {
-                UnturnedPlayer player = UnturnedPlayer.FromPlayer(parameters.player);
-                AdvancedHealthComponent? comp = ComponentManager.Get(player);
+                UnturnedPlayer victim = UnturnedPlayer.FromPlayer(e.Parameters.player);
+                if (victim == null)
+                    return;
+                
+                AdvancedHealthComponent? comp = ComponentManager.Get(victim);
                 if (comp == null)
                     return;
                 
@@ -136,151 +133,134 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 var healthSettings = _config.HealthSystemSettings;
                 var friendlyFireSettings = _config.AntiGroupFriendlyFireSettings;
                 bool allow = true;
-                shouldAllow = false;
+                bool shouldAllow = false;
 
-                /*if (parameters.killer != CSteamID.Nil)
+                try
                 {
-                    UnturnedPlayer killerPlayer = UnturnedPlayer.FromCSteamID(parameters.killer);
-                    if (killerPlayer != null && _config.DefibrillatorSettings.Enabled)
+                    if (friendlyFireSettings.Enable)
                     {
-                        AdvancedHealthComponent killerComp = killerPlayer.
-                        if (!_config.DefibrillatorSettings.EnablePermission || (_config.DefibrillatorSettings.EnablePermission && killerPlayer.HasPermission(_config.DefibrillatorSettings.PermissionForUseDefiblirator)))
+                        UnturnedPlayer attacker = UnturnedPlayer.FromCSteamID(e.Parameters.killer);
+                        if (attacker != null)
                         {
-                            Defibrillator defibrillator = _config.DefibrillatorSettings.DefibrillatorItems.Find(x => x.ItemID == killerPlayer.Player.equipment.ItemID);
-                            if (defibrillator != null)
+                            if (attacker.CSteamID != victim.CSteamID)
                             {
-                                if (killerComp.LastDefibliratorUses.TryGetValue(defibrillator.ItemID, out DateTime value))
+                                EDeathCause cause2 = e.Parameters.cause;
+                                if (cause2 == EDeathCause.CHARGE || cause2 == EDeathCause.GRENADE ||
+                                    cause2 == EDeathCause.GUN || cause2 == EDeathCause.LANDMINE ||
+                                    cause2 == EDeathCause.MELEE || cause2 == EDeathCause.MISSILE ||
+                                    cause2 == EDeathCause.PUNCH || cause2 == EDeathCause.ROADKILL ||
+                                    cause2 == EDeathCause.SENTRY)
                                 {
-                                    if (value > DateTime.Now)
+                                    List<RocketPermissionsGroup> mutualGroups =
+                                        UPlayerHelper.GetMutualGroups(victim, attacker);
+                                    List<string> ffGroups = friendlyFireSettings.Groups;
+
+                                    foreach (var group in mutualGroups)
                                     {
-                                        Helper.SendChatMessage(killerPlayer.SteamPlayer(), TAdvancedHealthMain.Instance.Translate(true, "defibrillator_error_cooldown", (value - DateTime.Now).TotalSeconds.ToString("0.00")));
-                                        return;
+                                        if (!ffGroups.Contains(group.Id.ToLower()))
+                                            continue;
+                                        shouldAllow = false;
+                                        if (!string.IsNullOrEmpty(friendlyFireSettings.MessageIcon))
+                                            ChatManager.serverSendMessage(
+                                                friendlyFireSettings.Message.Replace('{', '<').Replace('}', '>'),
+                                                Color.white, null, attacker.SteamPlayer(), EChatMode.LOCAL,
+                                                friendlyFireSettings.MessageIcon, true);
+                                        else
+                                            UChatHelper.SendPlainChatMessage(attacker.SteamPlayer(),
+                                                friendlyFireSettings.Message);
+                                        allow = false;
+                                        break;
                                     }
-                                    killerComp.LastDefibliratorUses.Remove(defibrillator.ItemID);
                                 }
-
-                                int chance = MathHelper.Next(1, 100);
-                                if (chance != 0 && chance <= defibrillator.ReviveChance)
-                                    comp.ReviveAsync();
-                                killerComp.LastDefibliratorUses.Add(defibrillator.ItemID, DateTime.Now.AddSeconds(defibrillator.RechargeTimeSecs));
-                                return;
                             }
                         }
                     }
-                }*/
 
-                if (friendlyFireSettings.Enable)
-                {
-                    UnturnedPlayer victim = UnturnedPlayer.FromPlayer(parameters.player);
-                    UnturnedPlayer attacker = UnturnedPlayer.FromCSteamID(parameters.killer);
+                    victim.Player.life.askHeal(100, false, false);
+                    float totaldamage;
 
-                    if (victim != null && attacker != null)
+                    EDeathCause cause = e.Parameters.cause;
+                    ELimb limb = e.Parameters.limb;
+                    CSteamID killer = e.Parameters.killer;
+                    var param = e.Parameters;
+
+                    switch (cause)
                     {
-                        if (attacker.CSteamID != victim.CSteamID)
+                        case EDeathCause.PUNCH:
+                            param.damage = 1.0f;
+                            break;
+                        case EDeathCause.BONES:
+                            param.damage = 10.0f;
+                            victim.Broken = true;
+                            break;
+                        case EDeathCause.BLEEDING when health.IsInjured && !comp.allowDamage:
+                            param.damage = 0;
+                            victim.Bleeding = false;
+                            break;
+                        case EDeathCause.BLEEDING:
                         {
-                            EDeathCause cause2 = parameters.cause;
-                            if (cause2 == EDeathCause.CHARGE || cause2 == EDeathCause.GRENADE || cause2 == EDeathCause.GUN || cause2 == EDeathCause.LANDMINE || cause2 == EDeathCause.MELEE || cause2 == EDeathCause.MISSILE || cause2 == EDeathCause.PUNCH || cause2 == EDeathCause.ROADKILL || cause2 == EDeathCause.SENTRY)
-                            {
-                                //List<Permission> victimPerms = victim.GetPermissions();
-                                //List<Permission> attackerPerms = attacker.GetPermissions();
-
-                                List<RocketPermissionsGroup> mutualGroups = UPlayerHelper.GetMutualGroups(victim, attacker);
-                                List<string> ffGroups = friendlyFireSettings.Groups;
-
-                                foreach (var group in mutualGroups)
-                                {
-                                    if (!ffGroups.Contains(group.Id.ToLower()))
-                                        continue;
-                                    shouldAllow = false;
-                                    if (!string.IsNullOrEmpty(friendlyFireSettings.MessageIcon))
-                                        ChatManager.serverSendMessage(
-                                            friendlyFireSettings.Message.Replace('{', '<').Replace('}', '>'),
-                                            Color.white, null, attacker.SteamPlayer(), EChatMode.LOCAL,
-                                            friendlyFireSettings.MessageIcon, true);
-                                    else
-                                        UChatHelper.SendPlainChatMessage(attacker.SteamPlayer(),
-                                            friendlyFireSettings.Message);
-                                    allow = false;
-                                    break;
-                                }
-                            }
+                            param.damage = comp.hasHeavyBleeding
+                                ? healthSettings.Combat.HeavyBleedingDamage
+                                : healthSettings.Combat.BleedingDamage;
+                            victim.Bleeding = true;
+                            break;
                         }
+                        case EDeathCause.ANIMAL:
+                        case EDeathCause.ZOMBIE:
+                            limb = ELimb.LEFT_FRONT;
+                            break;
                     }
-                }
 
-                player.Player.life.askHeal(100, false, false);
-                float totaldamage;
+                    comp.allowDamage = false;
 
-                EDeathCause cause = parameters.cause;
-                ELimb limb = parameters.limb;
-                CSteamID killer = parameters.killer;
-
-                switch (cause)
-                {
-                    case EDeathCause.PUNCH:
-                        parameters.damage = 1.0f;
-                        break;
-                    case EDeathCause.BONES:
-                        parameters.damage = 10.0f;
-                        player.Broken = true;
-                        break;
-                    case EDeathCause.BLEEDING when health.IsInjured && !comp.allowDamage:
-                        parameters.damage = 0;
-                        player.Bleeding = false;
-                        break;
-                    case EDeathCause.BLEEDING:
+                    if (e.Parameters.respectArmor)
                     {
-                        parameters.damage = comp.hasHeavyBleeding ? healthSettings.Combat.HeavyBleedingDamage : healthSettings.Combat.BleedingDamage;
-                        player.Bleeding = true;
-                        break;
+                        param.times *= DamageTool.getPlayerArmor(e.Parameters.limb, victim.Player);
+                        if (e.Parameters.applyGlobalArmorMultiplier)
+                            param.times *= Provider.modeConfigData.Players.Armor_Multiplier;
+                        int b = Mathf.FloorToInt(e.Parameters.damage * e.Parameters.times);
+                        totaldamage = Mathf.Min(byte.MaxValue, b);
                     }
-                    case EDeathCause.ANIMAL:
-                    case EDeathCause.ZOMBIE:
-                        limb = ELimb.LEFT_FRONT;
-                        break;
+                    else
+                        totaldamage = e.Parameters.times * e.Parameters.damage;
+
+                    if (!allow || victim.Features.GodMode)
+                        totaldamage = 0;
+
+                    e.Parameters = param;
+                    HandleIncomingDamage(victim, health, killer, totaldamage, limb, cause, victim.Position.normalized);
                 }
-
-                comp.allowDamage = false;
-
-                if (parameters.respectArmor)
+                finally
                 {
-                    parameters.times *= DamageTool.getPlayerArmor(parameters.limb, parameters.player);
-                    if (parameters.applyGlobalArmorMultiplier)
-                        parameters.times *= Provider.modeConfigData.Players.Armor_Multiplier;
-                    int b = Mathf.FloorToInt(parameters.damage * parameters.times);
-                    totaldamage = Mathf.Min(byte.MaxValue, b);
+                    e.ShouldAllow = shouldAllow;
+                    e.IsCancelled = !shouldAllow;
                 }
-                else
-                    totaldamage = parameters.times * parameters.damage;
-
-                if (!allow || player.Features.GodMode)
-                    totaldamage = 0;
-
-                HandleIncomingDamage(player, health, killer, totaldamage, limb, cause, player.Position.normalized);
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(OnPlayerDamaged)}.", ex);
+                AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(OnDamaged)}.", ex);
             }
         }
          
-        internal static void OnPlayerLifeDamaged(SDG.Unturned.Player p, byte damage, Vector3 force, EDeathCause cause, ELimb limb, CSteamID killer)
+        [EventHandler]
+        private void OnLifeDamaged(PlayerHurtEvent e)
         {
             try
             {
-                UnturnedPlayer player = UnturnedPlayer.FromPlayer(p);
+                UnturnedPlayer player = UnturnedPlayer.FromPlayer(e.Player);
                 AdvancedHealthComponent? comp = ComponentManager.Get(player);
                 if (comp == null)
                     return;
 
-                player.Player.life.askHeal(100, false, false);
+                e.Player.life.askHeal(100, false, false);
                 var health = comp.HealthData;
                 if (health == null)
                     return;
                 
-                float totalDamage = damage;
-
-                switch (cause)
+                float totalDamage = e.Damage;
+                var limb = e.Limb;
+                
+                switch (e.Cause)
                 {
                     case EDeathCause.PUNCH:
                         totalDamage = 1.0f;
@@ -310,11 +290,11 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 if (player.Features.GodMode)
                     totalDamage = 0;
 
-                HandleIncomingDamage(player, health, killer, totalDamage, limb, cause, player.Position.normalized);
+                HandleIncomingDamage(player, health, e.Killer, totalDamage, limb, e.Cause, player.Position.normalized);
             }
             catch (Exception ex)
             {
-                AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(OnPlayerLifeDamaged)}.", ex);
+                AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(OnLifeDamaged)}.", ex);
             }
         }
         

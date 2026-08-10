@@ -17,9 +17,9 @@
     <Description>A custom tarkov like health system with database support.</Description>
 
     <!-- Version -->
-    <Version>4.3.0</Version>
-    <AssemblyVersion>4.3.0.0</AssemblyVersion>
-    <FileVersion>4.3.0.0</FileVersion>
+    <Version>4.3.1</Version>
+    <AssemblyVersion>4.3.1.0</AssemblyVersion>
+    <FileVersion>4.3.1.0</FileVersion>
     <BuildDate>$([System.DateTime]::UtcNow.ToString("yyyy-MM-dd HH:mm:ss"))</BuildDate>
     <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
 
@@ -68,6 +68,10 @@
     </Reference>
     <Reference Include="Rocket.Unturned">
       <HintPath>..\assets\libraries\Rocket.Unturned.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="RocketFlow">
+      <HintPath>..\assets\libraries\RocketFlow.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="SDG.NetTransport">

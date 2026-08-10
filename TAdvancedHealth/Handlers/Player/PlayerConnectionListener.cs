@@ -1,34 +1,22 @@
 using System;
-using System.Collections.Generic;
-using Rocket.Unturned;
 using Rocket.Unturned.Player;
 using SDG.Unturned;
+using Tavstal.RocketFlow.Attributes;
+using Tavstal.RocketFlow.Core;
+using Tavstal.RocketFlow.Events.Player;
 using Tavstal.TAdvancedHealth.Components;
-using Tavstal.TAdvancedHealth.Models;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TAdvancedHealth.Utils.Helpers;
 using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Helpers.Unturned;
+// ReSharper disable UnusedMember.Local
 
 namespace Tavstal.TAdvancedHealth.Handlers.Player
 {
-    public static class PlayerConnectionHandler
+    public class PlayerConnectionListener : EventListener
     {
         private static AdvancedHealthConfig _config => AdvancedHealth.Instance.Config;
-        private static readonly Dictionary<string, PlayerStatSubscriptions> _playerStats = new  Dictionary<string, PlayerStatSubscriptions>();
-        
-        internal static void Attach()
-        {
-            //U.Events.OnPlayerConnected += OnPlayerJoin;
-            U.Events.OnPlayerDisconnected += OnPlayerLeave;
-        }
-
-        internal static void Detach()
-        {
-            //U.Events.OnPlayerConnected -= OnPlayerJoin;
-            U.Events.OnPlayerDisconnected -= OnPlayerLeave;
-        }
         
         internal static void OnPlayerJoin(UnturnedPlayer player)
         {
@@ -44,22 +32,6 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     AdvancedHealth.Logger.Error($"Failed to retrieve health data for player {player.DisplayName} ({player.Id}).");
                     return;
                 }
-                
-                #region Attach Events
-
-                player.Player.equipment.onEquipRequested += PlayerInventoryHandler.OnPlayerEquipRequested;
-                player.Player.equipment.onDequipRequested += PlayerInventoryHandler.OnPlayerDequipRequested;
-                player.Player.life.onHurt += PlayerLifeHandler.OnPlayerLifeDamaged;
-
-                var statSubscriptions = new PlayerStatSubscriptions(player);
-                _playerStats.Add(player.Id, statSubscriptions);
-                player.Player.life.onOxygenUpdated += statSubscriptions.OxygenCallback;
-                player.Player.life.onTemperatureUpdated += statSubscriptions.TemperatureCallback;
-                player.Player.movement.onSafetyUpdated += statSubscriptions.SafetyCallback;
-                player.Player.movement.onRadiationUpdated += statSubscriptions.RadiationCallback;
-                player.Player.life.onVirusUpdated += statSubscriptions.VirusCallback;
-
-                #endregion
 
                 #region Hide default HUD and show the custom one
 
@@ -75,11 +47,12 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 
                 #region Update States
                 
+                /* TODO
                 PlayerStatHandler.OnPlayerBleedingUpdate(player, player.Bleeding);
                 PlayerStatHandler.OnPlayerBrokenUpdate(player, player.Broken);
-                PlayerStatHandler.OnPlayerSafezoneUpdated(player, player.Player.movement.isSafe);
+                PlayerStatHandler.OnSafezoneUpdated(player, player.Player.movement.isSafe);
                 PlayerStatHandler.OnPlayerDeadzoneUpdated(player, player.Player.movement.isRadiated);
-                PlayerStatHandler.OnPlayerTemperatureUpdate(player, player.Player.life.temperature);
+                PlayerStatHandler.OnPlayerTemperatureUpdate(player, player.Player.life.temperature);*/
                 
                 if (LightingManager.isFullMoon)
                     comp.TryAddState(EPlayerState.FULL_MOON);
@@ -92,25 +65,21 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(OnPlayerJoin)}.", ex);
             }
         }
+
+        [EventHandler]
+        private void OnPlayerDisconnect(PlayerDisconnectEvent e)
+        {
+            AdvancedHealthComponent? comp = ComponentManager.Get(e.Player);
+            if (comp != null && comp.dragState != EDragState.None)
+                comp.UnDrag();
+                
+            ComponentManager.Invalidate(e.Player.Id);
+        }
         
         private static void OnPlayerLeave(UnturnedPlayer player)
         {
             try
             {
-                player.Player.equipment.onEquipRequested -= PlayerInventoryHandler.OnPlayerEquipRequested;
-                player.Player.equipment.onDequipRequested -= PlayerInventoryHandler.OnPlayerDequipRequested;
-                player.Player.life.onHurt -= PlayerLifeHandler.OnPlayerLifeDamaged;
-                
-                if (_playerStats.TryGetValue(player.Id, out PlayerStatSubscriptions statSubscriptions))
-                {
-                    player.Player.life.onOxygenUpdated -= statSubscriptions.OxygenCallback;
-                    player.Player.life.onTemperatureUpdated -= statSubscriptions.TemperatureCallback;
-                    player.Player.movement.onSafetyUpdated -= statSubscriptions.SafetyCallback;
-                    player.Player.movement.onRadiationUpdated -= statSubscriptions.RadiationCallback;
-                    player.Player.life.onVirusUpdated -= statSubscriptions.VirusCallback;
-                    _playerStats.Remove(player.Id);
-                }
-
                 AdvancedHealthComponent? comp = ComponentManager.Get(player);
                 if (comp != null && comp.dragState != EDragState.None)
                     comp.UnDrag();

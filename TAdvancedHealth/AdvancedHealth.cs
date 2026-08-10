@@ -3,8 +3,12 @@ using SDG.Unturned;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Tavstal.RocketFlow.Attributes;
+using Tavstal.RocketFlow.Core;
+using Tavstal.RocketFlow.Events.Level;
+using Tavstal.TAdvancedHealth.Components;
 using Tavstal.TAdvancedHealth.Handlers;
-using Tavstal.TAdvancedHealth.Handlers.Player;
+using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Models.Logging;
@@ -15,13 +19,11 @@ namespace Tavstal.TAdvancedHealth
     /// <summary>
     /// Represents a plugin for advanced health management.
     /// </summary>
-    public class AdvancedHealth : PluginBase<AdvancedHealthConfig>
+    public class AdvancedHealth : PluginBase<AdvancedHealthConfig>, EventListener
     {
         public static AdvancedHealth Instance { get; private set; } = null!;
         public static DatabaseManager DatabaseManager { get; private set; } = null!;
         private HarmonyLib.Harmony? HarmonyPatcher { get; set; }
-        private bool _hasFullMoon;
-        private DateTime _nextUpdate;
 
         public override void OnPreLoad()
         {
@@ -60,31 +62,15 @@ namespace Tavstal.TAdvancedHealth
         /// </summary>
         public override void OnLoad()
         {
-            Level.onPostLevelLoaded += OnPostLevelLoaded;
             DatabaseManager = new DatabaseManager(Config);
-
-            PlayerConnectionHandler.Attach();
-            PlayerInventoryHandler.Attach();
-            PlayerLifeHandler.Attach();
-            PlayerMovementHandler.Attach();
-            PlayerStatHandler.Attach();
-            UIEventHandler.Attach();
-            VehicleEventHandler.Attach();
             HealthSystemEventHandler.Attach();
-            _hasFullMoon = LightingManager.isFullMoon;
-
+            RocketFlow.RocketFlow.Initialize();
+            RocketFlow.RocketFlow.RegisterAll(this);
+            
             HarmonyPatcher = new HarmonyLib.Harmony("tavstal.tadvancedhealth.harmony");
             HarmonyPatcher.PatchAll();
             
             Logger.Info("# TAdvancedHealth has been loaded.");
-        }
-
-        private void OnPostLevelLoaded(int level)
-        {
-            if (!DatabaseManager.IsAuthenticationFailed)
-                return;
-            Logger.Warning($"# Unloading {GetPluginName()} due to database authentication error.");
-            this.UnloadPlugin();
         }
 
         /// <summary>
@@ -92,15 +78,8 @@ namespace Tavstal.TAdvancedHealth
         /// </summary>
         public override void OnUnLoad()
         {
-            Level.onPostLevelLoaded -= OnPostLevelLoaded;
-            PlayerConnectionHandler.Detach();
-            PlayerInventoryHandler.Detach();
-            PlayerLifeHandler.Detach();
-            PlayerMovementHandler.Detach();
-            PlayerStatHandler.Detach();
-            UIEventHandler.Detach();
-            VehicleEventHandler.Detach();
             HealthSystemEventHandler.Detach();
+            RocketFlow.RocketFlow.UnregisterAll(this);
             HarmonyPatcher?.UnpatchAll();
             
             foreach (SteamPlayer steamPlayer in Provider.clients)
@@ -120,29 +99,13 @@ namespace Tavstal.TAdvancedHealth
             Logger.Info("# TAdvancedHealth has been successfully unloaded!");
         }
 
-        /// <summary>
-        /// Called every frame, if the MonoBehaviour is enabled.
-        /// </summary>
-        private void Update()
+        [EventHandler]
+        public void OnPostLevelLoaded(LevelPostLoadEvent e)
         {
-            try
-            {
-                if (_nextUpdate > DateTime.Now)
-                    return;
-
-                // Update Moon State
-                if (_hasFullMoon != LightingManager.isFullMoon)
-                {
-                    _hasFullMoon = LightingManager.isFullMoon;
-                    PlayerStatHandler.OnMoonUpdated(LightingManager.isFullMoon);
-                }
-
-                _nextUpdate = DateTime.Now.AddSeconds(5);
-            }
-            catch (Exception ex)
-            {
-                Logger.Error($"Unexpected error occured in {nameof(Update)}.", ex);
-            }
+            if (!DatabaseManager.IsAuthenticationFailed)
+                return;
+            Logger.Warning($"# Unloading {GetPluginName()} due to database authentication error.");
+            this.UnloadPlugin();
         }
 
         public override Dictionary<string, string> LanguagePacks => new Dictionary<string, string>();
