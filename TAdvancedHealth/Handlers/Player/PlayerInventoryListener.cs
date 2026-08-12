@@ -11,6 +11,7 @@ using Tavstal.TAdvancedHealth.Models.Config;
 using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Extensions;
 // ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedMember.Global
 
 namespace Tavstal.TAdvancedHealth.Handlers.Player
 {
@@ -26,91 +27,70 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 AdvancedHealthComponent? comp = ComponentManager.Get(e.Player);
                 if (comp == null)
                     return;
-                
+
                 var healthData = comp.HealthData;
                 if (healthData == null)
                     return;
-                    
+
                 if (healthData.RightArmHealth > 0 && healthData.LeftArmHealth > 0)
                     return;
 
                 ushort itemID = e.Item.item.id;
                 var itemType = e.Asset.type;
                 var equipment = e.Player.Player.equipment;
-                
-                try
+
+                bool isMedicine = _config.Medicines.Any(x => x.ItemId == itemID);
+                if (isMedicine)
+                    return;
+
+                if (healthData.RightArmHealth == 0 && healthData.LeftArmHealth == 0)
                 {
-                    bool isMedicine = _config.Medicines.Any(x => x.ItemId == itemID);
-                    if (isMedicine)
-                        return;
-                    
-                    if (healthData.RightArmHealth == 0 && healthData.LeftArmHealth == 0)
+                    if (!_config.HealthSystemSettings.Restrictions.CanHoldOneHandItemsWithBrokenArms)
+                        if (_config.OneHandedItems.Items.Contains(itemID) ||
+                            _config.OneHandedItems.ItemTypes.Contains(itemType))
+                        {
+                            e.ShouldAllow = false;
+                            e.IsCancelled = true;
+                            if (equipment.itemID != 0)
+                                equipment.dequip();
+                        }
+
+                    if (!_config.HealthSystemSettings.Restrictions.CanHoldTwoHandItemsWithBrokenArms)
+                        if (_config.TwoHandedItems.Items.Contains(itemID) ||
+                            _config.TwoHandedItems.ItemTypes.Contains(itemType))
+                        {
+                            e.ShouldAllow = false;
+                            e.IsCancelled = true;
+                            if (equipment.itemID != 0)
+                                equipment.dequip();
+                        }
+
+                    return;
+                }
+
+                if (!_config.HealthSystemSettings.Restrictions.CanHoldOneHandItemsWithOneBrokenArm)
+                    if (_config.OneHandedItems.Items.Contains(itemID) ||
+                        _config.OneHandedItems.ItemTypes.Contains(itemType))
                     {
-                        if (!_config.HealthSystemSettings.Restrictions.CanHoldOneHandItemsWithBrokenArms)
-                            if (_config.OneHandedItems.Items.Contains(itemID) || _config.OneHandedItems.ItemTypes.Contains(itemType))
-                            {
-                                e.ShouldAllow = false;
-                                e.IsCancelled = true;
-                                if (equipment.itemID != 0)
-                                    equipment.dequip();
-                            }
-                        if (!_config.HealthSystemSettings.Restrictions.CanHoldTwoHandItemsWithBrokenArms)
-                            if (_config.TwoHandedItems.Items.Contains(itemID) || _config.TwoHandedItems.ItemTypes.Contains(itemType))
-                            {
-                                e.ShouldAllow = false;
-                                e.IsCancelled = true;
-                                if (equipment.itemID != 0)
-                                    equipment.dequip();
-                            }
-                        return;
+                        e.ShouldAllow = false;
+                        e.IsCancelled = true;
+                        if (equipment.itemID != 0)
+                            equipment.dequip();
                     }
-                    
-                    if (!_config.HealthSystemSettings.Restrictions.CanHoldOneHandItemsWithOneBrokenArm)
-                        if (_config.OneHandedItems.Items.Contains(itemID) || _config.OneHandedItems.ItemTypes.Contains(itemType))
-                        {
-                            e.ShouldAllow = false;
-                            e.IsCancelled = true;
-                            if (equipment.itemID != 0)
-                                equipment.dequip();
-                        }
-                    if (!_config.HealthSystemSettings.Restrictions.CanHoldTwoHandItemsWithOneBrokenArm)
-                        if (_config.TwoHandedItems.Items.Contains(itemID) || _config.TwoHandedItems.ItemTypes.Contains(itemType))
-                        {
-                            e.ShouldAllow = false;
-                            e.IsCancelled = true;
-                            if (equipment.itemID != 0)
-                                equipment.dequip();
-                        }
-                }
-                finally
-                {
-                    if (e.ShouldAllow)
-                        comp.lastEquipedItem = e.Item.item.id;
-                }
+
+                if (!_config.HealthSystemSettings.Restrictions.CanHoldTwoHandItemsWithOneBrokenArm)
+                    if (_config.TwoHandedItems.Items.Contains(itemID) ||
+                        _config.TwoHandedItems.ItemTypes.Contains(itemType))
+                    {
+                        e.ShouldAllow = false;
+                        e.IsCancelled = true;
+                        if (equipment.itemID != 0)
+                            equipment.dequip();
+                    }
             }
             catch (Exception ex)
             {
                 AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(OnPlayerEquip)}.", ex);
-            }
-        }
-
-        [EventHandler(priority: EEventPriority.LOWEST, ignoreCancelled: true)]
-        private void OnPlayerDequip(PlayerDequipEvent e)
-        {
-            try
-            {
-                if (!e.ShouldAllow)
-                    return;
-                    
-                AdvancedHealthComponent? comp = ComponentManager.Get(e.Player);
-                if (comp == null)
-                    return;
-                
-                comp.lastEquipedItem = 0;
-            }
-            catch (Exception ex)
-            {
-                AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(OnPlayerDequip)}.", ex);
             }
         }
 
@@ -128,14 +108,9 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 if (health == null)
                     return;
                 
-                if (comp.lastEquipedItem == 0)
-                    return;
-                
-                Medicine? med = _config.Medicines.FirstOrDefault(x => x.ItemId == comp.lastEquipedItem);
+                Medicine? med = _config.Medicines.FirstOrDefault(x => x.ItemId == e.ConsumeableAsset.id);
                 if (med == null)
                     return;
-                
-                comp.lastEquipedItem = 0;
 
                 health.SetHeadHealth(health.HeadHealth + med.HeadHp);
                 health.SetBodyHealth(health.BodyHealth + med.BodyHp);

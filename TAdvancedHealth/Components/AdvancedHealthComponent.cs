@@ -31,7 +31,6 @@ namespace Tavstal.TAdvancedHealth.Components
 
         
         public bool allowDamage;
-        public ushort lastEquipedItem;
         public EPlayerTemperature currentTemperature;
         public List<EPlayerState> states = new List<EPlayerState>();
 
