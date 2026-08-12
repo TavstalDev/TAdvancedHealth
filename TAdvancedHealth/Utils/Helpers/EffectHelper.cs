@@ -7,6 +7,7 @@ using Tavstal.TAdvancedHealth.Models;
 using Tavstal.TAdvancedHealth.Models.Enumerators;
 using Tavstal.TAdvancedHealth.Utils.Managers;
 using Tavstal.TLibrary.Extensions;
+using Tavstal.TLibrary.Helpers.Unturned;
 
 namespace Tavstal.TAdvancedHealth.Utils.Helpers
 {
@@ -237,6 +238,16 @@ namespace Tavstal.TAdvancedHealth.Utils.Helpers
             {
                 AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(UpdateWholeHealthUI)}.", ex);
             }
+        }
+
+        public static void TriggerDamageEffect(UnturnedPlayer player, EDeathCause cause)
+        {
+            if (_config.HealthSystemSettings.DamageEffectId < 1)
+                return;
+            
+            UEffectHelper.SendUIEffect(_config.HealthSystemSettings.DamageEffectId,
+                (short)_config.HealthSystemSettings.DamageEffectId,
+                player.SteamPlayer().transportConnection, true);
         }
 
         public static EPlayerState GetPlayerState(EPlayerTemperature temperature)

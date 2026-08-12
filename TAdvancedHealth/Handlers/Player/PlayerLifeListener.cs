@@ -21,6 +21,7 @@ using Tavstal.TLibrary.Helpers.General;
 using Tavstal.TLibrary.Helpers.Unturned;
 using UnityEngine;
 // ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedMember.Global
 
 namespace Tavstal.TAdvancedHealth.Handlers.Player
 {
@@ -313,6 +314,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     if (HealthHelper.CanBleed(health.HeadHealth, totalDamage))
                         player.Bleeding = true;
 
+                    EffectHelper.TriggerDamageEffect(player, cause);
                     health.SetHeadHealth(health.HeadHealth - totalDamage);
 
                     if (health.HeadHealth > 0)
@@ -352,6 +354,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     if (HealthHelper.CanBleed(health.BodyHealth, totalDamage))
                         player.Bleeding = true;
 
+                    EffectHelper.TriggerDamageEffect(player, cause);
                     health.SetBodyHealth(health.BodyHealth - totalDamage);
 
                     if (health.BodyHealth > 0)
@@ -388,6 +391,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     if (HealthHelper.CanBleed(health.LeftArmHealth, totalDamage))
                         player.Bleeding = true;
 
+                    EffectHelper.TriggerDamageEffect(player, cause);
                     health.SetLeftArmHealth(health.LeftArmHealth - totalDamage);
 
                     if (health.LeftArmHealth + health.RightArmHealth > 0)
@@ -414,6 +418,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     if (HealthHelper.CanBleed(health.RightArmHealth, totalDamage))
                         player.Bleeding = true;
 
+                    EffectHelper.TriggerDamageEffect(player, cause);
                     health.SetRightArmHealth(health.RightArmHealth - totalDamage);
 
                     if (health.RightArmHealth + health.RightArmHealth > 0)
@@ -440,6 +445,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     if (HealthHelper.CanBleed(health.LeftLegHealth, totalDamage))
                         player.Bleeding = true;
 
+                    EffectHelper.TriggerDamageEffect(player, cause);
                     health.SetLeftLegHealth(health.LeftLegHealth - totalDamage);
 
                     if (health.LeftLegHealth + health.RightLegHealth > 0)
@@ -466,6 +472,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     if (HealthHelper.CanBleed(health.RightLegHealth, totalDamage))
                         player.Bleeding = true;
 
+                    EffectHelper.TriggerDamageEffect(player, cause);
                     health.SetRightLegHealth(health.RightLegHealth - totalDamage);
 
                     if (health.RightLegHealth + health.RightLegHealth > 0)
@@ -489,12 +496,14 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 {
                     if (cause == EDeathCause.BONES)
                     {
-                        if (HealthHelper.CanBleed(health.LeftLegHealth, totalDamage) ||
-                            HealthHelper.CanBleed(health.RightLegHealth, totalDamage))
+                        var damage = totalDamage / 2;
+                        if (HealthHelper.CanBleed(health.LeftLegHealth, damage) ||
+                            HealthHelper.CanBleed(health.RightLegHealth, damage))
                             player.Bleeding = true;
 
-                        health.SetRightLegHealth(health.RightLegHealth - totalDamage);
-                        health.SetLeftLegHealth(health.LeftLegHealth - totalDamage);
+                        EffectHelper.TriggerDamageEffect(player, cause);
+                        health.SetRightLegHealth(health.RightLegHealth - damage);
+                        health.SetLeftLegHealth(health.LeftLegHealth - damage);
 
                         if (health.LeftLegHealth + health.RightLegHealth > 0)
                             return;
@@ -511,6 +520,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     if (HealthHelper.CanBleed(health.BodyHealth, totalDamage))
                         player.Bleeding = true;
 
+                    EffectHelper.TriggerDamageEffect(player, cause);
                     health.SetBodyHealth(health.BodyHealth - totalDamage);
 
                     if (health.BodyHealth > 0)
