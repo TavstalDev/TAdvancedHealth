@@ -5,28 +5,31 @@ namespace Tavstal.TAdvancedHealth.Models.Config
 {
     public class HealthSystemSettings
     {
-        [YamlMember(Order = 0, Description = "Effect ID for the pain screen overlay")]
-        public ushort PainEffectID { get; set; }
+        [YamlMember(Order = 0, Description = "Effect ID for the damage screen overlay")]
+        public ushort DamageEffectId { get; set; }
         
-        [YamlMember(Order = 1, Description = "Enables per-limb health system")]
+        [YamlMember(Order = 1, Description = "Effect ID for the pain screen overlay")]
+        public ushort PainEffectId { get; set; }
+        
+        [YamlMember(Order = 2, Description = "Enables per-limb health system")]
         public bool EnableLimbHealthSystem { get; set; }
         
-        [YamlMember(Order = 2, Description = "Base health when Tarkov-like health is disabled")]
+        [YamlMember(Order = 3, Description = "Base health when Tarkov-like health is disabled")]
         public float BaseHealth { get; set; }
         
-        [YamlMember(Order = 3, Description = "Per-limb maximum health values")]
+        [YamlMember(Order = 4, Description = "Per-limb maximum health values")]
         public LimbHealthSettings LimbHealth { get; set; } = new LimbHealthSettings();
 
-        [YamlMember(Order = 4, Description = "Movement speed and walking restriction settings")]
+        [YamlMember(Order = 5, Description = "Movement speed and walking restriction settings")]
         public MovementSettings Movement { get; set; } = new MovementSettings();
 
-        [YamlMember(Order = 5, Description = "Death, driving, item and jump restriction settings")]
+        [YamlMember(Order = 6, Description = "Death, driving, item and jump restriction settings")]
         public RestrictionSettings Restrictions { get; set; } = new RestrictionSettings();
 
-        [YamlMember(Order = 6, Description = "Bleeding, injury and pain effect settings")]
+        [YamlMember(Order = 7, Description = "Bleeding, injury and pain effect settings")]
         public CombatSettings Combat { get; set; } = new CombatSettings();
 
-        [YamlMember(Order = 7, Description = "Health regeneration tick settings")]
+        [YamlMember(Order = 8, Description = "Health regeneration tick settings")]
         public RegenSettings Regen { get; set; } = new RegenSettings();
 
         [YamlIgnore]

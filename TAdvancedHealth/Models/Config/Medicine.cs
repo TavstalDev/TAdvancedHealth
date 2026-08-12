@@ -5,7 +5,7 @@ namespace Tavstal.TAdvancedHealth.Models.Config
     public class Medicine
     {
         [YamlMember(Order = 0)]
-        public ushort ItemID { get; set; }
+        public ushort ItemId { get; set; }
         [YamlMember(Order = 1)]
         public float HeadHp { get; set; }
         [YamlMember(Order = 2)]
@@ -25,7 +25,7 @@ namespace Tavstal.TAdvancedHealth.Models.Config
 
         public Medicine(ushort itemID, float headHp, float bodyHp, float rightArmHp, float leftArmHp, float rightLegHp, float leftLegHp, bool curesPain)
         {
-            ItemID = itemID;
+            ItemId = itemID;
             HeadHp = headHp;
             BodyHp = bodyHp;
             RightArmHp = rightArmHp;

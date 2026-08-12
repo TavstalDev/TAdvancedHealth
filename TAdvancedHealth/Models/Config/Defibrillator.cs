@@ -5,7 +5,7 @@ namespace Tavstal.TAdvancedHealth.Models.Config
     public class Defibrillator
     {
         [YamlMember(Order = 0)]
-        public ushort ItemID { get; set; }
+        public ushort ItemId { get; set; }
         [YamlMember(Order = 1)]
         public double RechargeTimeSecs { get; set; }
         [YamlMember(Order = 2)]
@@ -15,7 +15,7 @@ namespace Tavstal.TAdvancedHealth.Models.Config
 
         public Defibrillator(ushort itemID, double rechargeTimeSecs, double reviveChance)
         {
-            ItemID = itemID;
+            ItemId = itemID;
             RechargeTimeSecs = rechargeTimeSecs;
             ReviveChance = reviveChance;
         }

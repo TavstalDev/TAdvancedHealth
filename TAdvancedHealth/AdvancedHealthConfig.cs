@@ -51,7 +51,7 @@ namespace Tavstal.TAdvancedHealth
                 Permission = "EMS.defibrillator",
                 Items = new List<Defibrillator>
                 {
-                    new Defibrillator { ItemID = 21380, RechargeTimeSecs = 5, ReviveChance = 100 },
+                    new Defibrillator { ItemId = 21380, RechargeTimeSecs = 5, ReviveChance = 100 },
                 }
             };
             HospitalSettings = new HospitalSettings
@@ -74,7 +74,8 @@ namespace Tavstal.TAdvancedHealth
             HealthSystemSettings = new HealthSystemSettings
             {
                 EnableLimbHealthSystem = true,
-                PainEffectID = 0,
+                DamageEffectId = 8808,
+                PainEffectId = 8809,
                 BaseHealth = 100.0f,
                 BodyHealth = 70.0f,
                 HeadHealth = 35.0f,
@@ -133,12 +134,12 @@ namespace Tavstal.TAdvancedHealth
             };
             Medicines = new List<Medicine>
             {
-                new Medicine { ItemID = 15, HeadHp = 26.25f, BodyHp = 0, LeftArmHp = 0, LeftLegHp = 0, RightArmHp = 0, RightLegHp = 0, CuresPain = false },
-                new Medicine { ItemID = 403, HeadHp = 0, BodyHp = 52.5f, LeftArmHp = 0, LeftLegHp = 0, RightArmHp = 0, RightLegHp = 0, CuresPain = false },
-                new Medicine { ItemID = 96, HeadHp = 0, BodyHp = 0, LeftArmHp = 0, LeftLegHp = 45, RightArmHp = 0, RightLegHp = 45, CuresPain = false },
-                new Medicine { ItemID = 95, HeadHp = 0, BodyHp = 0, LeftArmHp = 32.5f, LeftLegHp = 0, RightArmHp = 32.5f, RightLegHp = 0, CuresPain = false },
-                new Medicine { ItemID = 394, HeadHp = 0, BodyHp = 0, LeftArmHp = 45, LeftLegHp = 0, RightArmHp = 45, RightLegHp = 0, CuresPain = false },
-                new Medicine { ItemID = 390, HeadHp = 0, BodyHp = 0, LeftArmHp = 0, LeftLegHp = 30, RightArmHp = 0, RightLegHp = 30, CuresPain = true }
+                new Medicine { ItemId = 15, HeadHp = 26.25f, BodyHp = 0, LeftArmHp = 0, LeftLegHp = 0, RightArmHp = 0, RightLegHp = 0, CuresPain = false },
+                new Medicine { ItemId = 403, HeadHp = 0, BodyHp = 52.5f, LeftArmHp = 0, LeftLegHp = 0, RightArmHp = 0, RightLegHp = 0, CuresPain = false },
+                new Medicine { ItemId = 96, HeadHp = 0, BodyHp = 0, LeftArmHp = 0, LeftLegHp = 45, RightArmHp = 0, RightLegHp = 45, CuresPain = false },
+                new Medicine { ItemId = 95, HeadHp = 0, BodyHp = 0, LeftArmHp = 32.5f, LeftLegHp = 0, RightArmHp = 32.5f, RightLegHp = 0, CuresPain = false },
+                new Medicine { ItemId = 394, HeadHp = 0, BodyHp = 0, LeftArmHp = 45, LeftLegHp = 0, RightArmHp = 45, RightLegHp = 0, CuresPain = false },
+                new Medicine { ItemId = 390, HeadHp = 0, BodyHp = 0, LeftArmHp = 0, LeftLegHp = 30, RightArmHp = 0, RightLegHp = 30, CuresPain = true }
             };
             OneHandedItems = new RestrictedItems
             {

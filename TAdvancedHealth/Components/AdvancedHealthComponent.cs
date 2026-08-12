@@ -209,6 +209,7 @@ namespace Tavstal.TAdvancedHealth.Components
             Player.Infection = 0;
             Player.Heal(100);
 
+            EffectManager.askEffectClearByID(AdvancedHealth.Instance.Config.HealthSystemSettings.PainEffectId, TranspConnection);
             EffectManager.sendUIEffectVisibility((short)AdvancedHealth.Instance.Config.EffectId, TranspConnection, true, "RevivePanel", false);
             Player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
         }

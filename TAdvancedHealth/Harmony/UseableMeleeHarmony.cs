@@ -25,7 +25,7 @@ namespace Tavstal.TAdvancedHealth.Harmony
         {
             UseableMelee useableMelee = (UseableMelee)__instance;
             UnturnedPlayer userPlayer = UnturnedPlayer.FromPlayer(useableMelee.player);
-            Defibrillator defibrillator = _config.DefibrillatorSettings.Items.Find(x => x.ItemID == useableMelee.equippedMeleeAsset.id);
+            Defibrillator defibrillator = _config.DefibrillatorSettings.Items.Find(x => x.ItemId == useableMelee.equippedMeleeAsset.id);
             if (!_config.DefibrillatorSettings.Enable || (_config.DefibrillatorSettings.Enable && !userPlayer.HasPermission(_config.DefibrillatorSettings.Permission)) || defibrillator == null)
                 return;
 

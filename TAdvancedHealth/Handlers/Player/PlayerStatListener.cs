@@ -255,13 +255,13 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
 
                     if (painChance <= _config.HealthSystemSettings.Combat.PainEffectChance)
                     {
-                       UEffectHelper.SendUIEffect(_config.HealthSystemSettings.PainEffectID,
-                            (short)_config.HealthSystemSettings.PainEffectID, comp.TranspConnection, true);
+                       UEffectHelper.SendUIEffect(_config.HealthSystemSettings.PainEffectId,
+                            (short)_config.HealthSystemSettings.PainEffectId, comp.TranspConnection, true);
                         if (_config.HealthSystemSettings.Combat.PainEffectDuration > 0)
                             AdvancedHealth.Instance.InvokeAction(_config.HealthSystemSettings.Combat.PainEffectDuration,
                                 () =>
                                 {
-                                    EffectManager.askEffectClearByID(_config.HealthSystemSettings.PainEffectID,
+                                    EffectManager.askEffectClearByID(_config.HealthSystemSettings.PainEffectId,
                                         player.SteamPlayer().transportConnection);
                                 });
 
@@ -338,7 +338,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 if (comp == null)
                     return;
                 
-                comp.TryRemoveState(EffectHelper.GetPlayerState(comp.currentTemperature), false);
+                comp.TryRemoveState(EffectHelper.GetPlayerState(comp.currentTemperature));
                 comp.TryAddState(EffectHelper.GetPlayerState(temperature));
                 comp.currentTemperature = temperature;
                 
