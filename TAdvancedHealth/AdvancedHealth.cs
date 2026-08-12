@@ -23,6 +23,7 @@ namespace Tavstal.TAdvancedHealth
     {
         public static AdvancedHealth Instance { get; private set; } = null!;
         public static DatabaseManager DatabaseManager { get; private set; } = null!;
+        internal static bool IsShuttingDown { get; set; }
         private HarmonyLib.Harmony? HarmonyPatcher { get; set; }
 
         public override void OnPreLoad()
@@ -81,21 +82,24 @@ namespace Tavstal.TAdvancedHealth
             HealthSystemEventHandler.Detach();
             RocketFlow.RocketFlow.UnregisterAll(this);
             HarmonyPatcher?.UnpatchAll();
-            
-            foreach (SteamPlayer steamPlayer in Provider.clients)
-            {
-                UnturnedPlayer uPlayer = UnturnedPlayer.FromSteamPlayer(steamPlayer);
-                EffectManager.askEffectClearByID(Config.EffectId, steamPlayer.transportConnection);
 
-                uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowFood, true);
-                uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowHealth, true);
-                uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowOxygen, true);
-                uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStamina, true);
-                uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowVirus, true);
-                uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowWater, true);
-                uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStatusIcons, true);
+            if (!IsShuttingDown)
+            {
+                foreach (SteamPlayer steamPlayer in Provider.clients)
+                {
+                    UnturnedPlayer uPlayer = UnturnedPlayer.FromSteamPlayer(steamPlayer);
+                    EffectManager.askEffectClearByID(Config.EffectId, steamPlayer.transportConnection);
+
+                    uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowFood, true);
+                    uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowHealth, true);
+                    uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowOxygen, true);
+                    uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStamina, true);
+                    uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowVirus, true);
+                    uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowWater, true);
+                    uPlayer.Player.setPluginWidgetFlag(EPluginWidgetFlags.ShowStatusIcons, true);
+                }
             }
-            
+
             Logger.Info("# TAdvancedHealth has been successfully unloaded!");
         }
 
