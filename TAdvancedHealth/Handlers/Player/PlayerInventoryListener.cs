@@ -37,12 +37,13 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 ushort itemID = e.Item.item.id;
                 var itemType = e.Asset.type;
                 var equipment = e.Player.Player.equipment;
-                bool isMedicine = _config.Medicines.Any(x => x.ItemID == itemID);
-                if (isMedicine)
-                    return;
                 
                 try
                 {
+                    bool isMedicine = _config.Medicines.Any(x => x.ItemId == itemID);
+                    if (isMedicine)
+                        return;
+                    
                     if (healthData.RightArmHealth == 0 && healthData.LeftArmHealth == 0)
                     {
                         if (!_config.HealthSystemSettings.Restrictions.CanHoldOneHandItemsWithBrokenArms)
@@ -123,17 +124,18 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 if (comp == null)
                     return;
 
-                if (comp.lastEquipedItem == 0)
-                    return;
-
-                comp.lastEquipedItem = 0;
-                Medicine? med = _config.Medicines.FirstOrDefault(x => x.ItemID == comp.lastEquipedItem);
-                if (med == null)
-                    return;
-
                 var health = comp.HealthData;
                 if (health == null)
                     return;
+                
+                if (comp.lastEquipedItem == 0)
+                    return;
+                
+                Medicine? med = _config.Medicines.FirstOrDefault(x => x.ItemId == comp.lastEquipedItem);
+                if (med == null)
+                    return;
+                
+                comp.lastEquipedItem = 0;
 
                 health.SetHeadHealth(health.HeadHealth + med.HeadHp);
                 health.SetBodyHealth(health.BodyHealth + med.BodyHp);
@@ -160,11 +162,8 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     });
                 }
 
-                if (!med.CuresPain)
-                    return;
-                
-                EffectManager.askEffectClearByID(_config.HealthSystemSettings.PainEffectID,
-                    player.SteamPlayer().transportConnection);
+                if (med.CuresPain)
+                    EffectManager.askEffectClearByID(_config.HealthSystemSettings.PainEffectId, player.SteamPlayer().transportConnection);
             }
             catch (Exception ex)
             {
