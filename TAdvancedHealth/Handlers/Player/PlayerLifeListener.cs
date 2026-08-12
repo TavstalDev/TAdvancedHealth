@@ -55,7 +55,8 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
         {
             try
             {
-                AdvancedHealthComponent? comp = ComponentManager.Get(e.Player);
+                var player = e.Player;
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
                 if (comp == null)
                     return;
                 
@@ -65,7 +66,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
 
 
                 EffectManager.sendUIEffectVisibility((short)_config.EffectId, comp.TranspConnection, true, "RevivePanel", false);
-                e.Player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
+                player.Player.setPluginWidgetFlag(EPluginWidgetFlags.Modal, false);
 
                 AdvancedHealth.Instance.InvokeAction(0.1f, () =>
                 {
@@ -80,32 +81,31 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                             {
                                 i = MathHelper.Next(0, h.Position.Count - 1);
                                 Vector3 p = h.Position.ElementAt(i).GetVector3();
-                                e.Player.Teleport(p, e.Player.Rotation);
+                                player.Teleport(p, player.Rotation);
                             }
                         }
                         else
                         {
-                            Hospital? hospital = _config.HospitalSettings.Hospitals.FirstOrDefault(x => e.Player.HasPermission(x.Permission.ToLower()));
+                            Hospital? hospital = _config.HospitalSettings.Hospitals.FirstOrDefault(x => player.HasPermission(x.Permission.ToLower()));
                             if (hospital is { Position: { } })
                             {
                                 int index = MathHelper.Next(0, hospital.Position.Count - 1);
                                 Vector3 hPosition = hospital.Position.ElementAt(index).GetVector3();
-                                e.Player.Teleport(hPosition, e.Player.Rotation);
+                                player.Teleport(hPosition, player.Rotation);
                             }
                         }
                     }
-
-                    /* TODO
-                    PlayerStatHandler.OnPlayerFoodUpdate(player, player.Player.life.food);
-                    PlayerStatHandler.OnPlayerWaterUpdate(player, player.Player.life.water);
-                    PlayerStatHandler.OnPlayerVirusUpdate(player, player.Player.life.virus);
-                    PlayerStatHandler.OnPlayerOxygenUpdate(player, player.Player.life.oxygen);
-                    PlayerStatHandler.OnPlayerStaminaUpdate(player, player.Player.life.stamina);
-                    PlayerStatHandler.OnPlayerBleedingUpdate(player, player.Bleeding);
-                    PlayerStatHandler.OnPlayerBrokenUpdate(player, player.Broken);
-                    PlayerStatHandler.OnSafezoneUpdated(player, player.Player.movement.isSafe);
-                    PlayerStatHandler.OnPlayerDeadzoneUpdated(player, player.Player.movement.isRadiated);
-                    PlayerStatHandler.OnPlayerTemperatureUpdate(player, player.Player.life.temperature);*/
+                    
+                    PlayerStatListener.FoodUpdate(player, player.Player.life.food);
+                    PlayerStatListener.WaterUpdate(player, player.Player.life.water);
+                    PlayerStatListener.VirusUpdate(player, player.Player.life.virus);
+                    PlayerStatListener.OxygenUpdate(player, player.Player.life.oxygen);
+                    PlayerStatListener.StaminaUpdate(player, player.Player.life.stamina);
+                    PlayerStatListener.BleedingUpdate(player, player.Bleeding);
+                    PlayerStatListener.BonesUpdate(player, player.Broken);
+                    PlayerStatListener.SafezoneUpdated(player, player.Player.movement.isSafe);
+                    PlayerStatListener.DeadzoneUpdated(player, player.Player.movement.isRadiated);
+                    PlayerStatListener.TemperatureUpdate(player, player.Player.life.temperature);
                 });
             }
             catch (Exception ex)

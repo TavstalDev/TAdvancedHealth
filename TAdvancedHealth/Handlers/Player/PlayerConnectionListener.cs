@@ -47,12 +47,11 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 
                 #region Update States
                 
-                /* TODO
-                PlayerStatHandler.OnPlayerBleedingUpdate(player, player.Bleeding);
-                PlayerStatHandler.OnPlayerBrokenUpdate(player, player.Broken);
-                PlayerStatHandler.OnSafezoneUpdated(player, player.Player.movement.isSafe);
-                PlayerStatHandler.OnPlayerDeadzoneUpdated(player, player.Player.movement.isRadiated);
-                PlayerStatHandler.OnPlayerTemperatureUpdate(player, player.Player.life.temperature);*/
+                PlayerStatListener.BleedingUpdate(player, player.Bleeding);
+                PlayerStatListener.BonesUpdate(player, player.Broken);
+                PlayerStatListener.SafezoneUpdated(player, player.Player.movement.isSafe);
+                PlayerStatListener.DeadzoneUpdated(player, player.Player.movement.isRadiated);
+                PlayerStatListener.TemperatureUpdate(player, player.Player.life.temperature);
                 
                 if (LightingManager.isFullMoon)
                     comp.TryAddState(EPlayerState.FULL_MOON);

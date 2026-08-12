@@ -1,4 +1,5 @@
 using System;
+using Rocket.Unturned.Player;
 using SDG.Unturned;
 using Tavstal.RocketFlow.Attributes;
 using Tavstal.RocketFlow.Core;
@@ -13,22 +14,70 @@ using Tavstal.TLibrary.Extensions;
 using Tavstal.TLibrary.Helpers.General;
 using Tavstal.TLibrary.Helpers.Unturned;
 // ReSharper disable UnusedMember.Local
+// ReSharper disable UnusedMember.Global
 
 namespace Tavstal.TAdvancedHealth.Handlers.Player
 {
     public class PlayerStatListener : EventListener
     {
-        private AdvancedHealthConfig _config => AdvancedHealth.Instance.Config;
+        private static AdvancedHealthConfig _config => AdvancedHealth.Instance.Config;
 
         [EventHandler]
-        private void OnHealthUpdate(PlayerHealthEvent e)
+        private void OnHealthUpdate(PlayerHealthEvent e) =>
+            HealthUpdate(e.Player, e.Value);
+
+        [EventHandler]
+        private void OnFoodUpdate(PlayerFoodEvent e) =>
+            FoodUpdate(e.Player, e.Value);
+
+        [EventHandler]
+        private void OnStaminaUpdate(PlayerStaminaEvent e) =>
+            StaminaUpdate(e.Player, e.Value);
+
+        [EventHandler]
+        private void OnWaterUpdate(PlayerWaterEvent e) =>
+            WaterUpdate(e.Player, e.Value);
+
+        [EventHandler]
+        private void OnVirusUpdate(PlayerVirusEvent e) =>
+            VirusUpdate(e.Player, e.Value);
+
+        [EventHandler]
+        private void OnOxygenUpdate(PlayerOxygenEvent e) =>
+            OxygenUpdate(e.Player, e.NewOxygen);
+
+        [EventHandler]
+        private void OnBleedingUpdate(PlayerBleedingEvent e) =>
+            BleedingUpdate(e.Player, e.IsBleeding);
+
+        [EventHandler]
+        private void OnBonesUpdate(PlayerBonesEvent e) =>
+            BonesUpdate(e.Player, e.IsBroken);
+
+        [EventHandler]
+        private void OnDeadzoneUpdated(PlayerDeadzoneUpdatedEvent e) =>
+            DeadzoneUpdated(e.Player, e.IsInDeadzone);
+
+        [EventHandler]
+        private void OnSafezoneUpdated(PlayerSafezoneUpdatedEvent e) =>
+            SafezoneUpdated(e.Player, e.IsSafe);
+
+        [EventHandler]
+        private void OnTemperatureUpdate(PlayerTemperatureUpdatedEvent e) =>
+            TemperatureUpdate(e.Player, e.NewTemperature);
+
+        [EventHandler]
+        private void OnStanceUpdate(PlayerStanceEvent e) => 
+            StanceUpdate(e.Player, e.Stance);
+        
+        internal static void HealthUpdate(UnturnedPlayer player, byte newHealth)
         {
             try
             {
                 if (_config.HealthSystemSettings.EnableLimbHealthSystem)
                     return;
                 
-                AdvancedHealthComponent? comp = ComponentManager.Get(e.Player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
                 if (comp == null)
                     return;
                 
@@ -36,20 +85,19 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 if (health == null)
                     return;
                 
-                EffectHelper.SendUIEffectProgressBar(e.Player, (short)_config.EffectId, true, EProgressBar.SimpleHealth, (int)(Math.Round(health.BaseHealth, 2) / _config.HealthSystemSettings.BaseHealth * 100), 0);
+                EffectHelper.SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.SimpleHealth, (int)(Math.Round(health.BaseHealth, 2) / _config.HealthSystemSettings.BaseHealth * 100), 0);
             }
             catch (Exception ex)
             {
                 AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(OnHealthUpdate)}.", ex);
             }
         }
-
-        [EventHandler]
-        private void OnFoodUpdate(PlayerFoodEvent e)
+        
+        internal static void FoodUpdate(UnturnedPlayer player, byte food)
         {
             try
             {
-                AdvancedHealthComponent? comp = ComponentManager.Get(e.Player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
                 if (comp == null)
                     return;
                 
@@ -57,10 +105,10 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 if (health == null)
                     return;
                 
-                EffectHelper.SendUIEffectProgressBar(e.Player, (short)_config.EffectId, true, EProgressBar.Food, e.Value, (int)comp.ProgressbarData.Food.Value);
-                comp.ProgressbarData.Food.Value = e.Value;
+                EffectHelper.SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Food, food, (int)comp.ProgressbarData.Food.Value);
+                comp.ProgressbarData.Food.Value = food;
 
-                if (e.Value <= 0)
+                if (food <= 0)
                     comp.TryAddState(EPlayerState.NO_FOOD);
                 else
                     comp.TryRemoveState(EPlayerState.NO_FOOD);
@@ -71,18 +119,17 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             }
         }
         
-        [EventHandler]
-        private void OnStaminaUpdate(PlayerStaminaEvent e)
+        internal static void StaminaUpdate(UnturnedPlayer player, byte stamina)
         {
             try
             {
-                AdvancedHealthComponent? comp = ComponentManager.Get(e.Player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
                 if (comp == null)
                     return;
                 
-                EffectHelper.SendUIEffectProgressBar(e.Player, (short)_config.EffectId, true, EProgressBar.Stamina,
-                    e.Value, (int)comp.ProgressbarData.Stamina.Value);
-                comp.ProgressbarData.Stamina.Value = e.Value;
+                EffectHelper.SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Stamina,
+                    stamina, (int)comp.ProgressbarData.Stamina.Value);
+                comp.ProgressbarData.Stamina.Value = stamina;
             }
             catch (Exception ex)
             {
@@ -90,19 +137,18 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             }
         }
         
-        [EventHandler]
-        private void OnWaterUpdate(PlayerWaterEvent e)
+        internal static void WaterUpdate(UnturnedPlayer player, byte water)
         {
             try
             {
-                AdvancedHealthComponent? comp = ComponentManager.Get(e.Player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
                 if (comp == null)
                     return;
                 
-                EffectHelper.SendUIEffectProgressBar(e.Player, (short)_config.EffectId, true, EProgressBar.Water, e.Value, (int)comp.ProgressbarData.Water.Value);
-                comp.ProgressbarData.Water.Value = e.Value;
+                EffectHelper.SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Water, water, (int)comp.ProgressbarData.Water.Value);
+                comp.ProgressbarData.Water.Value = water;
 
-                if (e.Value <= 0)
+                if (water <= 0)
                     comp.TryAddState(EPlayerState.NO_WATER);
                 else
                     comp.TryRemoveState(EPlayerState.NO_WATER);
@@ -112,20 +158,19 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(OnWaterUpdate)}.", ex);
             }
         }
-
-        [EventHandler]
-        private void OnVirusUpdate(PlayerVirusEvent e)
+        
+        internal static void VirusUpdate(UnturnedPlayer player, byte virus)
         {
             try
             {
-                AdvancedHealthComponent? comp = ComponentManager.Get(e.Player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
                 if (comp == null)
                     return;
                 
-                EffectHelper.SendUIEffectProgressBar(e.Player, (short)_config.EffectId, true, EProgressBar.Radiation, e.Value, (int)comp.ProgressbarData.Virus.Value);
-                comp.ProgressbarData.Virus.Value = e.Value;
+                EffectHelper.SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Radiation, virus, (int)comp.ProgressbarData.Virus.Value);
+                comp.ProgressbarData.Virus.Value = virus;
 
-                if (e.Value <= 0)
+                if (virus <= 0)
                     comp.TryAddState(EPlayerState.NO_VIRUS);
                 else
                     comp.TryRemoveState(EPlayerState.NO_VIRUS);
@@ -135,20 +180,19 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(OnVirusUpdate)}.", ex);
             }
         }
-
-        [EventHandler]
-        private void OnOxygenUpdate(PlayerOxygenEvent e)
+        
+        internal static void OxygenUpdate(UnturnedPlayer player, byte oxygen)
         {
             try
             {
-                AdvancedHealthComponent? comp = ComponentManager.Get(e.Player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
                 if (comp == null)
                     return;
                 
-                EffectHelper.SendUIEffectProgressBar(e.Player, (short)_config.EffectId, true, EProgressBar.Oxygen, e.NewOxygen, (int)comp.ProgressbarData.Oxygen.Value);
-                comp.ProgressbarData.Oxygen.Value = e.NewOxygen;
+                EffectHelper.SendUIEffectProgressBar(player, (short)_config.EffectId, true, EProgressBar.Oxygen, oxygen, (int)comp.ProgressbarData.Oxygen.Value);
+                comp.ProgressbarData.Oxygen.Value = oxygen;
 
-                if (e.NewOxygen <= 0)
+                if (oxygen <= 0)
                     comp.TryAddState(EPlayerState.NO_OXYGEN);
                 else
                     comp.TryRemoveState(EPlayerState.NO_OXYGEN);
@@ -158,17 +202,16 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 AdvancedHealth.Logger.Error($"Unexpected error occured in {nameof(OnOxygenUpdate)}.", ex);
             }
         }
-
-        [EventHandler]
-        private void OnBleedingUpdate(PlayerBleedingEvent e)
+        
+        internal static void BleedingUpdate(UnturnedPlayer player, bool isBleeding)
         {
             try
             {
-                AdvancedHealthComponent? comp = ComponentManager.Get(e.Player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
                 if (comp == null)
                     return;
                 
-                if (!e.IsBleeding)
+                if (!isBleeding)
                 {
                     comp.hasHeavyBleeding = false;
                     comp.TryRemoveState(EPlayerState.BLEEDING);
@@ -177,7 +220,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
 
                 if (!_config.HealthSystemSettings.Combat.CanStartBleeding)
                 {
-                    e.Player.Bleeding = false;
+                    player.Bleeding = false;
                     return;
                 }
 
@@ -192,16 +235,15 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             }
         }
         
-        [EventHandler]
-        private void OnBonesUpdate(PlayerBonesEvent e)
+        internal static void BonesUpdate(UnturnedPlayer player, bool isBroken)
         {
             try
             {
-                AdvancedHealthComponent? comp = ComponentManager.Get(e.Player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
                 if (comp == null)
                     return;
                 
-                if (!e.IsBroken)
+                if (!isBroken)
                 {
                     comp.TryRemoveState(EPlayerState.BROKEN_BONES);
                     return;
@@ -220,7 +262,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                                 () =>
                                 {
                                     EffectManager.askEffectClearByID(_config.HealthSystemSettings.PainEffectID,
-                                        e.Player.SteamPlayer().transportConnection);
+                                        player.SteamPlayer().transportConnection);
                                 });
 
                     }
@@ -232,12 +274,12 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                     if (health.LeftLegHealth == 0 && health.RightLegHealth == 0)
                     {
                         if (!_config.HealthSystemSettings.Movement.CanWalkWithBrokenLegs)
-                            e.Player.Player.stance.checkStance(EPlayerStance.PRONE, true);
+                            player.Player.stance.checkStance(EPlayerStance.PRONE, true);
                     }
                     else if (health.LeftLegHealth == 0 || health.RightLegHealth == 0)
                     {
                         if (!_config.HealthSystemSettings.Movement.CanWalkWithOneBrokenLeg)
-                            e.Player.Player.stance.checkStance(EPlayerStance.PRONE, true);
+                            player.Player.stance.checkStance(EPlayerStance.PRONE, true);
                     }
                 }
 
@@ -249,16 +291,16 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             }
         }
 
-        [EventHandler]
-        private void OnDeadzoneUpdated(PlayerDeadzoneUpdatedEvent e)
+        
+        internal static void DeadzoneUpdated(UnturnedPlayer player, bool isInDeadZone)
         {
             try
             {
-                AdvancedHealthComponent? comp = ComponentManager.Get(e.Player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
                 if (comp == null)
                     return;
                 
-                if (e.IsInDeadzone)
+                if (isInDeadZone)
                     comp.TryAddState(EPlayerState.DEATH_ZONE);
                 else
                     comp.TryRemoveState(EPlayerState.DEATH_ZONE);
@@ -269,16 +311,15 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             }
         }
         
-        [EventHandler]
-        private void OnSafezoneUpdated(PlayerSafezoneUpdatedEvent e)
+        internal static void SafezoneUpdated(UnturnedPlayer player, bool isSafe)
         {
             try
             {
-                AdvancedHealthComponent? comp = ComponentManager.Get(e.Player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
                 if (comp == null)
                     return;
                 
-                if (e.IsSafe)
+                if (isSafe)
                     comp.TryAddState(EPlayerState.SAFE_ZONE);
                 else
                     comp.TryRemoveState(EPlayerState.SAFE_ZONE);
@@ -289,18 +330,17 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             }
         }
         
-        [EventHandler]
-        private void OnTemperatureUpdate(PlayerTemperatureUpdatedEvent e)
+        internal static void TemperatureUpdate(UnturnedPlayer player, EPlayerTemperature temperature)
         {
             try
             {
-                AdvancedHealthComponent? comp = ComponentManager.Get(e.Player);
+                AdvancedHealthComponent? comp = ComponentManager.Get(player);
                 if (comp == null)
                     return;
                 
                 comp.TryRemoveState(EffectHelper.GetPlayerState(comp.currentTemperature), false);
-                comp.TryAddState(EffectHelper.GetPlayerState(e.NewTemperature));
-                comp.currentTemperature = e.NewTemperature;
+                comp.TryAddState(EffectHelper.GetPlayerState(temperature));
+                comp.currentTemperature = temperature;
                 
             }
             catch (Exception ex)
@@ -309,12 +349,11 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
             }
         }
         
-        [EventHandler]
-        private void OnStanceUpdate(PlayerStanceEvent e)
+        internal static void StanceUpdate(UnturnedPlayer player, byte stance)
         {
             try
             {
-                var comp = ComponentManager.Get(e.Player);
+                var comp = ComponentManager.Get(player);
                 if (comp == null)
                     return;
                 
@@ -324,7 +363,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 
                 if (health.IsInjured)
                 {
-                    e.Player.Player.stance.checkStance(EPlayerStance.PRONE, true);
+                    player.Player.stance.checkStance(EPlayerStance.PRONE, true);
                     return;
                 }
 
@@ -332,7 +371,7 @@ namespace Tavstal.TAdvancedHealth.Handlers.Player
                 {
                     if (!_config.HealthSystemSettings.Movement.CanWalkWithOneBrokenLeg || !_config.HealthSystemSettings.Movement.CanWalkWithBrokenLegs && health.LeftLegHealth == 0 &&
                         health.RightLegHealth == 0)
-                        e.Player.Player.stance.checkStance(EPlayerStance.PRONE, true);
+                        player.Player.stance.checkStance(EPlayerStance.PRONE, true);
                 }
             }
             catch (Exception ex)
